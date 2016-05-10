@@ -1,0 +1,44 @@
+
+<div class="types-information">
+    <table width="100%">
+        <thead>
+            <tr>
+                {% for cell in thead %}
+                    <th width="{{ 100 / thead|length }}%">
+                        {{ cell|raw }}
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {% for information in table.get_template() %}
+                        {% include 'information/table/tbody-cell.twig' %}
+                    {% endfor %}
+                </td>
+                {% if table.get_archive() %}
+                <td>
+                    {% for information in table.get_archive() %}
+                        {% include 'information/table/tbody-cell.twig' %}
+                    {% endfor %}
+                </td>
+                {% endif %}
+                <td>
+                    {% for information in table.get_views() %}
+                        {% include 'information/table/tbody-cell.twig' %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for information in table.get_forms() %}
+                        {% include 'information/table/tbody-cell.twig' %}
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
