@@ -9,10 +9,12 @@ function arthistory_scripts() {
     wp_enqueue_script( 'arthistory-logic-base', get_template_directory_uri().'/build/app.base.min.js');
     wp_enqueue_script( 'arthistory-logic-main', get_template_directory_uri().'/build/app.main.min.js', array(), '20160509', true );
 
+//    todo, load hbs templates and vis http://visjs.org/docs/timeline/#groups
+
 }
 add_action( 'wp_enqueue_scripts', 'arthistory_scripts' );
 
-/*
+/**
  * custom admin css
  */
 function arthistory_admin_css() { ?>
