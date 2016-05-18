@@ -21,7 +21,8 @@ function arthistory_admin_css() { ?>
     <style>
         #menu-comments, #menu-tools, /* sidebar */
         #wp-admin-bar-wp-logo, #wp-admin-bar-comments, /*top bar*/
-        #contextual-help-link-wrap    /* misc */
+        #contextual-help-link-wrap, /* misc */
+        #types-information-table /* editor page */
         {
             display: none!important;
         }
