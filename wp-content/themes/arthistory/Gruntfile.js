@@ -16,6 +16,23 @@ module.exports = function(grunt){
         ]
     };
     grunt.initConfig({
+        copy :{
+            images: {
+                expand: true,
+                cwd: 'assets/images/',
+                src: '**/*.*',
+                dest: 'build/assets/',
+                flatten: true,
+                filter: 'isFile'
+            },
+            fonts: {
+                expand: true,
+                cwd: 'assets/fonts',
+                src: '**/*.*',
+                flatten: true,
+                dest: 'build/assets/'
+            }
+        },
         handlebars: {
             compile: {
                 src: watchFiles.handlebars,
@@ -147,6 +164,7 @@ module.exports = function(grunt){
     // Dev task, run jshint, copy custom client side js scripts, then start server and watch
     grunt.registerTask('dev', [
         'newer:handlebars:compile',
+        'newer:copy',
         'newer:uglify',
         'newer:sass',
         'watch'
@@ -155,6 +173,7 @@ module.exports = function(grunt){
     // build task, for initializing environment after clone or UI dependencies update
     grunt.registerTask('build', [
         'handlebars:compile',
+        'copy',
         'uglify',
         'sass',
         'postcss'

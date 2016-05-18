@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "bower": "1.4.0"
+    "bower": "1.4.0",
+    "grunt-copy": "^0.1.0"
   },
   "devDependencies": {
     "autoprefixer": "6.3.3",
