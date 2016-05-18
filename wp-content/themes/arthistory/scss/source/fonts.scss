@@ -1,16 +1,24 @@
 //header font
 @font-face {
-  font-family: 'engravers-regular';
+  font-family: 'EngraversRegular';
   src: url('assets/engravers-regular.woff2') format('woff2'),url('assets/engravers-regular.woff') format('woff'), url('assets/engravers-regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
+.f--font-engravers-regular{
+  font-family: 'EngraversRegular', sans-serif;
+}
+
 //body font
 @font-face {
-  font-family: 'dinbekregular';
+  font-family: 'DinkbekRegular';
   src: url('assets/dinbek-regular.woff2') format('woff2'),
   url('assets/dinbek-regular.woff') format('woff'),url('assets/dinbek-regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+}
+
+.f--font-dinbek-regular{
+  font-family: 'DinkbekRegular', sans-serif;
 }
