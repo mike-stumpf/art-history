@@ -3,5 +3,7 @@
 Template Name: Homepage
 
 */
-?>
-hello world
+get_header(); ?>
+    hello
+<?php
+get_footer();
