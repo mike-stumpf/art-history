@@ -12,7 +12,8 @@
     "velocity": "1.2.3",
     "bluebird": "3.3.4",
     "store-js": "1.3.20",
-    "handlebars": "~4.0.5",
-    "vis": "^4.16.1"
+    "handlebars": "4.0.5",
+    "vis": "4.16.1",
+    "normalize-css": "4.1.1"
   }
 }
