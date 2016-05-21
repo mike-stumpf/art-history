@@ -8,8 +8,15 @@
  *
  * @package arthistory
  */
-
-wp_footer(); ?>
+?>
 </main>
+<footer>
+</footer>
+<?php wp_footer(); ?>
+<script type="text/javascript">
+    $(function(){
+        artHistory.init();
+    });
+</script>
 </body>
 </html>

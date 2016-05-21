@@ -105,6 +105,7 @@ module.exports = function(grunt){
             base: {
                 files: {
                     'build/app.base.min.js': [
+                        'bower_components/cash/dist/cash.min.js',
                         'bower_components/bluebird/js/browser/bluebird.min.js',
                         'bower_components/velocity/velocity.min.js',
                         'bower_components/velocity/velocity.ui.min.js'
