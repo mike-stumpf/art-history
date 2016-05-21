@@ -1,0 +1,26 @@
+/*
+core
+-----------------------------
+*/
+
+.timeline-artwork {
+  border: 10px solid black;
+  border-radius: 50%;
+  width: 75px;
+  height: 75px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: block;
+}
+
+.timeline-header {
+  font-size: 25px;
+  color: $timeline-green;
+  @extend .f--font-dinbek-bold;
+}
+
+.timeline-event {
+  font-size: 25px;
+  color: $timeline-green;
+}

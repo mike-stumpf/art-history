@@ -22,3 +22,15 @@
 .f--font-dinbek-regular{
   font-family: 'DinkbekRegular', sans-serif;
 }
+
+@font-face {
+  font-family: 'DinkbekBold';
+  src: url('assets/dinbek-bold.woff2') format('woff2'),
+  url('assets/dinbek-bold.woff') format('woff'),url('assets/dinbek-bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.f--font-dinbek-bold{
+  font-family: 'DinkbekBold', sans-serif;
+}
