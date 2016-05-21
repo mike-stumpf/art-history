@@ -2,9 +2,15 @@
 @import "source/fonts";
 @import "source/colors";
 
+//modules
+@import "modules/media_queries";
+
 //core
 @import "core";
 
-//modules
+//theme
+@import "theme/header";
+@import "theme/footer";
 
 //pages
+@import "pages/homepage";

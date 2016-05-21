@@ -55,3 +55,11 @@ add_action('init', 'disable_embeds_init', 9999);
 
 remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 remove_action( 'wp_print_styles', 'print_emoji_styles' );
+
+
+/**
+ * helper functions
+ */
+ function getAssetDirectory(){
+     return get_template_directory_uri().'/build/assets/';
+ }

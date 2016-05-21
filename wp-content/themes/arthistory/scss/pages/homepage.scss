@@ -1,0 +1,34 @@
+/*
+core
+-----------------------------
+*/
+
+.page-template-template-homepage {
+  #arthistory-main-content {
+    border: 10px solid $color-map-1;
+    @include tablet {
+      border-width: 15px;
+    }
+    @include desktop {
+      border-width: 25px;
+    }
+  }
+}
+
+/*
+header
+-----------------------------
+*/
+
+.map-header-image {
+  width: 100%;
+}
+
+/*
+body
+-----------------------------
+*/
+
+#map-timeline-container {
+  padding: 50px;
+}
