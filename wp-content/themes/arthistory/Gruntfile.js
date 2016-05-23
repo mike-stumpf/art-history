@@ -16,6 +16,15 @@ module.exports = function(grunt){
         ]
     };
     grunt.initConfig({
+        concat: {
+            uglifyBase: {
+                src: [
+                    'build/app.base.min.js',
+                    'bower_components/vis/dist/vis.min.js'
+                ],
+                dest: 'build/app.base.min.js'
+            }
+        },
         copy :{
             images: {
                 expand: true,
@@ -167,6 +176,7 @@ module.exports = function(grunt){
         'newer:handlebars:compile',
         'newer:copy',
         'newer:uglify',
+        'concat',
         'newer:sass',
         'watch'
     ]);
@@ -176,6 +186,7 @@ module.exports = function(grunt){
         'handlebars:compile',
         'copy',
         'uglify',
+        'concat',
         'sass',
         'postcss'
     ]);
