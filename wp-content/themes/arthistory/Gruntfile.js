@@ -117,7 +117,8 @@ module.exports = function(grunt){
                         'bower_components/cash/dist/cash.min.js',
                         'bower_components/bluebird/js/browser/bluebird.min.js',
                         'bower_components/velocity/velocity.min.js',
-                        'bower_components/velocity/velocity.ui.min.js'
+                        'bower_components/velocity/velocity.ui.min.js',
+                        'bower_components/moment/min/moment.min.js'
                     ]
                 },
                 options: {
@@ -175,7 +176,7 @@ module.exports = function(grunt){
     grunt.registerTask('dev', [
         'newer:handlebars:compile',
         'newer:copy',
-        'newer:uglify',
+        'uglify',
         'concat',
         'newer:sass',
         'watch'
