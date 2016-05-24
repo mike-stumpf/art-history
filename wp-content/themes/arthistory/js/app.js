@@ -2,6 +2,7 @@ var artHistory = {
 
     //lib
     animations: {},
+    handlebars: {},
 
     //modules
     timeline: {},

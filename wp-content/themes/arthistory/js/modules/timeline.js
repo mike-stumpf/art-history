@@ -28,7 +28,16 @@
             data = window[$(container).attr('data-items-list')],
             items = new vis.DataSet(data),
             options = {
-                zoomable: false
+                zoomable: false,
+                template: function (item) {
+                    var template;
+                    if (item.hasOwnProperty('end')){
+                        template = Handlebars.templates.timeline_duration;
+                    } else {
+                        template = Handlebars.templates.timeline_moment;
+                    }
+                    return template(item);
+                }
             },
             minDate,
             maxDate;
@@ -55,6 +64,8 @@
     }
 
     this.init = function(){
+
+        artHistory.handlebars.applyHelpers();
 
         $(timelineClass).each(function(element){
             initializeTimeline(element);

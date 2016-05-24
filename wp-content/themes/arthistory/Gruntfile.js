@@ -45,7 +45,7 @@ module.exports = function(grunt){
         handlebars: {
             compile: {
                 src: watchFiles.handlebars,
-                dest: 'build/baobao.handlebars.min.js'
+                dest: 'build/app.handlebars.min.js'
             },
             options: {
                 namespace: 'Handlebars.templates',
@@ -118,7 +118,8 @@ module.exports = function(grunt){
                         'bower_components/bluebird/js/browser/bluebird.min.js',
                         'bower_components/velocity/velocity.min.js',
                         'bower_components/velocity/velocity.ui.min.js',
-                        'bower_components/moment/min/moment.min.js'
+                        'bower_components/moment/min/moment.min.js',
+                        'bower_components/handlebars/handlebars.runtime.min.js'
                     ]
                 },
                 options: {
