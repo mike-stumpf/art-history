@@ -34,6 +34,7 @@
             maxDate;
 
         data.forEach(function(entry){
+            //todo, add hbs template based on moment or duration
             if (!minDate || !maxDate){
                 minDate = maxDate = convertDate(entry.start);//everything is stored in momentjs format
             }
