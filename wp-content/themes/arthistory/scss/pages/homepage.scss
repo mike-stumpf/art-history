@@ -3,15 +3,30 @@ core
 -----------------------------
 */
 
+@mixin timeline-active-color($value) {
+  .vis-item, .timeline-artwork, #arthistory-main-content {
+    border-color: $value;
+  }
+}
+
 .page-template-template-homepage {
   #arthistory-main-content {
-    border: 10px solid $color-map-1;
+    border: 10px solid transparent;
     @include tablet {
       border-width: 15px;
     }
     @include desktop {
       border-width: 25px;
     }
+  }
+  &.map-timeline-1 {
+    @include timeline-active-color($color-map-1);
+  }
+  &.map-timeline-2 {
+    @include timeline-active-color($color-map-2);
+  }
+  &.map-timeline-3 {
+    @include timeline-active-color($color-map-3);
   }
 }
 
@@ -31,4 +46,31 @@ body
 
 #map-timeline-container {
   padding: 50px;
+}
+
+.timeline-artwork {
+  border: 5px solid transparent;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: block;
+  @include transition-with-defaults(border-color);
+}
+
+.timeline-header {
+  font-size: 25px;
+  color: $timeline-green;
+  @extend .f--font-dinbek-bold;
+}
+
+.timeline-event {
+  font-size: 25px;
+  color: $timeline-green;
+}
+
+.vis-item {
+  @include transition-with-defaults(border-color);
 }

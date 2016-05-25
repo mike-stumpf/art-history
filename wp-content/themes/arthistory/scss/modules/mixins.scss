@@ -1,0 +1,36 @@
+/*
+helpers
+-----------------------------
+*/
+
+@mixin transition-with-defaults($element, $duration:300ms, $timingFunction:ease-out, $delay:0s){
+  -webkit-transition: $element $duration $timingFunction $delay;
+  -moz-transition: $element $duration $timingFunction $delay;
+  -o-transition: $element $duration $timingFunction $delay;
+  transition: $element $duration $timingFunction $delay;
+}
+
+@mixin transition-raw($args) {
+  $args: unquote($args);
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -o-transition: $args;
+  -ms-transition: $args;
+  transition: $args;
+}
+
+@mixin animate-with-defaults ($animationName, $duration:2s, $timingFunction:linear, $delay:0s, $iterationCount:infinite, $direction:normal){
+  -webkit-animation: $animationName $duration $timingFunction $delay $iterationCount $direction;
+  -moz-animation: $animationName $duration $timingFunction $delay $iterationCount $direction;
+  -o-animation: $animationName $duration $timingFunction $delay $iterationCount $direction;
+  animation: $animationName $duration $timingFunction $delay $iterationCount $direction;
+}
+
+@mixin unselectable {
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  /* No support for these yet, use at own risk */
+  -o-user-select: none;
+  user-select: none;
+}

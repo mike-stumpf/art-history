@@ -1,8 +1,10 @@
 (function() {
 
     var that = artHistory.timeline,
+        animations = artHistory.animations,
         timelineClass = '.map-timeline',
-        timeFormat = 'YYYY-MM-DD';
+        timeFormat = 'YYYY-MM-DD',
+        bodyElement = $('body');
 
     this.mapTimelines = [];
 
@@ -66,6 +68,28 @@
         that.mapTimelines.push(new vis.Timeline(container, items, options));
     }
 
+    this.selectTimeline = function(selectedTimelineIndex){
+        var bodyClasses = bodyElement.attr('class').split(' '),
+            timelineLogicClass = '.l--show-for-map-',
+            selectedTimePrefix = 'map-timeline-',
+            selectedTimeline = selectedTimePrefix+selectedTimelineIndex,
+            previousTimelineSelector,
+            previousTimelineIndex;
+        bodyClasses.forEach(function(entry){
+            if(entry.indexOf(selectedTimePrefix) !== -1){
+                previousTimelineSelector = entry;
+                var pieces = previousTimelineSelector.split('-');
+                previousTimelineIndex = pieces[pieces.length-1];
+            }
+        });
+        if (previousTimelineSelector && previousTimelineIndex){
+            bodyElement.removeClass(previousTimelineSelector);
+            animations.fadeOut($(timelineLogicClass+previousTimelineIndex));
+        }
+        bodyElement.addClass(selectedTimeline);
+        animations.fadeIn($(timelineLogicClass+selectedTimelineIndex));
+    };
+
     this.init = function(){
 
         artHistory.handlebars.applyHelpers();
@@ -73,6 +97,8 @@
         $(timelineClass).each(function(element){
             initializeTimeline(element);
         });
+
+        that.selectTimeline(1);
     };
 
 }).apply(artHistory.timeline);

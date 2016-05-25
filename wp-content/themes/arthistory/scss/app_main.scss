@@ -4,6 +4,7 @@
 
 //modules
 @import "modules/media_queries";
+@import "modules/mixins";
 
 //core
 @import "core";
@@ -14,4 +15,3 @@
 
 //pages
 @import "pages/homepage";
-@import "modules/timeline";

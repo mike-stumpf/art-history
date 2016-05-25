@@ -8,8 +8,12 @@ module.exports = function(grunt){
         mainJs: [
             'js/**/*.js'
         ],
+        baseSass: [
+            'scss/lib/**/*.scss'
+        ],
         mainSass: [
-            'scss/**/*.scss'
+            'scss/**/*.scss',
+            '!scss/lib/**/*.scss'
         ],
         handlebars: [
             'handlebars/**/*.hbs'
@@ -152,6 +156,13 @@ module.exports = function(grunt){
             mainJs: {
                 files: watchFiles.mainJs,
                 tasks: ['jshint:main','uglify:main'],
+                options: {
+                    livereload: true
+                }
+            },
+            baseSass: {
+                files: watchFiles.baseSass,
+                tasks: ['sass:base','postcss:base'],
                 options: {
                     livereload: true
                 }
