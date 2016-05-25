@@ -1,5 +1,8 @@
 (function() {
 
+//variables
+//-----------------------------
+
     var that = artHistory.timeline,
         animations = artHistory.animations,
         timelineClass = '.map-timeline',
@@ -7,6 +10,10 @@
         bodyElement = $('body');
 
     this.mapTimelines = [];
+
+
+//helpers
+//-----------------------------
 
     this.hasTimeline = function(){
         return $(timelineClass).length > 0;
@@ -25,6 +32,14 @@
         }
     }
 
+    function isDateDuration(item){
+        return item.hasOwnProperty('end');
+    }
+
+
+//timeline
+//-----------------------------
+
     function initializeTimeline(element){
         var container = element,
             data = window[$(container).attr('data-items-list')],
@@ -35,7 +50,7 @@
                 throttleRedraw: 100,
                 template: function (item) {
                     var template;
-                    if (item.hasOwnProperty('end')){
+                    if (isDateDuration(item)){
                         template = Handlebars.templates.timeline_duration;
                     } else {
                         template = Handlebars.templates.timeline_moment;
@@ -51,7 +66,7 @@
                 minDate = maxDate = convertDate(entry.start);//everything is stored in momentjs format
             }
             minDate = compareDates(entry.start, minDate, false);
-            if (entry.hasOwnProperty('end')){
+            if (isDateDuration(entry)){
                 maxDate = compareDates(entry.end, maxDate, true);
             } else {
                 maxDate = compareDates(entry.start, maxDate, true);
@@ -89,6 +104,10 @@
         bodyElement.addClass(selectedTimeline);
         animations.fadeIn($(timelineLogicClass+selectedTimelineIndex));
     };
+
+    
+//main
+//-----------------------------
 
     this.init = function(){
 
