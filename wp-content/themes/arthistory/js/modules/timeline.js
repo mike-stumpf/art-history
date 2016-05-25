@@ -26,9 +26,11 @@
     function initializeTimeline(element){
         var container = element,
             data = window[$(container).attr('data-items-list')],
-            items = new vis.DataSet(data),
             options = {
                 zoomable: false,
+                minHeight: 350,
+                stack: true,
+                throttleRedraw: 100,
                 template: function (item) {
                     var template;
                     if (item.hasOwnProperty('end')){
@@ -40,10 +42,9 @@
                 }
             },
             minDate,
-            maxDate;
-
+            maxDate,
+            items;
         data.forEach(function(entry){
-            //todo, add hbs template based on moment or duration
             if (!minDate || !maxDate){
                 minDate = maxDate = convertDate(entry.start);//everything is stored in momentjs format
             }
@@ -52,6 +53,7 @@
                 maxDate = compareDates(entry.end, maxDate, true);
             } else {
                 maxDate = compareDates(entry.start, maxDate, true);
+                // entry.type = 'point';//todo, determine if point is the correct type
             }
         });
         if (minDate){
@@ -60,6 +62,7 @@
         if (maxDate){
             options.max = maxDate.add(1,'month').format(timeFormat);//todo, update to years with real data
         }
+        items = new vis.DataSet(data);
         that.mapTimelines.push(new vis.Timeline(container, items, options));
     }
 
