@@ -1,5 +1,9 @@
 <?php
 
+function sortByName($a, $b) {
+    return $a->name > $b->name;
+}
+
 function getTimelineData(){
 
     //variables
@@ -12,6 +16,8 @@ function getTimelineData(){
             'hide_empty' => false
         )
     );
+    //sort timeline options by starting year
+    usort($timelineOptions, 'sortByName');
 
     //get timeline objects and events based on timeline category
     foreach($timelineOptions as $option){
@@ -22,28 +28,30 @@ function getTimelineData(){
 
         //get timeline object
         $timelineArguments = array(
-            'post_type' => 'post',
+            'post_status' => 'publish',
+            'post_type' => 'timeline',
             'tax_query' => array(
                 array(
                     'taxonomy' => 'event-timeline',
                     'field'    => 'slug',
-                    'terms'    => $option->slug,
+                    'terms'    => $option->slug
                 )
             ),
             'posts_per_page' => 1
         );
         $timelineQuery = new WP_Query($timelineArguments);
-        if ($timelineQuery->have_posts() ) {
-            while ($timelineQuery->have_posts() ) {
+        if ($timelineQuery->have_posts()) {
+            while ($timelineQuery->have_posts()) {
                 $timelineQuery->the_post();
-                $timeline = constructTimelineObject(get_the_ID());
+                $timelineId = get_the_ID();
+                $timeline = constructTimelineObject($timelineId);
             }
         }
 
         //get event objects
         //todo
 
-        array_push($timelineGroups, array(
+        array_push($timelineGroups, (object)array(
             'name'=>$option->name,
             'slug'=>$option->slug,
             'timeline'=>$timeline,
@@ -56,8 +64,8 @@ function getTimelineData(){
 
 function constructTimelineObject($timelineId){
     //fields
-    $headerImage = get_post_meta($timelineId,'timeline-header-image');
-    $description = get_post_meta($timelineId,'timeline-description');
+    $headerImage = getSingleMetaValue($timelineId,'timeline-header-image');
+    $description = wpautop(getSingleMetaValue($timelineId,'timeline-description'));
 
     //response object
     return (object)array(

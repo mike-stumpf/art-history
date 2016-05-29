@@ -17,7 +17,7 @@ add_action( 'wp_enqueue_scripts', 'arthistory_scripts' );
  */
 function arthistory_admin_css() { ?>
     <style>
-        #menu-comments, #menu-tools, /* sidebar */
+        #menu-comments, #menu-tools, #menu-posts, /* sidebar */
         #wp-admin-bar-wp-logo, #wp-admin-bar-comments, /*top bar*/
         #contextual-help-link-wrap, /* misc */
         #types-information-table /* editor page */
@@ -53,11 +53,3 @@ add_action('init', 'disable_embeds_init', 9999);
 
 remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 remove_action( 'wp_print_styles', 'print_emoji_styles' );
-
-
-/**
- * helper functions
- */
- function getAssetDirectory(){
-     return get_template_directory_uri().'/build/assets/';
- }

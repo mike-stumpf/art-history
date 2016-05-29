@@ -5,16 +5,13 @@ Template Name: Homepage
 */
 get_header();
 
-include_once('logic/timeline.php');
+include_once('logic/bootstrapper.php');
 $timelineGroups = getTimelineData();
 ?>
     <section id="map-header-image-container">
-        <?php foreach($timelineGroups as $timelineGroup){
-//            echo $timelineGroup->slug;
-        }?>
-        <img class="map-header-image l--show-for-map-1" src="<?php echo getAssetDirectory();?>1845-1915.jpg" alt="1845-1915"/>
-        <img class="map-header-image l--show-for-map-2 faded-out" src="<?php echo getAssetDirectory();?>1916-1945.jpg" alt="1916-1945"/>
-        <img class="map-header-image l--show-for-map-3 faded-out" src="<?php echo getAssetDirectory();?>1946-1994.jpg" alt="1946-1994"/>
+        <?php foreach($timelineGroups as $timelineGroup){?>
+            <img class="map-header-image faded-out l--show-for-<?php echo $timelineGroup->slug;?>" src="<?php echo $timelineGroup->timeline->image;?>" alt="<?php echo $timelineGroup->name;?>"/>
+       <?php }?>
     </section>
     <section id="map-timeline-container">
         <div id="map-timeline-1" class="map-timeline l--show-for-map-1 faded-out" data-items-list="map1Items"></div>
