@@ -3,8 +3,15 @@
 Template Name: Homepage
 
 */
-get_header(); ?>
+get_header();
+
+include_once('logic/timeline.php');
+$timelineGroups = getTimelineData();
+?>
     <section id="map-header-image-container">
+        <?php foreach($timelineGroups as $timelineGroup){
+//            echo $timelineGroup->slug;
+        }?>
         <img class="map-header-image l--show-for-map-1" src="<?php echo getAssetDirectory();?>1845-1915.jpg" alt="1845-1915"/>
         <img class="map-header-image l--show-for-map-2 faded-out" src="<?php echo getAssetDirectory();?>1916-1945.jpg" alt="1916-1945"/>
         <img class="map-header-image l--show-for-map-3 faded-out" src="<?php echo getAssetDirectory();?>1946-1994.jpg" alt="1946-1994"/>
