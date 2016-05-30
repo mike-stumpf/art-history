@@ -239,10 +239,14 @@ class artHistoryTimeline {
 
     public function constructVideoObject($videoId){
         //fields
-//todo
+        $title = $this->helpers->getMetaValue($videoId,'video-title');
+        $url = $this->helpers->getMetaValue($videoId,'video-url');
+
         //response object
         return (object)array(
-            'id'=>$videoId
+            'id'=>$videoId,
+            'title'=>$title,
+            'url'=>$url
         );
     }
 
