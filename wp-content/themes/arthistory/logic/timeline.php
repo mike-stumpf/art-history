@@ -64,12 +64,40 @@ function getTimelineData(){
 
 function constructTimelineObject($timelineId){
     //fields
-    $headerImage = getSingleMetaValue($timelineId,'timeline-header-image');
-    $description = wpautop(getSingleMetaValue($timelineId,'timeline-description'));
+    $headerImage = getMetaValue($timelineId,'timeline-header-image');
+    $description = wpautop(getMetaValue($timelineId,'timeline-description'));
 
     //response object
     return (object)array(
+        'id'=>$timelineId,
         'image'=>$headerImage,
         'description'=>$description
+    );
+}
+
+function constructEventObject($eventId){
+    //fields
+    $title = getMetaValue($eventId,'event-title');
+    $timelineTitle = getMetaValue($eventId,'event-timeline-title');
+    $eventStart = getMetaValue($eventId,'event-start');
+    $eventEnd = getMetaValue($eventId,'event-end');
+    $eventImage = getMetaValue($eventId,'event-image');
+    $powerpoints = array();
+    $books = array();
+    $articles = array();
+    $videos = array();
+
+    //response object
+    return (object)array(
+        'id'=>$eventId,
+        'title'=>$title,
+        'timelineTitle'=>$timelineTitle,
+        'start'=>$eventStart,
+        'end'=>$eventEnd,
+        'image'=>$eventImage,
+        'powerpoints'=>$powerpoints,
+        'books'=>$books,
+        'articles'=>$articles,
+        'videos'=>$videos
     );
 }

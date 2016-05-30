@@ -8,6 +8,7 @@ function getAssetDirectory(){
     return get_template_directory_uri().'/build/assets/';
 }
 
-function getSingleMetaValue($postId,$metaKey){
-    return get_post_meta($postId,'wpcf-'.$metaKey,true);
+function getMetaValue($postId,$metaKey,$isSingleValue = true){
+    //get keys one at a time instead of not specifying a meta key for convenience
+    return get_post_meta($postId,'wpcf-'.$metaKey,$isSingleValue);
 }
