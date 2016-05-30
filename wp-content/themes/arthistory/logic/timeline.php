@@ -163,7 +163,7 @@ class artHistoryTimeline {
     public function constructEventObject($eventId){
         //variables
         $parentType = $this->typeEvent;
-            
+
         //fields
         $title = $this->helpers->getMetaValue($eventId,'event-title');
         $timelineTitle = $this->helpers->getMetaValue($eventId,'event-timeline-title');
@@ -194,10 +194,18 @@ class artHistoryTimeline {
 
     public function constructBookObject($bookId){
         //fields
-//todo
+        $title = $this->helpers->getMetaValue($bookId,'book-title');
+        $author = $this->helpers->getMetaValue($bookId,'book-author');
+        $callNumber = $this->helpers->getMetaValue($bookId,'book-call-number');
+        $year = $this->helpers->getMetaValue($bookId,'book-year');
+
         //response object
         return (object)array(
-            'id'=>$bookId
+            'id'=>$bookId,
+            'title'=>$title,
+            'author'=>$author,
+            'callNumber'=>$callNumber,
+            'year'=>$year
         );
     }
 
