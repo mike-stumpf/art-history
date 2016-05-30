@@ -1,7 +1,4 @@
 <?php
-/**
- * variables
- */
 
 // base class
 class artHistoryTimeline {
@@ -15,7 +12,8 @@ class artHistoryTimeline {
     public $typeArticle;
     public $typePowerpoint;
     public $typeVideo;
-
+    public $typeEventTimeline;
+    private $helpers;
 
     /**
      * main
@@ -27,10 +25,8 @@ class artHistoryTimeline {
         $this->typeArticle = 'article';
         $this->typePowerpoint = 'powerpoint';
         $this->typeVideo = 'video';
-    }
-
-    private static function sortByName($a, $b) {
-        return $a->name > $b->name;
+        $this->typeEventTimeline = 'event-timeline';
+        $this->helpers = new artHistoryHelpers();
     }
 
     public function getTimelineData(){
@@ -41,12 +37,12 @@ class artHistoryTimeline {
         //get timeline categories
         $timelineOptions = get_terms(
             array(
-                'taxonomy' => 'event-timeline',
+                'taxonomy' => $this->typeEventTimeline,
                 'hide_empty' => false
             )
         );
         //sort timeline options by starting year
-        usort($timelineOptions, array('artHistoryTimeline','sortByName'));
+        usort($timelineOptions, array('artHistoryHelpers','sortByName'));
 
         //get timeline objects and events based on timeline category
         foreach($timelineOptions as $option){
@@ -61,7 +57,7 @@ class artHistoryTimeline {
                 'post_type' => $this->typeTimeline,
                 'tax_query' => array(
                     array(
-                        'taxonomy' => 'event-timeline',
+                        'taxonomy' => $this->typeEventTimeline,
                         'field'    => 'slug',
                         'terms'    => $option->slug
                     )
@@ -110,10 +106,6 @@ class artHistoryTimeline {
             'post_status' => 'publish'
         );
         $childQuery = new WP_Query($childArguments);
-//        var_dump($childArguments);
-//        echo '<br/><br/>';
-//        var_dump($childQuery->posts);
-//        die();
         if ($childQuery->have_posts()) {
             while ($childQuery->have_posts()) {
                 $childQuery->the_post();
@@ -147,8 +139,8 @@ class artHistoryTimeline {
         $parentType = $this->typeTimeline;
 
         //fields
-        $headerImage = getMetaValue($timelineId,'timeline-header-image');
-        $description = wpautop(getMetaValue($timelineId,'timeline-description'));
+        $headerImage = $this->helpers->getMetaValue($timelineId,'timeline-header-image');
+        $description = wpautop($this->helpers->getMetaValue($timelineId,'timeline-description'));
 
         //get children
         $books = $this->getChildren($timelineId,$parentType,$this->typeBook);
@@ -169,16 +161,21 @@ class artHistoryTimeline {
     }
 
     public function constructEventObject($eventId){
+        //variables
+        $parentType = $this->typeEvent;
+            
         //fields
-        $title = getMetaValue($eventId,'event-title');
-        $timelineTitle = getMetaValue($eventId,'event-timeline-title');
-        $eventStart = getMetaValue($eventId,'event-start');
-        $eventEnd = getMetaValue($eventId,'event-end');
-        $eventImage = getMetaValue($eventId,'event-image');
-        $powerpoints = array();
-        $books = array();
-        $articles = array();
-        $videos = array();
+        $title = $this->helpers->getMetaValue($eventId,'event-title');
+        $timelineTitle = $this->helpers->getMetaValue($eventId,'event-timeline-title');
+        $eventStart = $this->helpers->getMetaValue($eventId,'event-start');
+        $eventEnd = $this->helpers->getMetaValue($eventId,'event-end');
+        $eventImage = $this->helpers->getMetaValue($eventId,'event-image');
+
+        //get children
+        $books = $this->getChildren($eventId,$parentType,$this->typeBook);
+        $powerpoints = $this->getChildren($eventId,$parentType,$this->typePowerpoint);
+        $articles = $this->getChildren($eventId,$parentType,$this->typeArticle);
+        $videos = $this->getChildren($eventId,$parentType,$this->typeVideo);
 
         //response object
         return (object)array(
