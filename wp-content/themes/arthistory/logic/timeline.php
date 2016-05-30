@@ -201,8 +201,8 @@ class artHistoryTimeline {
             'id'=>$eventId,
             'title'=>$title,
             'timelineTitle'=>$timelineTitle,
-            'start'=>$eventStart,
-            'end'=>$eventEnd,
+            'start'=>$eventStart,//todo, format value
+            'end'=>$eventEnd,//todo, format value
             'image'=>$eventImage,
             'powerpoints'=>$powerpoints,
             'books'=>$books,
