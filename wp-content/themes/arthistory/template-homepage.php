@@ -6,12 +6,13 @@ Template Name: Homepage
 get_header();
 
 include_once('logic/bootstrapper.php');
-$timelineGroups = getTimelineData();
+$artHistoryTimeline = new artHistoryTimeline();
+$timelineGroups = $artHistoryTimeline->getTimelineData();
 ?>
     <section id="map-header-image-container">
         <?php foreach($timelineGroups as $timelineGroup){?>
             <img class="map-header-image faded-out l--show-for-<?php echo $timelineGroup->slug;?>" src="<?php echo $timelineGroup->timeline->image;?>" alt="<?php echo $timelineGroup->name;?>"/>
-       <?php }?>
+        <?php }?>
     </section>
     <section id="map-timeline-container">
         <div id="map-timeline-1" class="map-timeline l--show-for-map-1 faded-out" data-items-list="map1Items"></div>
@@ -31,4 +32,8 @@ $timelineGroups = getTimelineData();
             map3Items = [];
     </script>
 <?php
+foreach($timelineGroups as $timelineGroup) {
+    echo'<br/><br/><br/><br/>';
+    var_dump($timelineGroup);
+}
 get_footer();
