@@ -74,7 +74,26 @@ class artHistoryTimeline {
             }
 
             //get event objects
-            //todo
+            $eventArguments = array(
+                'post_status' => 'publish',
+                'post_type' => $this->typeEvent,
+                'tax_query' => array(
+                    array(
+                        'taxonomy' => $this->typeEventTimeline,
+                        'field'    => 'slug',
+                        'terms'    => $option->slug
+                    )
+                ),
+                'posts_per_page' => -1
+            );
+            $eventQuery = new WP_Query($eventArguments);
+            if ($eventQuery->have_posts()) {
+                while ($eventQuery->have_posts()) {
+                    $eventQuery->the_post();
+                    $eventId = get_the_ID();
+                    array_push($events, $this->constructEventObject($eventId));
+                }
+            }
 
             array_push($timelineGroups, (object)array(
                 'name'=>$option->name,
