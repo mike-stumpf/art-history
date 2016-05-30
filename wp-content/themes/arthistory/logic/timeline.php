@@ -211,10 +211,14 @@ class artHistoryTimeline {
 
     public function constructPowerpointObject($powerpointId){
         //fields
-//todo
+        $title = $this->helpers->getMetaValue($powerpointId,'powerpoint-title');
+        $url = $this->helpers->getMetaValue($powerpointId,'powerpoint-url');
+
         //response object
         return (object)array(
-            'id'=>$powerpointId
+            'id'=>$powerpointId,
+            'title'=>$title,
+            'url'=>$url
         );
     }
 
