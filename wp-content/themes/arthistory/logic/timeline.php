@@ -225,10 +225,14 @@ class artHistoryTimeline {
 
     public function constructArticleObject($articleId){
         //fields
-//todo
+        $title = $this->helpers->getMetaValue($articleId,'article-title');
+        $author = $this->helpers->getMetaValue($articleId,'article-author');
+
         //response object
         return (object)array(
-            'id'=>$articleId
+            'id'=>$articleId,
+            'title'=>$title,
+            'author'=>$author
         );
     }
 
