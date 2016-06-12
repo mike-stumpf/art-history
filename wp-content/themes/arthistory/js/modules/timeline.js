@@ -84,10 +84,10 @@
             items.push(compiledDataObject);
         });
         if (minDate){
-            options.min = moment(minDate).subtract(5,'year').format(timeFormat);
+            options.min = moment(minDate).subtract(4,'year').format(timeFormat);
         }
         if (maxDate){
-            options.max = moment(maxDate).add(5,'year').format(timeFormat);
+            options.max = moment(maxDate).add(4,'year').format(timeFormat);
         }
         items = new vis.DataSet(items);
         that.mapTimelines.push(new vis.Timeline(container, items, options));
