@@ -75,7 +75,8 @@
             }
             minDate = compareDates(entry.start, minDate, false);
             if (isDateDuration(entry)){
-                compiledDataObject.end = entry.end = convertDate(entry.end);
+                compiledDataObject.end = entry.end;
+                entry.end = convertDate(entry.end);
                 maxDate = compareDates(entry.end, maxDate, true);
             } else {
                 maxDate = compareDates(entry.start, maxDate, true);
