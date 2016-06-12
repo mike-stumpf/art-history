@@ -33,7 +33,7 @@
     }
 
     function isDateDuration(item){
-        return item.hasOwnProperty('end');
+        return item.hasOwnProperty('end') && item.end.length > 0;
     }
 
 
@@ -42,7 +42,7 @@
 
     function initializeTimeline(element){
         var container = element,
-            data = window[$(container).attr('data-items-list')],
+            data = mapData[$(container).attr('data-items-list')],
             options = {
                 zoomable: false,
                 minHeight: 350,
@@ -60,26 +60,36 @@
             },
             minDate,
             maxDate,
-            items;
+            items = [],
+            compiledDataObject;
         data.forEach(function(entry){
+            compiledDataObject = {
+                id: entry.id,
+                image: entry.image,
+                title: entry.timelineTitle,
+                start: entry.start
+            };
+            entry.start = convertDate(entry.start);
             if (!minDate || !maxDate){
-                minDate = maxDate = convertDate(entry.start);//everything is stored in momentjs format
+                minDate = maxDate = entry.start;//everything is stored in momentjs format
             }
             minDate = compareDates(entry.start, minDate, false);
             if (isDateDuration(entry)){
+                compiledDataObject.end = entry.end = convertDate(entry.end);
                 maxDate = compareDates(entry.end, maxDate, true);
             } else {
                 maxDate = compareDates(entry.start, maxDate, true);
                 // entry.type = 'point';//todo, determine if point is the correct type
             }
+            items.push(compiledDataObject);
         });
         if (minDate){
-            options.min = minDate.subtract(1,'month').format(timeFormat);
+            options.min = moment(minDate).subtract(5,'year').format(timeFormat);
         }
         if (maxDate){
-            options.max = maxDate.add(1,'month').format(timeFormat);//todo, update to years with real data
+            options.max = moment(maxDate).add(5,'year').format(timeFormat);
         }
-        items = new vis.DataSet(data);
+        items = new vis.DataSet(items);
         that.mapTimelines.push(new vis.Timeline(container, items, options));
     }
 
@@ -105,7 +115,7 @@
         animations.fadeIn($(timelineLogicClass+selectedTimelineIndex));
     };
 
-    
+
 //main
 //-----------------------------
 

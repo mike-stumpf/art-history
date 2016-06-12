@@ -9,7 +9,7 @@ core
   }
 }
 
-.page-template-template-homepage {
+.page-template-template-timeline {
   #arthistory-main-content {
     border: 10px solid transparent;
     @include tablet {
@@ -56,6 +56,8 @@ body
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-color: white;
+  font-size: 0;
   display: block;
   @include transition-with-defaults(border-color);
 }

@@ -198,9 +198,20 @@ class artHistoryTimeline {
         //fields
         $title = $this->helpers->getMetaValue($eventId,'event-title');
         $timelineTitle = $this->helpers->getMetaValue($eventId,'event-timeline-title');
-        $eventStart = $this->helpers->getMetaValue($eventId,'event-start');
-        $eventEnd = $this->helpers->getMetaValue($eventId,'event-end');
         $eventImage = $this->helpers->getMetaValue($eventId,'event-image');
+        $eventStart = $this->helpers->getMetaValue($eventId,'event-start');
+        if(strlen($eventStart) > 1) {
+            //only convert to date if not null
+            $eventStartTime = new DateTime();
+            $eventStartTime->setTimestamp((int)$eventStart);
+            $eventStart = $eventStartTime->format('Y-m-d');
+        }
+        $eventEnd = $this->helpers->getMetaValue($eventId,'event-end');
+        if(strlen($eventEnd) > 1){
+            $eventEndTime = new DateTime();
+            $eventEndTime->setTimestamp((int)$eventEnd);
+            $eventEnd = $eventEndTime->format('Y-m-d');
+        }
 
         //get children
         $books = $this->getChildren($eventId,$parentType,$this->typeBook);
@@ -213,8 +224,8 @@ class artHistoryTimeline {
             'id'=>$eventId,
             'title'=>$title,
             'timelineTitle'=>$timelineTitle,
-            'start'=>$eventStart,//todo, format value
-            'end'=>$eventEnd,//todo, format value
+            'start'=>$eventStart,
+            'end'=>$eventEnd,
             'image'=>$eventImage,
             'powerpoints'=>$powerpoints,
             'books'=>$books,

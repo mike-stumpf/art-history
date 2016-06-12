@@ -20,10 +20,13 @@ $timelineGroups = $artHistoryTimeline->getTimelineData();
         <?php } ?>
     </section>
     <script type="text/javascript">
+        var mapData = {},
+            dataKey,
+            dataValue;
         <?php foreach($timelineGroups as $timelineGroup){?>
-        var dataKey = '<?php echo $timelineGroup->niceSlug;?>Items',
-            dataValue = '<?php echo json_encode($timelineGroup->events);?>';
-        eval('var '+dataKey+'='+dataValue);//convert php object to json object
+        dataKey = '<?php echo $timelineGroup->niceSlug;?>Items';
+        dataValue = '<?php echo json_encode($timelineGroup->events);?>';
+        mapData[dataKey] = JSON.parse(dataValue);
         <?php } ?>
     </script>
 <?php foreach($timelineGroups as $timelineGroup) {
