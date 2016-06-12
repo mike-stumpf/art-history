@@ -94,10 +94,22 @@ class artHistoryTimeline {
                     array_push($events, $this->constructEventObject($eventId));
                 }
             }
+            $optionNiceSlug = '';
+            $optionNiceSlugPieces = explode('-',$option->slug);
+            $i = 0;
+            //make the JS compatible nice slug
+            foreach($optionNiceSlugPieces as $piece){
+                if ($i !== 0){
+                    $piece = ucfirst($piece);
+                }
+                $optionNiceSlug .= $piece;
+                $i++;
+            }
 
             array_push($timelineGroups, (object)array(
                 'name'=>$option->name,
                 'slug'=>$option->slug,
+                'niceSlug'=>$optionNiceSlug,
                 'timeline'=>$timeline,
                 'events'=>$events
             ));
