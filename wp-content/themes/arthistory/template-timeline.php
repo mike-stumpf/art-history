@@ -5,7 +5,7 @@ Template Name: Timeline
 */
 get_header();
 
-include_once('logic/bootstrapper.php');
+include_once('php/bootstrapper.php');
 $artHistoryTimeline = new artHistoryTimeline();
 $timelineGroups = $artHistoryTimeline->getTimelineData();
 ?>
