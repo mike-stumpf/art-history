@@ -59,7 +59,11 @@ body
   background-color: white;
   font-size: 0;
   display: block;
-  @include transition-with-defaults(border-color);
+  cursor: pointer;
+  @include transition-with-defaults(transform);
+  &:hover {
+    transform: scale(1.15);
+  }
 }
 
 .timeline-header {
