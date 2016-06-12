@@ -72,11 +72,16 @@ body
   @extend .f--font-dinbek-bold;
 }
 
-.timeline-event {
-  font-size: 25px;
+.timeline-duration {
+  font-size: 16px;
+  padding: 10px;
+  background-color: white;
+  cursor: pointer;
   color: $timeline-green;
 }
 
-.vis-item {
-  @include transition-with-defaults(border-color);
+.vis-range {
+  border-top: 2px dotted $timeline-green;
+  border-left: 1px dotted $timeline-green;
+  border-right: 1px dotted $timeline-green;
 }

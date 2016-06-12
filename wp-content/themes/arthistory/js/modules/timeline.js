@@ -80,7 +80,6 @@
                 maxDate = compareDates(entry.end, maxDate, true);
             } else {
                 maxDate = compareDates(entry.start, maxDate, true);
-                // entry.type = 'point';//todo, determine if point is the correct type
             }
             items.push(compiledDataObject);
         });
