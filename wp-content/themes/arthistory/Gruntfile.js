@@ -9,11 +9,11 @@ module.exports = function(grunt){
             'js/**/*.js'
         ],
         baseSass: [
-            'scss/lib/**/*.scss'
+            'sass/lib/**/*.scss'
         ],
         mainSass: [
-            'scss/**/*.scss',
-            '!scss/lib/**/*.scss'
+            'sass/**/*.scss',
+            '!sass/lib/**/*.scss'
         ],
         handlebars: [
             'handlebars/**/*.hbs'
@@ -97,7 +97,7 @@ module.exports = function(grunt){
         sass: {
             base: {
                 files: {
-                    'build/app.base.min.css': 'scss/app_base.scss'
+                    'build/app.base.min.css': 'sass/app_base.scss'
                 },
                 options: {
                     style: 'compressed',
@@ -106,7 +106,7 @@ module.exports = function(grunt){
             },
             main: {
                 files: {
-                    'build/app.main.min.css': 'scss/app_main.scss'
+                    'build/app.main.min.css': 'sass/app_main.scss'
                 },
                 options: {
                     style: 'compressed',
