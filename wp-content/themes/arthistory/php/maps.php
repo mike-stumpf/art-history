@@ -9,16 +9,10 @@ use artHistory\Lib\Dictionary;
 
 // base class
 class Maps {
-    
-    /**
-     * main
-     */
+
+    private $mapData;
+
     public function __construct(){
-
-    }
-
-    public function getMapData(){
-
         //variables
         $mapGroups = array();
 
@@ -57,7 +51,8 @@ class Maps {
                 while ($timelineQuery->have_posts()) {
                     $timelineQuery->the_post();
                     $timelineId = get_the_ID();
-                    $timeline = new Data\Timeline($timelineId);
+                    $timelineObject = new Data\Timeline($timelineId);
+                    $timeline = $timelineObject->getTimeline();
                 }
             }
 
@@ -79,7 +74,8 @@ class Maps {
                 while ($eventQuery->have_posts()) {
                     $eventQuery->the_post();
                     $eventId = get_the_ID();
-                    array_push($events, new Data\Event($eventId));
+                    $eventObject = new Data\Event($eventId);
+                    array_push($events, $eventObject->getEvent());
                 }
             }
             $optionNiceSlug = '';
@@ -103,7 +99,11 @@ class Maps {
             ));
         }
 
-        return $mapGroups;
+        $this->mapData = $mapGroups;
+    }
+
+    public function getMapData(){
+        return $this->mapData;
     }
 
 }

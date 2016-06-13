@@ -47,18 +47,21 @@ class Helpers {
                 switch($postType){
                     case Dictionary::$typeBook:
                         $child = new Data\Book($childId);
+                        array_push($children, $child->getBook());
                         break;
                     case Dictionary::$typeArticle:
                         $child = new Data\Article($childId);
+                        array_push($children, $child->getArticle());
                         break;
                     case Dictionary::$typePowerpoint:
                         $child = new Data\Powerpoint($childId);
+                        array_push($children, $child->getPowerPoint());
                         break;
                     case Dictionary::$typeVideo:
                         $child = new Data\Video($childId);
+                        array_push($children, $child->getVideo());
                         break;
                 }
-                array_push($children, $child);
             }
         }
         return $children;
