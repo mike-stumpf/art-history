@@ -26,7 +26,7 @@ class Video {
     }
 
     public function getVideo(){
-        return array(
+        return (object)array(
             'id'=>$this->id,
             'title'=>$this->title,
             'url'=>$this->url

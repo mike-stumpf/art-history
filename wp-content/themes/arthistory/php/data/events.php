@@ -55,7 +55,7 @@ class Event {
     }
     
     public function getEvent(){
-        return array(
+        return (object)array(
             'id'=>$this->id,
             'title'=>$this->title,
             'timelineTitle'=>$this->timelineTitle,

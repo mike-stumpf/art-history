@@ -12,6 +12,7 @@ include_once('data/video.php');
 //parents
 include_once('data/events.php');
 include_once('data/timeline.php');
+include_once('data/map.php');
 
 //logic
-include_once('maps.php');
+include_once('arthistory.php');

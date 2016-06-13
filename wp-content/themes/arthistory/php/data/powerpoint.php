@@ -26,7 +26,7 @@ class PowerPoint {
     }
 
     public function getPowerPoint(){
-        return array(
+        return (object)array(
             'id'=>$this->id,
             'title'=>$this->title,
             'url'=>$this->url

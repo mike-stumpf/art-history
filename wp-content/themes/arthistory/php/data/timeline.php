@@ -38,7 +38,7 @@ class Timeline {
     }
 
     public function getTimeline(){
-        return array(
+        return (object)array(
             'id'=>$this->timelineId,
             'image'=>$this->headerImage,
             'description'=>$this->description,

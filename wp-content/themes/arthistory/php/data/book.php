@@ -30,7 +30,7 @@ class Book {
     }
 
     public function getBook(){
-        return array(
+        return (object)array(
             'id'=>$this->id,
             'title'=>$this->title,
             'author'=>$this->author,

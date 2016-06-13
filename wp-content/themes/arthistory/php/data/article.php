@@ -26,7 +26,7 @@ class Article {
     }
 
     public function getArticle(){
-        return array(
+        return (object)array(
             'id'=>$this->id,
             'title'=>$this->title,
             'author'=>$this->author

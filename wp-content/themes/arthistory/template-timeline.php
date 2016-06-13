@@ -8,7 +8,7 @@ Template Name: Timeline
 get_header();
 
 include_once('php/bootstrapper.php');
-$artHistoryMaps = new artHistory\Maps();
+$artHistoryMaps = new artHistory\artHistory();
 $mapGroups = $artHistoryMaps->getMapData();
 ?>
     <section id="map-header-image-container">
