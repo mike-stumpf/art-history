@@ -2,11 +2,13 @@
 /*
 Template Name: Timeline
 
+//todo, documentation
+
 */
 get_header();
 
 include_once('php/bootstrapper.php');
-$artHistoryTimeline = new artHistoryTimeline();
+$artHistoryTimeline = new artHistory\Timeline();
 $timelineGroups = $artHistoryTimeline->getTimelineData();
 ?>
     <section id="map-header-image-container">
@@ -16,17 +18,35 @@ $timelineGroups = $artHistoryTimeline->getTimelineData();
     </section>
     <section id="map-timeline-container">
         <?php foreach($timelineGroups as $timelineGroup){?>
-            <div id="timeline-<?php echo $timelineGroup->slug;?>" class="map-timeline l--show-for-<?php echo $timelineGroup->slug;?> faded-out" data-items-list="<?php echo $timelineGroup->niceSlug;?>Items"></div>
+            <div id="timeline-<?php echo $timelineGroup->slug;?>" class="map-timeline l--show-for-<?php echo $timelineGroup->slug;?> faded-out" data-items-list="<?php echo $timelineGroup->niceSlug;?>"></div>
         <?php } ?>
     </section>
     <script type="text/javascript">
         var mapData = {},
-            dataKey,
-            dataValue;
+            mapName,
+            timeline,
+            events;
         <?php foreach($timelineGroups as $timelineGroup){?>
-        dataKey = '<?php echo $timelineGroup->niceSlug;?>Items';
-        dataValue = '<?php echo json_encode($timelineGroup->events);?>';
-        mapData[dataKey] = JSON.parse(dataValue);
+        mapName = '<?php echo $timelineGroup->niceSlug;?>';
+        events = '<?php echo json_encode($timelineGroup->events);?>';
+        timeline = '<?php echo json_encode($timelineGroup->timeline);?>';
+        mapData[mapName] = {
+            name: '<?php echo $timelineGroup->name;?>',
+            slug: '<?php echo $timelineGroup->slug;?>'
+        };
+        try {
+            mapData[mapName].events = JSON.parse(events);
+        } catch (e){
+            console.log(e);
+            mapData[mapName].events = [];
+        }
+        try {
+            console.log(typeof timeline);
+            mapData[mapName].timeline = JSON.parse(timeline);
+        } catch (e){
+            console.log(e);
+            mapData[mapName].timeline = {};
+        }
         <?php } ?>
     </script>
 <?php foreach($timelineGroups as $timelineGroup) {

@@ -1,5 +1,7 @@
 (function() {
 
+    //todo, documentation
+
 //variables
 //-----------------------------
 
@@ -62,7 +64,7 @@
             maxDate,
             items = [],
             compiledDataObject;
-        data.forEach(function(entry){
+        data.events.forEach(function(entry){
             compiledDataObject = {
                 id: entry.id,
                 image: entry.image,

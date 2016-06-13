@@ -1,7 +1,13 @@
-<?php
+<?php namespace artHistory;
+
+//todo, documentation
+
+//reference external functions outside of current namespace
+use WP_Query;
+use DateTime;
 
 // base class
-class artHistoryTimeline {
+class Timeline {
     /**
      * variables
      */
@@ -26,7 +32,7 @@ class artHistoryTimeline {
         $this->typePowerpoint = 'powerpoint';
         $this->typeVideo = 'video';
         $this->typeEventTimeline = 'event-timeline';
-        $this->helpers = new artHistoryHelpers();
+        $this->helpers = new Helpers();
     }
 
     public function getTimelineData(){
@@ -42,7 +48,7 @@ class artHistoryTimeline {
             )
         );
         //sort timeline options by starting year
-        usort($timelineOptions, array('artHistoryHelpers','sortByName'));
+        usort($timelineOptions, array('artHistory\Helpers','sortByName'));
 
         //get timeline objects and events based on timeline category
         foreach($timelineOptions as $option){

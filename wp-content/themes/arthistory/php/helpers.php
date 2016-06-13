@@ -1,11 +1,13 @@
-<?php
+<?php namespace artHistory;
+
+//todo, documentation
 
 /**
  * helper functions
  */
 
 // base class
-class artHistoryHelpers {
+class Helpers {
 
     public static function getAssetDirectory() {
         return get_template_directory_uri() . '/build/assets/';
