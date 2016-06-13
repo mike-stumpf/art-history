@@ -8,17 +8,17 @@ Template Name: Timeline
 get_header();
 
 include_once('php/bootstrapper.php');
-$artHistoryTimeline = new artHistory\Timeline();
-$timelineGroups = $artHistoryTimeline->getTimelineData();
+$artHistoryMaps = new artHistory\Maps();
+$mapGroups = $artHistoryMaps->getMapData();
 ?>
     <section id="map-header-image-container">
-        <?php foreach($timelineGroups as $timelineGroup){?>
-            <img class="map-header-image faded-out l--show-for-<?php echo $timelineGroup->slug;?>" src="<?php echo $timelineGroup->timeline->image;?>" alt="<?php echo $timelineGroup->name;?>"/>
+        <?php foreach($mapGroups as $mapGroup){?>
+            <img class="map-header-image faded-out l--show-for-<?php echo $mapGroup->slug;?>" src="<?php echo $mapGroup->timeline->image;?>" alt="<?php echo $mapGroup->name;?>"/>
         <?php } ?>
     </section>
     <section id="map-timeline-container">
-        <?php foreach($timelineGroups as $timelineGroup){?>
-            <div id="timeline-<?php echo $timelineGroup->slug;?>" class="map-timeline l--show-for-<?php echo $timelineGroup->slug;?> faded-out" data-items-list="<?php echo $timelineGroup->niceSlug;?>"></div>
+        <?php foreach($mapGroups as $mapGroup){?>
+            <div id="timeline-<?php echo $mapGroup->slug;?>" class="map-timeline l--show-for-<?php echo $mapGroup->slug;?> faded-out" data-items-list="<?php echo $mapGroup->niceSlug;?>"></div>
         <?php } ?>
     </section>
     <script type="text/javascript">
@@ -26,13 +26,13 @@ $timelineGroups = $artHistoryTimeline->getTimelineData();
             mapName,
             timeline,
             events;
-        <?php foreach($timelineGroups as $timelineGroup){?>
-        mapName = '<?php echo $timelineGroup->niceSlug;?>';
-        events = '<?php echo json_encode($timelineGroup->events);?>';
-        timeline = '<?php echo json_encode($timelineGroup->timeline);?>';
+        <?php foreach($mapGroups as $mapGroup){?>
+        mapName = '<?php echo $mapGroup->niceSlug;?>';
+        events = '<?php echo json_encode($mapGroup->events);?>';
+        timeline = '<?php echo json_encode($mapGroup->timeline);?>';
         mapData[mapName] = {
-            name: '<?php echo $timelineGroup->name;?>',
-            slug: '<?php echo $timelineGroup->slug;?>'
+            name: '<?php echo $mapGroup->name;?>',
+            slug: '<?php echo $mapGroup->slug;?>'
         };
         try {
             mapData[mapName].events = JSON.parse(events);
@@ -49,8 +49,8 @@ $timelineGroups = $artHistoryTimeline->getTimelineData();
         }
         <?php } ?>
     </script>
-<?php foreach($timelineGroups as $timelineGroup) {
+<?php foreach($mapGroups as $mapGroup) {
     echo'<br/><br/><br/><br/>';
-//    var_dump($timelineGroup);
+//    var_dump($mapGroup);
 }
 get_footer();
