@@ -115,6 +115,10 @@
         animations.fadeIn($(timelineLogicClass+selectedTimelineIndex));
     };
 
+    this.openEvent = function(eventId){
+        console.log('open event',eventId);
+    };
+
 
 //main
 //-----------------------------
@@ -128,6 +132,10 @@
         });
 
         that.selectTimeline(1);
+
+        bodyElement.on('click', '.timeline-artwork', function(){
+            that.openEvent($(this).attr('data-event-id'));
+        });
     };
 
 }).apply(artHistory.timeline);
