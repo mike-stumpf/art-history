@@ -34,6 +34,7 @@ class Timeline {
     }
 
     public function __toString(){
+        //http://php.net/manual/en/language.oop5.magic.php#object.tostring
         return 'timeline here';
     }
 
