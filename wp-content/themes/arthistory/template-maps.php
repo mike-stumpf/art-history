@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Timeline
+Template Name: Maps
 
 //todo, documentation
 
