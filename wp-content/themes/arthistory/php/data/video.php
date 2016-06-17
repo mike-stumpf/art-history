@@ -16,17 +16,15 @@ class Video {
         $this->id = $powerpointId;
         $this->title = Helpers::getMetaValue($powerpointId,'video-title');
         $this->url = Helpers::getMetaValue($powerpointId,'video-url');
-
-        //response object
-        return $this->getVideo();
+        
     }
 
     public function __toString(){
-        return 'video here';
+        return json_encode($this->getVideo());
     }
 
     public function getVideo(){
-        return (object)array(
+        return array(
             'id'=>$this->id,
             'title'=>$this->title,
             'url'=>$this->url

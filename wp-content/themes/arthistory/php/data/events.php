@@ -11,7 +11,7 @@ class Event {
     private $id;
     private $title;
     private $timelineTitle;
-    private $eventImage;
+    private $image;
     private $powerpoints;
     private $books;
     private $articles;
@@ -25,7 +25,7 @@ class Event {
         $this->id = $eventId;
         $this->title = Helpers::getMetaValue($eventId,'event-title');
         $this->timelineTitle = Helpers::getMetaValue($eventId,'event-timeline-title');
-        $this->eventImage = Helpers::getMetaValue($eventId,'event-image');
+        $this->image = Helpers::getMetaValue($eventId,'event-image');
         $this->eventStart = Helpers::getMetaValue($eventId,'event-start');
         if(strlen($this->eventStart) > 1) {
             //only convert to date if not null
@@ -46,22 +46,20 @@ class Event {
         $this->articles = Helpers::getChildren($eventId,$parentType,Dictionary::$typeArticle);
         $this->videos = Helpers::getChildren($eventId,$parentType,Dictionary::$typeVideo);
         
-        //response object
-        return $this->getEvent();
     }
 
     public function __toString() {
-        return 'event here';
+        return json_encode($this->getEvent());
     }
     
     public function getEvent(){
-        return (object)array(
+        return array(
             'id'=>$this->id,
             'title'=>$this->title,
             'timelineTitle'=>$this->timelineTitle,
             'start'=>$this->eventStart,
             'end'=>$this->eventEnd,
-            'image'=>$this->eventImage,
+            'image'=>$this->image,
             'powerpoints'=>$this->powerpoints,
             'books'=>$this->books,
             'articles'=>$this->articles,

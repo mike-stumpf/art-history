@@ -20,17 +20,15 @@ class Book {
         $this->author = Helpers::getMetaValue($bookId,'book-author');
         $this->callNumber = Helpers::getMetaValue($bookId,'book-call-number');
         $this->year = Helpers::getMetaValue($bookId,'book-year');
-
-        //response object
-        return $this->getBook();
+        
     }
 
     public function __toString(){
-        return 'book here';
+        return json_encode($this->getBook());
     }
 
     public function getBook(){
-        return (object)array(
+        return array(
             'id'=>$this->id,
             'title'=>$this->title,
             'author'=>$this->author,

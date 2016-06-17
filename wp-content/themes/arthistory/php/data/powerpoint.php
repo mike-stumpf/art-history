@@ -16,17 +16,15 @@ class PowerPoint {
         $this->id = $powerpointId;
         $this->title = Helpers::getMetaValue($powerpointId,'powerpoint-title');
         $this->url = Helpers::getMetaValue($powerpointId,'powerpoint-url');
-
-        //response object
-        return $this->getPowerPoint();
+        
     }
 
     public function __toString(){
-        return 'powerpoint here';
+        return json_encode($this->getPowerPoint());
     }
 
     public function getPowerPoint(){
-        return (object)array(
+        return array(
             'id'=>$this->id,
             'title'=>$this->title,
             'url'=>$this->url

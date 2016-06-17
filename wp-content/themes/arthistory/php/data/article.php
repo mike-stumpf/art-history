@@ -16,17 +16,15 @@ class Article {
         $this->id = $articleId;
         $this->title = Helpers::getMetaValue($articleId,'article-title');
         $this->author = Helpers::getMetaValue($articleId,'article-author');
-
-        //response object
-        return $this->getArticle();
+        
     }
 
     public function __toString(){
-        return 'article here';
+        return json_encode($this->getArticle());
     }
 
     public function getArticle(){
-        return (object)array(
+        return array(
             'id'=>$this->id,
             'title'=>$this->title,
             'author'=>$this->author

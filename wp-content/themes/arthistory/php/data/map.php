@@ -83,7 +83,7 @@ class Map {
     }
 
     public function getMap(){
-        return (object)array(
+        return array(
             'name'=>$this->name,
             'slug'=>$this->slug,
             'niceSlug'=>$this->niceSlug,
