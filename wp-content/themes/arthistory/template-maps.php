@@ -23,8 +23,9 @@ $mapGroups = $artHistoryMaps->getMapData();
     </section>
     <section id="maps-selector-container">
         <?php $i = 1;
-        foreach($mapGroups as $mapGroup) { ?>
-            <a href="#" data-timeline-selector="<?php echo $i;?>" class="maps-timeline-selector"><?php echo $mapGroup['title']?></a>
+        foreach($mapGroups as $mapGroup) {
+            $className = $i===1?'active':'';?>
+            <a href="#" data-timeline-selector="<?php echo $i;?>" class="maps-timeline-selector <?php echo $className;?>"><?php echo $mapGroup['title']?></a>
             <?php $i++;
         } ?>
     </section>

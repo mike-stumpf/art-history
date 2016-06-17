@@ -85,3 +85,9 @@ body
   border-left: 1px dotted $timeline-green;
   border-right: 1px dotted $timeline-green;
 }
+
+.maps-timeline-selector {
+  &.active {
+    font-weight: bold;
+  }
+}
