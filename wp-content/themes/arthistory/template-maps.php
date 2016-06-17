@@ -13,7 +13,7 @@ $mapGroups = $artHistoryMaps->getMapData();
 ?>
     <section id="maps-header-image-container">
         <?php foreach($mapGroups as $mapGroup){?>
-            <img class="map-header-image faded-out l--show-for-<?php echo $mapGroup['slug'];?>" src="<?php echo $mapGroup['timeline']['image'];?>" alt="<?php echo $mapGroup['name'];?>"/>
+            <img class="map-header-image faded-out l--show-for-<?php echo $mapGroup['slug'];?>" src="<?php echo $mapGroup['timeline']['image'];?>" alt="<?php echo $mapGroup['title'];?>"/>
         <?php } ?>
     </section>
     <section id="maps-timeline-container">
@@ -21,36 +21,39 @@ $mapGroups = $artHistoryMaps->getMapData();
             <div id="timeline-<?php echo $mapGroup['slug'];?>" class="map-timeline l--show-for-<?php echo $mapGroup['slug'];?> faded-out" data-items-list="<?php echo $mapGroup['niceSlug'];?>"></div>
         <?php } ?>
     </section>
+    <section id="maps-selector-container">
+        <?php $i = 1;
+        foreach($mapGroups as $mapGroup) { ?>
+            <a href="#" data-timeline-selector="<?php echo $i;?>" class="maps-timeline-selector"><?php echo $mapGroup['title']?></a>
+            <?php $i++;
+        } ?>
+    </section>
     <section id="maps-sidebar-container"></section>
     <script type="text/javascript">
         var mapData = {},
-            mapName,
+            mapTitle,
             timeline,
             events;
         <?php foreach($mapGroups as $mapGroup){?>
-        mapName = '<?php echo $mapGroup['niceSlug'];?>';
+        mapTitle = '<?php echo $mapGroup['niceSlug'];?>';
         events = '<?php echo json_encode($mapGroup['events']);?>';
         timeline = '<?php echo json_encode($mapGroup['timeline']);?>';
-        mapData[mapName] = {
-            name: '<?php echo $mapGroup['name'];?>',
+        mapData[mapTitle] = {
+            title: '<?php echo $mapGroup['title'];?>',
             slug: '<?php echo $mapGroup['slug'];?>'
         };
         try {
-            mapData[mapName].events = JSON.parse(events);
+            mapData[mapTitle].events = JSON.parse(events);
         } catch (e){
             console.log(e);
-            mapData[mapName].events = [];
+            mapData[mapTitle].events = [];
         }
         try {
-            mapData[mapName].timeline = JSON.parse(timeline);
+            mapData[mapTitle].timeline = JSON.parse(timeline);
         } catch (e){
             console.log(e);
-            mapData[mapName].timeline = {};
+            mapData[mapTitle].timeline = {};
         }
         <?php } ?>
     </script>
-<?php foreach($mapGroups as $mapGroup) {
-    echo'<br/><br/><br/><br/>';
-//    var_dump($mapGroup->events);
-}
-get_footer();
+<?php get_footer();

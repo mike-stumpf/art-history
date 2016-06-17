@@ -3,6 +3,7 @@ var artHistory = {
     //lib
     animations: {},
     handlebars: {},
+    helpers: {},
 
     //modules
     timeline: {},

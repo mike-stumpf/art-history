@@ -84,7 +84,7 @@ class Map {
 
     public function getMap(){
         return array(
-            'name'=>$this->name,
+            'title'=>$this->name,
             'slug'=>$this->slug,
             'niceSlug'=>$this->niceSlug,
             'timeline'=>$this->timeline,

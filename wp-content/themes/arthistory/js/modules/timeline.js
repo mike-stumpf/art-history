@@ -7,10 +7,12 @@
 
     var that = artHistory.timeline,
         animations = artHistory.animations,
+        helpers = artHistory.helpers,
         sidebarContainer = $('#maps-sidebar-container'),
+        timelineSelectors = $('.maps-timeline-selector'),
+        bodyElement = $('body'),
         timelineClass = '.map-timeline',
-        timeFormat = 'YYYY-MM-DD',
-        bodyElement = $('body');
+        timeFormat = 'YYYY-MM-DD';
 
     this.mapTimelines = [];
 
@@ -156,9 +158,21 @@
 
         that.selectTimeline(1);
 
-        bodyElement.on('click', '.timeline-artwork', function(){
-            that.openEvent($(this).attr('data-event-id'));
-        });
+        bodyElement
+            .on('click', '.timeline-artwork', function(){
+                that.openEvent($(this).attr('data-event-id'));
+            });
+
+        timelineSelectors
+            .on('click', function(event){
+                event.preventDefault();
+                var activeSelector = $(this);
+                timelineSelectors.each(function(){
+                    $(this).removeClass(helpers.activeClass);
+                });
+                that.selectTimeline(activeSelector.attr('data-timeline-selector'));
+                activeSelector.addClass(helpers.activeClass);
+            });
     };
 
 }).apply(artHistory.timeline);

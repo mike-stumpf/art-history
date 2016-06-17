@@ -1,8 +1,11 @@
 <div>
-    <h1>Period: {{name}}</h1>
+    <h1>Period: {{title}}</h1>
 </div>
-{{#each events}}
-    <div>
-        {{title}}
-    </div>
-{{/each}}
+<div>
+    <h3>Events</h3>
+    {{#each events}}
+        <div>
+            {{title}}
+        </div>
+    {{/each}}
+</div>
