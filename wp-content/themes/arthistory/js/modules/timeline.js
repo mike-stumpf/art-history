@@ -7,6 +7,7 @@
 
     var that = artHistory.timeline,
         animations = artHistory.animations,
+        sidebarContainer = $('#maps-sidebar-container'),
         timelineClass = '.map-timeline',
         timeFormat = 'YYYY-MM-DD',
         bodyElement = $('body');
@@ -38,13 +39,17 @@
         return item.hasOwnProperty('end') && item.end.length > 0;
     }
 
+    function getDataItemsList(container){
+        return $(container).attr('data-items-list');
+    }
+
 
 //timeline
 //-----------------------------
 
     function initializeTimeline(element){
         var container = element,
-            data = mapData[$(container).attr('data-items-list')],
+            data = mapData[getDataItemsList(container)],
             options = {
                 zoomable: false,
                 minHeight: 350,
@@ -113,6 +118,7 @@
             bodyElement.removeClass(previousTimelineSelector);
             animations.fadeOut($(timelineLogicClass+previousTimelineIndex));
         }
+        populateSidebar(selectedTimelineIndex);
         bodyElement.addClass(selectedTimeline);
         animations.fadeIn($(timelineLogicClass+selectedTimelineIndex));
     };
@@ -120,6 +126,21 @@
     this.openEvent = function(eventId){
         console.log('open event',eventId);
     };
+
+
+//sidebar
+//----------------------------- 
+
+    function populateSidebar(selectedTimelineIndex){
+        var data = mapData[getDataItemsList('#timeline-map-'+selectedTimelineIndex)],
+            template = Handlebars.templates.sidebar,
+            html = template(data);
+        animations.fadeOut(sidebarContainer)
+            .then(function(){
+                sidebarContainer.html(html);
+                animations.fadeIn(sidebarContainer);
+            });
+    }
 
 
 //main
