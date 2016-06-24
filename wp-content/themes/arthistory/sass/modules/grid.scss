@@ -1,0 +1,227 @@
+/*
+Grid
+
+Notes: Always design for mobile-first such that your media queries use min-width instead of max-width
+*/
+
+//grid
+//-----------------------------
+.grid-container {
+  @include container;
+}
+
+$grid-padding: 5px;
+
+//responsive classes
+//-----------------------------
+.small-1 {
+  padding: 0 $grid-padding;
+  @include span(1);
+}
+.small-2 {
+  padding: 0 $grid-padding;
+  @include span(2);
+}
+.small-3 {
+  padding: 0 $grid-padding;
+  @include span(3);
+}
+.small-4 {
+  padding: 0 $grid-padding;
+  @include span(4);
+}
+.small-5 {
+  padding: 0 $grid-padding;
+  @include span(5);
+}
+.small-6 {
+  padding: 0 $grid-padding;
+  @include span(6);
+}
+.small-7 {
+  padding: 0 $grid-padding;
+  @include span(7);
+}
+.small-8 {
+  padding: 0 $grid-padding;
+  @include span(8);
+}
+.small-9 {
+  padding: 0 $grid-padding;
+  @include span(9);
+}
+.small-10 {
+  padding: 0 $grid-padding;
+  @include span(10);
+}
+.small-11 {
+  padding: 0 $grid-padding;
+  @include span(11);
+}
+.small-12 {
+  padding: 0 $grid-padding;
+  @include span(12);
+}
+
+
+//tablet
+//-----------------------------
+.medium-1 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(1);
+  }
+}
+.medium-2 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(2);
+  }
+}
+.medium-3 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(3);
+  }
+}
+.medium-4 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(4);
+  }
+}
+.medium-5 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(5);
+  }
+}
+.medium-6 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(6);
+  }
+}
+.medium-7 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(7);
+  }
+}
+.medium-8 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(8);
+  }
+}
+.medium-9 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(9);
+  }
+}
+.medium-10 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(10);
+  }
+}
+.medium-11 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(11);
+  }
+}
+.medium-12 {
+  padding: 0 $grid-padding;
+  @include tablet-up {
+    @include span(12);
+  }
+}
+
+
+//desktop
+//-----------------------------
+.large-1 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(1);
+  }
+}
+.large-2 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(2);
+  }
+}
+.large-3 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(3);
+  }
+}
+.large-4 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(4);
+  }
+}
+.large-5 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(5);
+  }
+}
+.large-6 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(6);
+  }
+}
+.large-7 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(7);
+  }
+}
+.large-8 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(8);
+  }
+}
+.large-9 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(9);
+  }
+}
+.large-10 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(10);
+  }
+}
+.large-11 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(11);
+  }
+}
+.large-12 {
+  padding: 0 $grid-padding;
+  @include desktop {
+    @include span(12);
+  }
+}
+
+//helper classes
+//-----------------------------
+@mixin grid-end {
+  float: right;
+  margin-right: 0;
+}
+
+.grid-end {
+  @include grid-end;
+}
