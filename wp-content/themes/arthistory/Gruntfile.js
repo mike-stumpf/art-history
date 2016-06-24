@@ -78,9 +78,7 @@ module.exports = function(grunt){
                         require('autoprefixer')({browsers: 'last 2 versions'}) // add vendor prefixes
                     ]
                 },
-                dist: {
-                    src: 'build/app.base.min.css'
-                }
+                src: 'build/app.base.min.css'
             },
             main: {
                 options: {
@@ -89,9 +87,7 @@ module.exports = function(grunt){
                         require('autoprefixer')({browsers: 'last 2 versions'}) // add vendor prefixes
                     ]
                 },
-                dist: {
-                    src: 'build/app.main.min.css'
-                }
+                src: 'build/app.main.min.css'
             }
         },
         sass: {
