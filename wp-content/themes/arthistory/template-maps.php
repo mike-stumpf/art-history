@@ -24,8 +24,16 @@ $mapGroups = $artHistoryMaps->getMapData();
     <section id="maps-selector-container">
         <?php $i = 1;
         foreach($mapGroups as $mapGroup) {
-            $className = $i===1?'active':'';?>
-            <a href="#" data-timeline-selector="<?php echo $i;?>" class="maps-timeline-selector <?php echo $className;?>"><?php echo $mapGroup['title']?></a>
+            $className = $i===1?'active':'';
+            $gridSize = 'small-'.sizeof($mapGroups);
+            if(sizeof($mapGroups) === $i){
+                $gridSize .= ' grid-end';
+            } ?>
+            <div class="<?php echo $gridSize;?>">
+                <a href="#" data-timeline-selector="<?php echo $i;?>" class="maps-timeline-selector <?php echo $className;?>">
+                    <?php echo $mapGroup['title']?>
+                </a>
+            </div>
             <?php $i++;
         } ?>
     </section>

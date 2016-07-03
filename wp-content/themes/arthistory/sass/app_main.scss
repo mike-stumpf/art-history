@@ -4,22 +4,22 @@
 
 //Susy (grid)
 //-----------------------------
-@import "../bower_components/susy/sass/susy";
-
-//settings
-$susy: (
-        columns: 12,
-        container: 1120px,//max-width = 1120px
-        global-box-sizing: border-box
-);
-
-/* Makes border-box properties */
-@include border-box-sizing;
+//@import "../bower_components/susy/sass/susy";
+//
+////settings
+//$susy: (
+//        columns: 12,
+//        container: 1120px,//max-width = 1120px
+//        global-box-sizing: border-box
+//);
+//
+///* Makes border-box properties */
+//@include border-box-sizing;
 
 //modules
 @import "modules/media_queries";
 @import "modules/mixins";
-@import "modules/grid";
+//@import "modules/grid";
 
 //core
 @import "core";
