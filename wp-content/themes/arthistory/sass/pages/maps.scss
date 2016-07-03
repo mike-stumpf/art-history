@@ -4,13 +4,13 @@ core
 */
 
 @mixin timeline-active-color($value) {
-  .vis-item, .timeline-artwork, #arthistory-main-content {
+  .vis-item, .timeline-artwork, #maps-main-content {
     border-color: $value;
   }
 }
 
 .page-template-template-maps {
-  #arthistory-main-content {
+  #maps-main-content {
     border: 10px solid transparent;
     @include tablet {
       border-width: 15px;
@@ -90,4 +90,17 @@ body
   &.active {
     font-weight: bold;
   }
+}
+
+#maps-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background: white;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
 }

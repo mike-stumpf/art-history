@@ -10,6 +10,7 @@
         helpers = artHistory.helpers,
         sidebarContainer = $('#maps-sidebar-container'),
         timelineSelectors = $('.maps-timeline-selector'),
+        transitionOverlay = $('#maps-transition-overlay'),
         bodyElement = $('body'),
         timelineClass = '.map-timeline',
         timeFormat = 'YYYY-MM-DD';
@@ -109,20 +110,26 @@
             selectedTimeline = selectedTimePrefix+selectedTimelineIndex,
             previousTimelineSelector,
             previousTimelineIndex;
-        bodyClasses.forEach(function(entry){
-            if(entry.indexOf(selectedTimePrefix) !== -1){
-                previousTimelineSelector = entry;
-                var pieces = previousTimelineSelector.split('-');
-                previousTimelineIndex = pieces[pieces.length-1];
-            }
+        animations.fadeIn(transitionOverlay)
+            .then(function(){
+                bodyClasses.forEach(function(entry){
+                    if(entry.indexOf(selectedTimePrefix) !== -1){
+                        previousTimelineSelector = entry;
+                        var pieces = previousTimelineSelector.split('-');
+                        previousTimelineIndex = pieces[pieces.length-1];
+                    }
+                });
+                if (previousTimelineSelector && previousTimelineIndex){
+                    bodyElement.removeClass(previousTimelineSelector);
+                    animations.fadeOut($(timelineLogicClass+previousTimelineIndex));
+                }
+                populateSidebar(selectedTimelineIndex);
+                bodyElement.addClass(selectedTimeline);
+                animations.fadeIn($(timelineLogicClass+selectedTimelineIndex))
+                    .then(function(){
+                        animations.fadeOut(transitionOverlay);
+                    });
         });
-        if (previousTimelineSelector && previousTimelineIndex){
-            bodyElement.removeClass(previousTimelineSelector);
-            animations.fadeOut($(timelineLogicClass+previousTimelineIndex));
-        }
-        populateSidebar(selectedTimelineIndex);
-        bodyElement.addClass(selectedTimeline);
-        animations.fadeIn($(timelineLogicClass+selectedTimelineIndex));
     };
 
     this.openEvent = function(eventId){
@@ -160,6 +167,11 @@
 
         bodyElement
             .on('click', '.timeline-artwork', function(){
+                that.openEvent($(this).attr('data-event-id'));
+            });
+
+        bodyElement
+            .on('click', '.timeline-duration', function(){
                 that.openEvent($(this).attr('data-event-id'));
             });
 

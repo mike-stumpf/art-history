@@ -20,4 +20,3 @@
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
-<main id="arthistory-main-content">
