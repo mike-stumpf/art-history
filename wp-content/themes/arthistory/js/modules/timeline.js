@@ -103,7 +103,38 @@
         that.mapTimelines.push(new vis.Timeline(container, items, options));
     }
 
-    this.selectTimeline = function(selectedTimelineIndex){
+    this.openEvent = function(eventId){
+        console.log('open event',eventId);
+    };
+
+
+//sidebar
+//----------------------------- 
+
+    function populateSidebar(selectedTimelineIndex){
+        var data = mapData[getDataItemsList('#timeline-map-'+selectedTimelineIndex)],
+            template = Handlebars.templates.sidebar,
+            html = template(data);
+        animations.fadeOut(sidebarContainer)
+            .then(function(){
+                sidebarContainer.html(html);
+                animations.fadeIn(sidebarContainer);
+            });
+    }
+
+//navigation
+//-----------------------------
+    function handleSelectorClick(element){
+        if (!element.hasClass(helpers.activeClass)) {
+            timelineSelectors.each(function () {
+                $(this).removeClass(helpers.activeClass);
+            });
+            selectTimeline(element.attr('data-timeline-selector'));
+            element.addClass(helpers.activeClass);
+        }
+    }
+
+   function selectTimeline(selectedTimelineIndex){
         var bodyClasses = bodyElement.attr('class').split(' '),
             timelineLogicClass = '.l--show-for-map-',
             selectedTimePrefix = 'map-timeline-',
@@ -129,28 +160,8 @@
                     .then(function(){
                         animations.fadeOut(transitionOverlay);
                     });
-        });
-    };
-
-    this.openEvent = function(eventId){
-        console.log('open event',eventId);
-    };
-
-
-//sidebar
-//----------------------------- 
-
-    function populateSidebar(selectedTimelineIndex){
-        var data = mapData[getDataItemsList('#timeline-map-'+selectedTimelineIndex)],
-            template = Handlebars.templates.sidebar,
-            html = template(data);
-        animations.fadeOut(sidebarContainer)
-            .then(function(){
-                sidebarContainer.html(html);
-                animations.fadeIn(sidebarContainer);
             });
     }
-
 
 //main
 //-----------------------------
@@ -163,7 +174,7 @@
             initializeTimeline(element);
         });
 
-        that.selectTimeline(1);
+        selectTimeline(1);
 
         bodyElement
             .on('click', '.timeline-artwork', function(){
@@ -178,12 +189,7 @@
         timelineSelectors
             .on('click', function(event){
                 event.preventDefault();
-                var activeSelector = $(this);
-                timelineSelectors.each(function(){
-                    $(this).removeClass(helpers.activeClass);
-                });
-                that.selectTimeline(activeSelector.attr('data-timeline-selector'));
-                activeSelector.addClass(helpers.activeClass);
+                handleSelectorClick($(this));
             });
     };
 
