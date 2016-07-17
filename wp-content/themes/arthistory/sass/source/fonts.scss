@@ -1,36 +1,17 @@
 //header font
-@font-face {
-  font-family: 'EngraversRegular';
-  src: url('assets/engravers-regular.woff2') format('woff2'),url('assets/engravers-regular.woff') format('woff'), url('assets/engravers-regular.ttf') format('truetype');
+.f--font-header-regular{
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   font-weight: normal;
-  font-style: normal;
-}
-
-.f--font-engravers-regular{
-  font-family: 'EngraversRegular', sans-serif;
 }
 
 //body font
-@font-face {
-  font-family: 'DinkbekRegular';
-  src: url('assets/dinbek-regular.woff2') format('woff2'),
-  url('assets/dinbek-regular.woff') format('woff'),url('assets/dinbek-regular.ttf') format('truetype');
+
+.f--font-body-regular{
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
   font-weight: normal;
-  font-style: normal;
 }
 
-.f--font-dinbek-regular{
-  font-family: 'DinkbekRegular', sans-serif;
-}
-
-@font-face {
-  font-family: 'DinkbekBold';
-  src: url('assets/dinbek-bold.woff2') format('woff2'),
-  url('assets/dinbek-bold.woff') format('woff'),url('assets/dinbek-bold.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-.f--font-dinbek-bold{
-  font-family: 'DinkbekBold', sans-serif;
+.f--font-body-bold{
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-weight: bold;
 }
