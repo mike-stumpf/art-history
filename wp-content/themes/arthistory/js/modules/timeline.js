@@ -11,6 +11,7 @@
         sidebarContainer = $('#maps-sidebar-container'),
         timelineSelectors = $('.maps-timeline-selector'),
         transitionOverlay = $('#maps-transition-overlay'),
+        headerMapTitle = $('#maps-header-title'),
         bodyElement = $('body'),
         timelineClass = '.map-timeline',
         timeFormat = 'YYYY-MM-DD';
@@ -134,6 +135,11 @@
         }
     }
 
+    function updateMapTitle(selectedTimelineIndex){
+        var data = mapData[getDataItemsList('#timeline-map-'+selectedTimelineIndex)];
+        headerMapTitle.html(data.title.replace('-',' \u2013 '));
+    }
+
    function selectTimeline(selectedTimelineIndex){
         var bodyClasses = bodyElement.attr('class').split(' '),
             timelineLogicClass = '.l--show-for-map-',
@@ -154,6 +160,7 @@
                     bodyElement.removeClass(previousTimelineSelector);
                     animations.fadeOut($(timelineLogicClass+previousTimelineIndex));
                 }
+                updateMapTitle(selectedTimelineIndex);
                 populateSidebar(selectedTimelineIndex);
                 bodyElement.addClass(selectedTimeline);
                 animations.fadeIn($(timelineLogicClass+selectedTimelineIndex))

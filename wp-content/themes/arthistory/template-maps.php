@@ -17,6 +17,21 @@ $mapGroups = $artHistoryMaps->getMapData();
             <?php foreach($mapGroups as $mapGroup){?>
                 <img class="map-header-image faded-out l--show-for-<?php echo $mapGroup['slug'];?>" src="<?php echo $mapGroup['timeline']['image'];?>" alt="<?php echo $mapGroup['title'];?>"/>
             <?php } ?>
+            <div id="maps-header-title-container" class="maps-header-title-element-container">
+                <div id="maps-header-title-left" class="maps-header-title-element-container maps-header-title-bullet">
+                    <div class="maps-header-title-element">
+                        &diams;
+                    </div>
+                </div>
+                <div class="maps-header-title-element">
+                    <h3 id="maps-header-title"></h3>
+                </div>
+                <div id="maps-header-title-right" class="maps-header-title-element-container maps-header-title-bullet">
+                    <div class="maps-header-title-element">
+                        &diams;
+                    </div>
+                </div>
+            </div>
         </section>
         <section id="maps-timeline-container">
             <?php foreach($mapGroups as $mapGroup){?>
