@@ -29,8 +29,14 @@ final class Types_Field_Utils {
 	public static function get_domains() {
 		return array( self::DOMAIN_POSTS, self::DOMAIN_USERS, self::DOMAIN_TERMS );
 	}
-	
-	
+
+
+	/**
+	 * @param $domain
+	 *
+	 * @return WPCF_Field_Definition_Factory
+	 * @deprecated Use WPCF_Field_Definition_Factory::get_factory_by_domain() instead.
+	 */
 	public static function get_definition_factory_by_domain( $domain ) {
 		switch( $domain ) {
 			case self::DOMAIN_POSTS:
@@ -49,21 +55,30 @@ final class Types_Field_Utils {
 	 * For a given field domain, return the appropriate field group factory instance.
 	 *
 	 * @param string $domain
-	 * @return WPCF_Field_Group_Factory
+	 * 
+	 * @return Types_Field_Group_Factory
 	 * @since 2.0
+	 * @deprecated Use Types_Field_Group_Factory::get_factory_by_domain() instead.
 	 */
 	public static function get_group_factory_by_domain( $domain ) {
 		switch( $domain ) {
 			case self::DOMAIN_POSTS:
-				return WPCF_Field_Group_Post_Factory::get_instance();
+				return Types_Field_Group_Post_Factory::get_instance();
 			case self::DOMAIN_USERS:
-				return WPCF_Field_Group_User_Factory::get_instance();
+				return Types_Field_Group_User_Factory::get_instance();
 			case self::DOMAIN_TERMS:
-				return WPCF_Field_Group_Term_Factory::get_instance();
+				return Types_Field_Group_Term_Factory::get_instance();
 			default:
 				throw new InvalidArgumentException( 'Invalid field domain.' );
 		}
 	}
+
+
+	private static $domain_legacy_value_map = array(
+		self::DOMAIN_POSTS => 'postmeta',
+		self::DOMAIN_USERS => 'usermeta',
+		self::DOMAIN_TERMS => 'termmeta'
+	);
 
 
 	/**
@@ -74,12 +89,20 @@ final class Types_Field_Utils {
 	 * @since 2.0
 	 */
 	public static function domain_to_legacy_meta_type( $domain ) {
-		static $map = array(
-			self::DOMAIN_POSTS => 'postmeta',
-			self::DOMAIN_USERS => 'usermeta',
-			self::DOMAIN_TERMS => 'termmeta'
-		);
-		return wpcf_getarr( $map, $domain );
+		return wpcf_getarr( self::$domain_legacy_value_map, $domain );
+	}
+
+
+	/**
+	 * Translate a "meta_type" value into a field domain name.
+	 *
+	 * @param $meta_type
+	 * @return string
+	 * @since 2.1
+	 */
+	public static function legacy_meta_type_to_domain( $meta_type ) {
+		$map = array_flip( self::$domain_legacy_value_map );
+		return wpcf_getarr( $map, $meta_type );
 	}
 
 	
@@ -121,7 +144,7 @@ final class Types_Field_Utils {
 	 * The groups are expected to belong to the same domain (term/post/user), otherwise problems may occur when
 	 * field slugs conflict.
 	 *
-	 * @param WPCF_Field_Group[] $field_groups
+	 * @param Types_Field_Group[] $field_groups
 	 * @return WPCF_Field_Definition[]
 	 * @since 1.9
 	 */
@@ -135,248 +158,6 @@ final class Types_Field_Utils {
 			}
 		}
 		return $field_definitions;
-	}
-
-
-	/**
-	 * Start managing a field with given meta_key with Types.
-	 *
-	 * Looks if there already exists a field definition that uses the meta_key. If yes, it's most probably a "disabled"
-	 * one, that is stored only for the possibility of later "re-activation" (which is happening now). In that case,
-	 * the field definition will be simply updated.
-	 *
-	 * If there is no matching field definition whatsoever, it will be created with in some default manner. 
-	 * Check WPCF_Field_Definition_Factory::create_field_definition_for_existing_fields() for details.
-	 *
-	 * AJAX callback helper only, do not use elsewhere.
-	 *
-	 * @param string $meta_key
-	 * @param string $domain Field domain
-	 * @return false|null|WPCF_Field_Definition The updated/newly created field definition or falsy value on failure.
-	 * @since 2.0
-	 */
-	public static function start_managing_field( $meta_key, $domain ) {
-		$factory = self::get_definition_factory_by_domain( $domain );
-		$definition = $factory->meta_key_belongs_to_types_field( $meta_key, 'definition' );
-		if( null == $definition ) {
-			$result = $factory->create_field_definition_for_existing_fields( $meta_key );
-			if( false != $result ) {
-				return $factory->load_field_definition( $result );
-			} else {
-				return false;
-			}
-		} else {
-			$is_success = $definition->set_types_management_status( true );
-			return ( $is_success ? $definition : false );
-		}
-	}
-
-
-	/**
-	 * Stop managing a field with given field slug by Types.
-	 *
-	 * AJAX callback helper only, do not use elsewhere.
-	 * 
-	 * @param string $field_slug
-	 * @param string $domain Field domain.
-	 * @return WP_Error|WPCF_Field_Definition Error with a user-friendly message on failure
-	 *     or the updated definition on success.
-	 * @since 2.0
-	 */
-	public static function stop_managing_field( $field_slug, $domain ) {
-		
-		$factory = self::get_definition_factory_by_domain( $domain );
-		$definition = $factory->load_field_definition( $field_slug );
-		
-		if( null == $definition ) {
-			
-			return new WP_Error( 42, sprintf( __( 'Field definition for field "%s" not found in options.', 'wpcf' ), sanitize_text_field( $field_slug ) ) );
-			
-		} else {
-			
-			$is_success = $definition->set_types_management_status( false );
-			
-			if( $is_success ) {
-				return $definition;
-			} else {
-				return new WP_Error(
-					42,
-					sprintf(
-						__( 'Unable to set types management status for field definition "%s".', 'wpcf' ),
-						sanitize_text_field( $field_slug )
-					)
-				);
-			}
-		}
-	}
-
-
-	/**
-	 * Change which groups is a field definition associated with.
-	 *
-	 * AJAX callback helper only, do not use elsewhere.
-	 *
-	 * @param string $field_slug Field definition slug.
-	 * @param string $domain Field domain
-	 * @param string[][] $groups Action-specific data passed through AJAX. Array containing a single key 'group_slugs',
-	 *     containing an array of field group slugs.
-	 *
-	 * @return WP_Error|WPCF_Field_Definition The updated field definition on success or an error object.
-	 * @since 2.0
-	 */
-	public static function change_assignment_to_groups( $field_slug, $domain, $groups ) {
-		$factory = Types_Field_Utils::get_definition_factory_by_domain( $domain );
-		$definition = $factory->load_field_definition( $field_slug );
-		if( null == $definition ) {
-			return new WP_Error( 42, sprintf( __( 'Field definition for field "%s" not found in options.', 'wpcf' ), sanitize_text_field( $field_slug ) ) );
-		}
-		$new_groups = wpcf_ensarr( wpcf_getarr( $groups, 'group_slugs' ) );
-		$associated_groups = $definition->get_associated_groups();
-		$is_success = true;
-		foreach( $associated_groups as $group ) {
-			if( !in_array( $group->get_slug(), $new_groups ) ) {
-				$is_success = $is_success && $group->remove_field_definition( $definition );
-			}
-		}
-		$group_factory = $factory->get_group_factory();
-		foreach( $new_groups as $new_group_slug ) {
-			$new_group = $group_factory->load_field_group( $new_group_slug );
-			if( null != $new_group ) {
-				$is_success = $is_success && $new_group->add_field_definition( $definition );
-			} else {
-				$is_success = false;
-			}
-		}
-
-		if( $is_success ) {
-			return $definition;
-		} else {
-			return new WP_Error();
-		}
-	}
-
-
-	/**
-	 * Delete a field definition and all values of the field within given domain.
-	 * 
-	 * @param string $field_slug
-	 * @param string $domain
-	 * @return bool|WP_Error True for success, false or WP_Error on error.
-	 * @since 2.0
-	 */
-	public static function delete_field( $field_slug, $domain ) {
-		
-		$factory = Types_Field_Utils::get_definition_factory_by_domain( $domain );
-		$definition = $factory->load_field_definition( $field_slug );
-		if( null == $definition ) {
-			return new WP_Error( 42, sprintf( __( 'Field definition for field "%s" not found in options.', 'wpcf' ), sanitize_text_field( $field_slug ) ) );
-		} else if( ! $definition->is_managed_by_types() ) {
-			return new WP_Error( 42, sprintf( __( 'Field "%s" will not be deleted because it is not managed by Types.', 'wpcf' ), sanitize_text_field( $field_slug ) ) );
-		}
-		
-		$response = $factory->delete_definition( $definition );
-			
-		return $response;
-	}
-
-
-	/**
-	 * Change a field type for given field definition.
-	 *
-	 * Performs checks if the conversion is allowed, and if not, generate a proper error message.
-	 *
-	 * @param string $field_slug
-	 * @param string $domain
-	 * @param string[] $arguments Needs to contain the 'field_type' key with target type slug.
-	 * @return false|WP_Error|WPCF_Field_Definition The updated definition on succes, error/false otherwise.
-	 * @since 2.0
-	 */
-	public static function change_field_type( $field_slug, $domain, $arguments ) {
-
-		// Load all information we need, fail if it doesn't exist.
-		$factory = Types_Field_Utils::get_definition_factory_by_domain( $domain );
-		$definition = $factory->load_field_definition( $field_slug );
-		if( null == $definition ) {
-			return new WP_Error( 42, sprintf( __( 'Field definition for field "%s" not found in options.', 'wpcf' ), sanitize_text_field( $field_slug ) ) );
-		} else if( ! $definition->is_managed_by_types() ) {
-			return new WP_Error( 42, sprintf( __( 'Field "%s" will not be converted because it is not managed by Types.', 'wpcf' ), sanitize_text_field( $field_slug ) ) );
-		}
-
-		$type_slug = wpcf_getarr( $arguments, 'field_type' );
-		$target_type = Types_Field_Type_Definition_Factory::get_instance()->load_field_type_definition( $type_slug );
-		if( null == $target_type ) {
-			return new WP_Error( 42, sprintf( __( 'Unknown field type "%s".', 'wpcf' ), $type_slug ) );
-		}
-
-		// Check if we can convert between types
-		$is_conversion_possible = Types_Field_Type_Converter::get_instance()->is_conversion_possible( $definition->get_type(), $target_type );
-		if( !$is_conversion_possible ) {
-			return new WP_Error(
-				42,
-				sprintf(
-					__( 'Conversion from type "%s" to "%s" is currently not allowed.', 'wpcf' ),
-					$definition->get_type()->get_display_name(),
-					$target_type->get_display_name()
-				)
-			);
-		}
-
-		// Check if we can do the conversion with current field's cardinality
-		$is_cardinality_sustainable = ( ! $definition->get_is_repetitive() || $target_type->can_be_repetitive() );
-		if( !$is_cardinality_sustainable ) {
-			return new WP_Error(
-				42,
-				sprintf(
-					__( 'Field "%s" cannot be converted from "%s" to "%s" because it is repetitive and the target type doesn\'t support that.', 'wpcf' ),
-					$definition->get_display_name(),
-					$definition->get_type()->get_display_name(),
-					$target_type->get_display_name()
-				)
-			);
-		}
-
-		// All is fine, proceed.
-		$result = $definition->change_type( $target_type );
-		if( $result ) {
-			return $definition;
-		} else {
-			// Something unexpected went wrong.
-			return false;
-		}
-	}
-
-
-	/**
-	 * Change cardinality of given field, if it is permitted by its type.
-	 *
-	 * @param string $field_slug Field definition slug.
-	 * @param string $domain Field domain.
-	 * @param string[] $arguments Needs to contain the 'target_cardinality' key with 'single'|'repetitive' value.
-	 * @return bool|WP_Error|WPCF_Field_Definition The updated definition on succes, error/false otherwise.
-	 * @since 2.0
-	 */
-	public static function change_field_cardinality( $field_slug, $domain, $arguments ) {
-		$factory = Types_Field_Utils::get_definition_factory_by_domain( $domain );
-		$definition = $factory->load_field_definition( $field_slug );
-		if( null == $definition ) {
-			return new WP_Error( 42, sprintf( __( 'Field definition for field "%s" not found in options.', 'wpcf' ), sanitize_text_field( $field_slug ) ) );
-		} else if( ! $definition->is_managed_by_types() ) {
-			return new WP_Error( 42, sprintf( __( 'Field "%s" will not be converted because it is not managed by Types.', 'wpcf' ), sanitize_text_field( $field_slug ) ) );
-		}
-
-		$target_cardinality = wpcf_getarr( $arguments, 'target_cardinality', null, array( 'single', 'repetitive' ) );
-		if( null == $target_cardinality ) {
-			return false;
-		}
-		$set_as_repetitive = ( 'repetitive' == $target_cardinality );
-
-		$result = $definition->set_is_repetitive( $set_as_repetitive );
-
-		if( $result ) {
-			return $definition;
-		} else {
-			return false;
-		}
 	}
 	
 }

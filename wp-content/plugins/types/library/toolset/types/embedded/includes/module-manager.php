@@ -493,6 +493,7 @@ function wpcf_admin_export_selected_data ( array $items, $_type = 'all', $return
             }
 
             // WPML
+	        // todo remove WPML dependency, see https://onthegosystems.myjetbrains.com/youtrack/issue/types-749#comment=102-105900
             global $iclTranslationManagement;
             if ( !empty( $iclTranslationManagement ) ) {
                 foreach ( $fields as $field_id => $field ) {
@@ -507,6 +508,15 @@ function wpcf_admin_export_selected_data ( array $items, $_type = 'all', $return
             $data['user_fields']['__key'] = 'field';
         }
     }
+	
+	
+	// Export term field groups and term field definitions.
+	if( in_array( $_type, array( 'term_groups', 'all' ) ) ) {
+		$ie_controller = Types_Import_Export::get_instance();
+		
+		$data['term_groups'] = $ie_controller->export_field_groups_for_domain( Types_Field_Utils::DOMAIN_TERMS );
+		$data['term_fields'] = $ie_controller->export_field_definitions_for_domain( Types_Field_Utils::DOMAIN_TERMS );
+	}
 
 
     if ( 'groups' == $_type || 'all' == $_type ) {
@@ -608,6 +618,7 @@ function wpcf_admin_export_selected_data ( array $items, $_type = 'all', $return
             }
 
             // WPML
+	        // todo remove WPML dependency, see https://onthegosystems.myjetbrains.com/youtrack/issue/types-749#comment=102-105900
             global $iclTranslationManagement;
             if ( !empty( $iclTranslationManagement ) ) {
                 foreach ( $fields as $field_id => $field ) {

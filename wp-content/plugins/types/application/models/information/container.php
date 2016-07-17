@@ -23,9 +23,8 @@ class Types_Information_Container {
 	}
 
 	// add message
-	public function add_message( $message ) {
-		if( $message = Types_Helper_Type_Hinting::valid( $message, 'Types_Information_Message' ) )
-			$this->messages[] = $message;
+	public function add_message( Types_Information_Message $message ) {
+		$this->messages[] = $message;
 	}
 
 	public function get_messages() {

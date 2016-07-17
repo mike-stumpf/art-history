@@ -46,8 +46,8 @@ if ( ! class_exists( 'Toolset_Export_Import_Screen' ) ) {
 		public function register_export_import_page_in_menu( $pages ) {
 			$pages[] = array(
 				'slug'			=> 'toolset-export-import',
-				'menu_title'	=> __( 'Export / Import', 'wp-cred' ),
-				'page_title'	=> __( 'Export / Import', 'wp-cred' ),
+				'menu_title'	=> __( 'Export / Import', 'wpv-views' ),
+				'page_title'	=> __( 'Export / Import', 'wpv-views' ),
 				'callback'		=> array( $this, 'export_import_page' )
 			);
 			return $pages;
@@ -118,6 +118,17 @@ if ( ! class_exists( 'Toolset_Export_Import_Screen' ) ) {
 					<?php echo $export_import_menu; ?>
 				</p>
 				<?php echo $export_import_content; ?>
+				<div class="toolset-debug-info-helper">
+					<p>
+					<?php
+					echo sprintf(
+						__( 'Need help? Grab some %1$sdebug information%2$s.', 'wpv-views' ),
+						'<a href="' . admin_url( 'admin.php?page=toolset-debug-information' ) . '">',
+						'</a>'
+					);
+					?>
+					</p>
+				</div>
 			</div>
 			<?php
 		}

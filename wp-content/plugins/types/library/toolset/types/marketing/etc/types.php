@@ -18,7 +18,7 @@ return array(
             array(
                 'header' => __( 'Toolset lets you display TTT without coding!', 'wpcf' ),
                 'description' => __( 'See how Toolset can help you build custom WordPress sites without writing PHP', 'wpcf' ),
-                'link' => __('http://wp-types.com/landing/types/', 'wpcf'),
+                'link' => __( 'http://wp-types.com/landing/types/', 'wpcf'),
             ),
         ),
         'fields' => array(

@@ -57,7 +57,13 @@ function wpcf_cd_post_groups_filter( $groups, $post, $context ) {
             $conditions = get_post_meta( $group['id'], '_wpcf_conditional_display', true );
         }
 
-        if ( !empty( $conditions['conditions'] ) ) {
+        if ( !empty( $conditions['conditions'] )
+             || ( isset( $conditions['custom_use'] )
+                  && $conditions['custom_use'] == 1
+                  && isset( $conditions['custom'] )
+                  && !empty( $conditions['custom'] )
+             )
+        ) {
             $meta_box_id = "wpcf-group-{$group['slug']}";
             $prefix = 'wpcf-';
             $suffix = '';

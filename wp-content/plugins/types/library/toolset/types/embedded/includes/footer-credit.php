@@ -46,15 +46,33 @@ function wpcf_footer_credits_init() {
  */
 function wpcf_footer_credit_defaults() {
     return array(
-        sprintf(__("Functionality enhanced using %sWordPress Post Fields%s", 'wpcf'),
-                '<a href="http://wp-types.com/documentation/user-guides/using-custom-fields/" target="_blank">',
-                ' &raquo;</a>'),
-        sprintf(__("Functionality enhanced using %sWordPress Post Types%s", 'wpcf'),
-                '<a href="http://wp-types.com/documentation/user-guides/create-a-custom-post-type/" target="_blank">',
-                ' &raquo;</a>'),
-        sprintf(__("Functionality enhanced using %sWordPress Taxonomy%s", 'wpcf'),
-                '<a href="http://wp-types.com/documentation/user-guides/create-custom-taxonomies/" target="_blank">',
-                ' &raquo;</a>'),
+
+        sprintf(
+	        __("Functionality enhanced using %sWordPress Post Fields%s", 'wpcf'),
+            sprintf(
+	            '<a href="%s" target="_blank">',
+	            Types_Helper_Url::get_url( 'using-post-fields' )
+            ),
+            ' &raquo;</a>'
+        ),
+
+        sprintf(
+	        __("Functionality enhanced using %sWordPress Post Types%s", 'wpcf'),
+            sprintf(
+                '<a href="%s" target="_blank">',
+	            Types_Helper_Url::get_url( 'custom-post-types' )
+            ),
+            ' &raquo;</a>'
+        ),
+
+        sprintf(
+	        __("Functionality enhanced using %sWordPress Taxonomy%s", 'wpcf'),
+            sprintf(
+	            '<a href="%s" target="_blank">',
+	            Types_Helper_Url::get_url( 'custom-taxonomy' )
+            ),
+            ' &raquo;</a>'
+        ),
     );
 }
 

@@ -15,6 +15,8 @@ class WPCF_Helper_Ajax
      * @global type $wpcf
      * @param type $data
      * @return boolean|string
+     *
+     * @deprecated Is this used anywhere? No usages found in Types 2.1.
      */
     public static function conditionalVerify( $data ) {
 

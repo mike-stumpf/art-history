@@ -68,7 +68,6 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
     }
 
     // Process groups
-
     $groups_check = array();
     if ( !empty( $data->groups ) ) {
         $groups = array();
@@ -646,6 +645,29 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
             }
         }
         update_option( 'wpcf-usermeta', $fields_existing );
+
+	// Handle term field groups and field definitions outside of this mess.
+	
+	$ie_controller = Types_Import_Export::get_instance();
+
+	$term_group_results = $ie_controller->process_field_group_import_per_domain(
+		Types_Field_Utils::DOMAIN_TERMS,
+		$data,
+		'term_groups',
+		$overwrite_groups,
+		$delete_groups,
+		wpcf_ensarr( wpcf_getpost( 'term_groups' ) )
+	);
+
+	$term_field_results = $ie_controller->process_field_definition_import_per_domain(
+		Types_Field_Utils::DOMAIN_TERMS,
+		$data,
+		'term_fields',
+		$delete_fields,
+		wpcf_ensarr( wpcf_getpost( 'term_fields' ) )
+	);
+
+	$return = array_merge( $return, $term_group_results, $term_field_results );
 
     // Process types
 

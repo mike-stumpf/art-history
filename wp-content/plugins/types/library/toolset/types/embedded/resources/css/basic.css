@@ -36,7 +36,6 @@
 ,#poststuff #types_labels .inside
 ,#poststuff #types_labels .inside table
 ,#custom_fields .inside .wpcf-custom-field-group ul
-,body .ui-dialog .wpcf-ui-dialog-cancel
 ,#wpcf-types-form-visibility-table
 ,#wpcf-types-form-visibility-table td
 ,.widefat .wpcf-fields-field-value-options .hndle
@@ -177,9 +176,6 @@ body.toolset_page_wpcf-edit-usermeta #major-publishing-actions
 
 .wpcf-field-remove
 ,#wpcf-conditional a
-,body .ui-dialog .wpcf-ui-dialog-cancel
-,body .ui-dialog .wpcf-ui-dialog-cancel:active
-,body .ui-dialog .wpcf-ui-dialog-cancel:focus
 {
     color: #a00;
 }
@@ -193,23 +189,12 @@ input.disabled, input:disabled, select.disabled, select:disabled, textarea.disab
 {
     text-decoration: none;
 }
-body .ui-dialog .wpcf-ui-dialog-cancel:hover
-{
-    color: #f00;
-}
 
 body .ui-dialog .wpcf-ui-dialog-cancel
-,body .ui-dialog .wpcf-ui-dialog-cancel:active
-,body .ui-dialog .wpcf-ui-dialog-cancel:focus
 {
-    background: none;
-    left: 16px;
-    padding: 1px 2px;
     position: absolute;
-
-    -webkit-box-shadow: none;
-    -moz-box-shadow:    none;
-    box-shadow:         none;
+    left: 16px;
+    margin-left: 0;
 }
 
 body.wp-admin .wpcf-ui-dialog
@@ -358,6 +343,16 @@ td>.wpcf-form-description-fieldset
     margin: 10px 0;
     display: block;
 }
+
+.toolset_page_wpcf-edit-type .wpcf-form-error {
+    width: 99%;
+    margin: 1px;
+    padding: 3px 5px;
+}
+.toolset_page_wpcf-edit-type #wpcf_warning_same_as_slug {
+    border-left-color: #ffba00;
+}
+
 input.wpcf-form-error {
     background-color: #F8F8F8;
     border-color: Red !important;
@@ -424,8 +419,43 @@ input.wpcf-form-error {
     cursor: pointer;
 }
 
+.wpcf-custom-field-disabled label,
+.wpcf-custom-field-disabled input[type="checkbox"] {
+    cursor: default;
+    color: #999;
+}
+
 .wpcf-fields-form-radio-move-field {
     cursor: move;
+}
+
+.wpcf-where-to-include-inner {
+    display: table;
+    width: 100%;
+}
+
+.wpcf-conditions-container,
+.wpcf-edit-button-container {
+    display: table-cell;
+}
+
+.wpcf-edit-button-container {
+    width: 5%;
+    text-align: right;
+    vertical-align: bottom;
+}
+
+#wpcf-fields-form-filters-association-form .wpcf-form-title {
+    float: left;
+    padding-right: 15px;
+}
+
+#wpcf-fields-form-filters-association-form input[type="radio"] {
+    margin-right: 0;
+}
+
+#wpcf-fields-form-filters-association-form label {
+    padding-right: 15px;
 }
 
 /* TYPES FORM */
@@ -455,6 +485,10 @@ input.wpcf-form-error {
 #wpcf-types-form-name-table tbody tr:first-child td
 {
     padding-top: 10px;
+}
+
+.wpcf-where-to-include.widefat {
+    margin-bottom: 20px;
 }
 
 .wpcf-fields table
@@ -1009,6 +1043,10 @@ body.wp-admin .wpcf-ui-dialog.wpcf-filter-dialog .ui-dialog-titlebar {
     display: block;
 }
 
+.wpcf-tabs div.hidden:first-child {
+    display: none;
+}
+
 .wpcf-fields-group-conditions-description {
     display: none;
 }
@@ -1360,16 +1398,6 @@ div.message p:empty {
     margin: 0;
 }
 
-
-/* Temporary notification on the Add Term page. */
-.wpcf-add-term-page-box {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding:10px;
-    border:1px solid #8cceea;
-    border-radius: 3px;
-    background-color:#eff8fc
-}
 
 /* Field Icons */
 .wpcf-choose-field i.types-field-icon {

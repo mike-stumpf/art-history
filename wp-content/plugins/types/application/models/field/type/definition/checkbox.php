@@ -8,6 +8,12 @@
 final class Types_Field_Type_Definition_Checkbox extends Types_Field_Type_Definition_Singular {
 
 
+	/**
+	 * Types_Field_Type_Definition_Checkbox constructor.
+	 *
+	 * @param array $args
+	 * @since 2.0
+	 */
 	public function __construct( $args ) {
 		parent::__construct( Types_Field_Type_Definition_Factory::CHECKBOX, $args );
 	}
@@ -16,18 +22,20 @@ final class Types_Field_Type_Definition_Checkbox extends Types_Field_Type_Defini
 	/**
 	 * @inheritdoc
 	 *
-	 * Checkbox field definition needs to contain these keys:
-	 *
-	 * - data/set_value: The value that will be saved to database when the field is checked. Default is '1'
-	 *
 	 * @param array $definition_array
 	 * @return array
 	 * @since 2.0
 	 */
-	public function sanitize_field_definition_array( $definition_array ) {
-		$definition_array = parent::sanitize_field_definition_array( $definition_array );
-		
-		$set_value = wpcf_getnest( $definition_array, array( 'data', 'set_value' ), '1' );
+	protected function sanitize_field_definition_array_type_specific( $definition_array ) {
+
+		$definition_array['type'] = Types_Field_Type_Definition_Factory::CHECKBOX;
+
+		$definition_array = $this->sanitize_element_isset( $definition_array, 'display', 'db', array( 'db', 'value' ), 'data' );
+		$definition_array = $this->sanitize_element_isset( $definition_array, 'display_value_selected', '', null, 'data' );
+		$definition_array = $this->sanitize_element_isset( $definition_array, 'display_value_not_selected', '', null, 'data' );
+		$definition_array = $this->sanitize_element_isset( $definition_array, 'save_empty', 'no', array( 'yes', 'no' ), 'data' );
+				
+		$set_value = wpcf_getnest( $definition_array, array( 'data', 'set_value' ) );
 		if( !is_string( $set_value ) && !is_numeric( $set_value ) ) {
 			$set_value = '1';
 		}

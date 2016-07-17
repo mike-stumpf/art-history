@@ -610,7 +610,7 @@ function wpcf_conditional_get_curent($data)
         && array_key_exists( 'custom_use', $data['data']['conditional_display'] )
         && !empty( $data['data']['conditional_display']['custom_use'] )
     ) {
-        return wpautop(__('This field use custom logic.', 'wpcf'));
+        return '<ul><li>' . __( 'Custom logic', 'wpcf' ) . '</li></ul>';
     }
     $current = '';
     if (

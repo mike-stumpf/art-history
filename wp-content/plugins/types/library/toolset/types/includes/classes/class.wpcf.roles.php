@@ -37,13 +37,14 @@ class WPCF_Roles
 
     protected static $perms_to_pages = array();
 
-    private function __construct()
-    {
-        $this->users_settings = get_option(self::$users_settings_name, false);
+    private function __construct() {
+	    $this->users_settings = get_option( self::$users_settings_name, false );
 
-        add_action('init', array($this, 'add_caps'), 99 );
-        add_action('edit_user_profile', array($this, 'edit_user_profile'));
-        add_filter('wpcf_access_custom_capabilities', array($this, 'wpcf_access_custom_capabilities'), 50);
+	    add_action( 'init', array( $this, 'add_caps' ), 99 );
+	    add_action( 'edit_user_profile', array( $this, 'edit_user_profile' ) );
+	    add_filter( 'wpcf_access_custom_capabilities', array( $this, 'wpcf_access_custom_capabilities' ), 50 );
+	    add_action( 'profile_update', array( $this, 'clean_the_mess_in_nonadmin_user_caps' ), 10, 1 );
+
     }
 
     public static function getInstance()
@@ -158,6 +159,42 @@ class WPCF_Roles
         $this->users_settings = true;
         update_option(self::$users_settings_name, $this->users_settings);
     }
+
+
+	/**
+	 * In WPCF_Roles::add_caps() we're adding extra capabilities to superadmins.
+	 *
+	 * When the superadmin status is revoked, we need to take those caps back, otherwise we might create a security
+	 * issue.
+	 *
+	 * This is a temporary workaround for types-768 until a better solution is provided.
+	 *
+	 * @param int|WP_User $user ID of the user or a WP_User instance that is currently being edited.
+	 * @since 2.1
+	 */
+	public function clean_the_mess_in_nonadmin_user_caps( $user ) {
+		
+		if( ! $user instanceof WP_User ) {
+			$user = new WP_User( $user );
+			if( ! $user->exists() ) {
+				return;
+			}
+		}
+
+		// True if the user is network (super) admin. Also returns True if network mode is disabled and the user is an admin.
+		$is_superadmin = is_super_admin( $user->ID );
+
+		if( ! $is_superadmin ) {
+			// We'll remove the extra Types capabilities. If the user has a role that adds those capabilities, nothing
+			// should change for them.
+			$wpcf_capabilities = array_keys( self::wpcf_get_capabilities() );
+			foreach( $wpcf_capabilities as $capability ) {
+				$user->remove_cap( $capability );
+			}
+		}
+
+	}
+
 
     public function disable_all_caps()
     {
@@ -326,7 +363,7 @@ class WPCF_Roles
 
 	public static function user_can_edit_term_field_group_by_id( $id )
 	{
-		$item = self::get_entry($id, WPCF_Field_Group_Term::POST_TYPE );
+		$item = self::get_entry($id, Types_Field_Group_Term::POST_TYPE );
 		return self::user_can_edit('term-field', $item);
 	}
 

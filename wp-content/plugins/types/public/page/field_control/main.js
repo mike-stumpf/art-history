@@ -1,7 +1,7 @@
 var Types = Types || {};
 
 // the head.js object
-Types.head = head;
+Types.head = Types.head || head;
 
 Types.page = Types.page || {};
 

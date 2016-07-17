@@ -165,11 +165,5 @@ function wpcf_fields_checkbox_insert_form( $form_data ) {
         '#markup' => '</dl></div>',
         '#pattern' => '<ERROR><BEFORE><ELEMENT><AFTER></td></tr>',
     );
-    /*
-    $form['help'] = array(
-        '#type' => 'markup',
-        '#markup' => '<p style="text-align:right"><a href="http://wp-types.com/documentation/functions/checkbox/" target="_blank">' . __( 'Checkbox help', 'wpcf' ) . '</a></p>',
-    );
-     */
     return $form;
 }

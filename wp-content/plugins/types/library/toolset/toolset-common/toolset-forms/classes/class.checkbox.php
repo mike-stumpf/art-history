@@ -18,6 +18,7 @@ class WPToolset_Field_Checkbox extends FieldFactory {
         $value = $this->getValue();
         $data = $this->getData();
         $checked = null;
+        $is_cred_generic_field = isset($data['options']['cred_generic']) && $data['options']['cred_generic']==1;
 
         /**
          * autocheck for new posts
@@ -35,7 +36,7 @@ class WPToolset_Field_Checkbox extends FieldFactory {
          * if is a default value, there value is 1 or default_value
          */
         if (
-                array_key_exists('default_value', $data) && ( 'y' === $value || $value === $data['default_value'])
+                array_key_exists('default_value', $data) && ( 'y' === $value || $value === $data['default_value']) && !$is_cred_generic_field
         ) {
             $checked = true;
         }
@@ -44,6 +45,8 @@ class WPToolset_Field_Checkbox extends FieldFactory {
         //if (!$checked&&$this->getValue()==1) {
         //    $checked=true;
         //}
+        $default_value = array_key_exists('default_value', $data) ? $data['default_value'] : "";
+        if ($is_cred_generic_field && !$checked) $default_value = "";
 
         /**
          * metaform
@@ -51,7 +54,7 @@ class WPToolset_Field_Checkbox extends FieldFactory {
         $form = array(
             '#type' => 'checkbox',
             '#value' => $value,
-            '#default_value' => array_key_exists('default_value', $data) ? $data['default_value'] : null,
+            '#default_value' => $default_value,
             '#name' => $this->getName(),
             '#description' => $this->getDescription(),
             '#title' => $this->getTitle(),

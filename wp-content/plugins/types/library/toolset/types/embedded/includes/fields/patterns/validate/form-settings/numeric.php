@@ -4,7 +4,7 @@ return array(
 	'control' => array(
 		'#pattern' => '<tr><td><TITLE></td><td><ERROR><BEFORE><ELEMENT><LABEL><AFTER></td></tr>',
 		'#title' => __( 'Validation', 'wpcf' ),
-		'#label' => __( 'Numeric', 'wpcf' ),
+		'#label' => __( 'Number', 'wpcf' ),
 		'#attributes' => array(
 			'class' => 'js-wpcf-validation-checkbox',
 		),

@@ -37,10 +37,10 @@ Types.information = Types.information || {};
                 content: content.html(),
                 position: {
                     edge: 'bottom',
-                    align: 'left'
+                    align: 'right'
                 },
                 buttons: function( event, t ) {
-                    var button_close = $( '<a href="javascript:void(0);" class="alignright">Close</a>' );
+                    var button_close = $( '<a href="javascript:void(0);" class="notice-dismiss alignright"></a>' );
                     button_close.bind( 'click.pointer', function( e ) {
                         e.preventDefault();
                         t.element.pointer( 'close' );
@@ -48,7 +48,7 @@ Types.information = Types.information || {};
                     return button_close;
                 },
                 show: function( event, t ){
-                    t.pointer.css( 'marginLeft', '-54px' );
+                    t.pointer.css( 'marginLeft', '54px' );
                 },
                 close: function( event, t ){
                     t.pointer.css( 'marginLeft', '0' );

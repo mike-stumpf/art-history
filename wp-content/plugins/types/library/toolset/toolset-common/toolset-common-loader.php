@@ -5,11 +5,11 @@ if ( class_exists( 'Toolset_Common_Bootstrap' ) ) {
 };
 
 if( !defined('TOOLSET_VERSION') ){
-	define('TOOLSET_VERSION', '2.0');
+	define('TOOLSET_VERSION', '2.1');
 }
 
 if ( ! defined('TOOLSET_COMMON_VERSION' ) ) {
-    define( 'TOOLSET_COMMON_VERSION', '1.9' );
+    define( 'TOOLSET_COMMON_VERSION', '2.1' );
 }
 
 if ( ! defined('TOOLSET_COMMON_PATH' ) ) {
@@ -21,7 +21,6 @@ if ( ! defined('TOOLSET_COMMON_DIR' ) ) {
 }
 
 require_once( TOOLSET_COMMON_PATH . '/bootstrap.php' );
-
 
 if ( ! function_exists( 'toolset_common_boostrap' ) ) {
     function toolset_common_boostrap() {
@@ -61,4 +60,28 @@ if ( ! function_exists( 'toolset_common_boostrap' ) ) {
     // Load early
 	// We register scripts and styles that are dependences for Toolset assets
     add_action( 'after_setup_theme', 'toolset_common_boostrap' );
+}
+
+
+if( !function_exists('toolset_disable_wpml_admin_lang_switcher') ){
+	add_filter( 'wpml_show_admin_language_switcher', 'toolset_disable_wpml_admin_lang_switcher' );
+	function toolset_disable_wpml_admin_lang_switcher( $state ) {
+		global $pagenow;
+
+		$toolset_pages = array(
+			'toolset-settings', 'toolset-help', 'toolset-debug-information'
+		);
+
+		$toolset_pages = apply_filters( 'toolset_filter_disable_wpml_lang_switcher_in_admin', $toolset_pages );
+
+		if (
+			$pagenow == 'admin.php'
+			&& isset( $_GET['page'] )
+			&& in_array( $_GET['page'], $toolset_pages )
+		) {
+			$state = false;
+		}
+		return $state;
+	}
+
 }

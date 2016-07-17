@@ -225,13 +225,76 @@ abstract class Types_Admin_Page
      * @param type $var Optional. Description.
      * @return type Description.
      */
-    protected function submitdiv($button_text, $form = array(), $type = 'custom-post-type' )
+    protected function submitdiv($button_text, $form = array(), $type = 'custom-post-type', $built_in = false )
     {
         if ( WPCF_Roles::user_can_edit($type, $this->ct) ) {
             $form['submit-div-open'] = array(
                 '#type' => 'markup',
-                '#markup' => '<div class="submitbox" id="submitpost"><div id="major-publishing-actions"><div id="publishing-action"><span class="spinner"></span>',
+                '#markup' => '<div class="submitbox" id="submitpost"><div id="major-publishing-actions">',
                 '_builtin' => true,
+            );
+
+            if(
+                ( isset( $_GET['group_id'] ) || isset( $_GET['wpcf-tax'] ) )
+                && isset( $_GET['page'] )
+                && ! $built_in
+            ) {
+                switch( $_GET['page'] ) {
+                    case 'wpcf-edit':           // post fields
+                        $action = 'delete_group';
+                        break;
+                    case 'wpcf-edit-usermeta':  // user fields
+                        $action = 'delete_usermeta_group';
+                        break;
+                    case 'wpcf-termmeta-edit':  // term fields
+                        $action = 'delete_term_group';
+                        break;
+                    case 'wpcf-edit-tax':       // taxonomy
+                        $action = 'delete_taxonomy';
+                        break;
+                }
+                if( isset( $action ) ) {
+                    $args = array(
+                        'action' => 'wpcf_ajax',
+                        'wpcf_action' => $action,
+                        '_wpnonce' => wp_create_nonce( $action ),
+                        'wpcf_warning' => urlencode(__('Are you sure?', 'wpcf'))
+                    );
+
+                    if( isset( $_GET['group_id'] ) ) {
+                        $args['group_id'] = $_GET['group_id'];
+                        $args['wpcf_ajax_update'] = 'wpcf_list_ajax_response_'.$_GET['group_id'];
+                        $delete_id_addition = $_GET['group_id'];
+                    } else if( isset( $_GET['wpcf-tax'] ) ) {
+                        $args['wpcf-tax'] = $_GET['wpcf-tax'];
+                        $args['wpcf_ajax_update'] = 'wpcf_list_ajax_response_'.$_GET['wpcf-tax'];
+                        $delete_id_addition = $_GET['wpcf-tax'];
+                    }
+
+                    $args['wpcf_ref'] = isset( $_GET['ref'] )
+                        ? $_GET['ref']
+                        : 'list';
+
+                    $form['delete'] = array(
+                        '#type' => 'markup',
+                        '#markup' => sprintf(
+                            '<div id="delete-action"><a href="%s" class="submitdelete wpcf-ajax-link wpcf-group-delete-link" id="wpcf-list-delete-%d"">%s</a></div>',
+                            esc_url(
+                                add_query_arg(
+                                    $args,
+                                    admin_url('admin-ajax.php')
+                                )
+                            ),
+                            $delete_id_addition,
+                            __('Delete', 'wpcf')
+                        )
+                    );
+                }
+            }
+
+            $form['submit-div-open-publish'] = array(
+                '#type' => 'markup',
+                '#markup' => '<div id="publishing-action"><span class="spinner"></span>'
             );
 
             $form['submit'] = array(
@@ -721,7 +784,7 @@ abstract class Types_Admin_Page
      * @param type $var Optional. Description.
      * @return type Description.
      */
-    protected function print_notice($notice, $add_wrap = 'no-wrap')
+    protected function print_notice($notice, $add_wrap = 'no-wrap', $print = true )
     {
         $form = array();
         if ( 'add-wpcf-inside' == $add_wrap ) {
@@ -741,7 +804,13 @@ abstract class Types_Admin_Page
             );
         }
         $form = wpcf_form(__FUNCTION__, $form);
-        echo $form->renderForm();
+
+        if( $print ) {
+            echo $form->renderForm();
+        } else {
+            return $form->renderForm();
+        }
+
     }
 
     /**
@@ -761,7 +830,7 @@ abstract class Types_Admin_Page
      * @param type $var Optional. Description.
      * @return type Description.
      *
-     * @deprecated Use WPCF_Utils::object_to_array_deep() instead.
+     * @deprecated Use Types_Utils::object_to_array_deep() instead.
      */
     protected function object_to_array($data)
     {

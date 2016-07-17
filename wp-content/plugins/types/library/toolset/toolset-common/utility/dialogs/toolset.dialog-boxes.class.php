@@ -8,10 +8,8 @@ if ( ! class_exists( 'Toolset_DialogBoxes' ) ) {
 
 		public function __construct( $screens = array() ) {
 			$this->screens = apply_filters( 'toolset_dialog-boxes_screen_ids', $screens );
-
-			add_filter( 'toolset_add_registered_script', array( &$this, 'register_scripts' ), 10, 1 );
 			add_filter( 'toolset_add_registered_styles', array( &$this, 'register_styles' ), 10, 1 );
-
+			add_filter( 'toolset_add_registered_script', array( &$this, 'register_scripts' ), 10, 1 );
 		}
 
 		function init_screen_render() {
@@ -37,11 +35,7 @@ if ( ! class_exists( 'Toolset_DialogBoxes' ) ) {
 			return $scripts;
 		}
 
-		function register_styles( $styles ) {
-			$styles['ddl-dialogs-css'] = new Toolset_Style( 'ddl-dialogs-css', TOOLSET_COMMON_URL . '/utility/dialogs/css/dd-dialogs.css', array( 'wp-jquery-ui-dialog' ) );
-			$styles['ddl-dialogs-general-css'] = new Toolset_Style( 'ddl-dialogs-general-css', TOOLSET_COMMON_URL . '/utility/dialogs/css/dd-dialogs-general.css', array( 'wp-jquery-ui-dialog' ) );
-			$styles['ddl-dialogs-forms-css'] = new Toolset_Style( 'ddl-dialogs-forms-css', TOOLSET_COMMON_URL . '/utility/dialogs/css/dd-dialogs-forms.css' );
-
+		function register_styles( $styles ){
 			return $styles;
 		}
 
@@ -74,5 +68,33 @@ if ( ! class_exists( 'Toolset_DialogBoxes' ) ) {
 			echo ob_get_clean();
 		}
 	}
-
 }
+
+/*** COMMON CASES ***/
+if( !class_exists('Toolset_PopUpBlockerAlert') ){
+	class Toolset_PopUpBlockerAlert extends Toolset_DialogBoxes{
+        const POPUP_MESSAGE_OPTION = 'toolset_popup_blocked_dismiss';
+        public function template(){
+            ob_start();?>
+
+            <script type="text/html" id="ddl-generic-dialog-tpl">
+                <div id="js-dialog-dialog-container">
+                    <div class="ddl-dialog-content" id="js-dialog-content-dialog">
+                        <?php printf(
+                            __('%sTo see the preview, you need to allow this page to show popups.%sHow to enable popups in your browser%s', 'ddl-layouts'),
+                            '<p>',
+                            '<br><a href="https://wp-types.com/documentation/user-guides/enable-pop-ups-browser/?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=enable-pop-ups-browser&utm_term=help-link" title="enable popups" target="_blank">',
+                            '</a></p>'
+                        );
+                        ?>
+                        <p>
+                            <label for="disable-popup-message"><input type="checkbox" name="<?php echo self::POPUP_MESSAGE_OPTION; ?>" value="true" id="disable-popup-message"> <?php _e('Don\'t show this message again', 'ddl-layouts'); ?></label>
+                        </p>
+                    </div>
+                </div>
+            </script>
+            <?php
+            echo ob_get_clean();
+        }
+    }
+} 

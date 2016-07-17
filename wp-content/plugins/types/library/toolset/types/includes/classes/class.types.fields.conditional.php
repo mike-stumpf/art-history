@@ -107,7 +107,7 @@ class Types_Fields_Conditional extends Types_Admin_Page
             '#type' => 'markup',
             '#markup' => sprintf(
                 '<div class="js-wpcf-simple-logic %s">',
-                $use_custom_logic? 'hidden':''
+                $use_custom_logic ? 'hidden':''
             ),
         );
 
@@ -165,8 +165,10 @@ class Types_Fields_Conditional extends Types_Admin_Page
         if ( $show_relation ) {
             $group = isset($data['meta_type']) && 'custom-fields-group' == $data['meta_type'];
             require_once WPCF_ABSPATH . '/includes/conditional-display.php';
-            foreach( $data['data']['conditional_display']['conditions'] as $condition ) {
-                $form += wpcf_cd_admin_form_single_filter($data, $condition, null, $group);
+            if( is_array( $data['data']['conditional_display']['conditions'] ) && ! empty( $data['data']['conditional_display']['conditions'] ) ) {
+                foreach( $data['data']['conditional_display']['conditions'] as $condition ) {
+                    $form += wpcf_cd_admin_form_single_filter($data, $condition, null, $group);
+                }
             }
         }
 
@@ -177,7 +179,8 @@ class Types_Fields_Conditional extends Types_Admin_Page
         $form['button-add'] = array(
             '#type' => 'button',
             '#inline' => true,
-            '#value' => isset( $data['data']['conditional_display']['conditions'] ) ? __( 'Add another condition', 'wpcf' ) : __( 'Add condition', 'wpcf' ),
+            '#value' => isset( $data['data']['conditional_display']['conditions'] ) && !empty( $data['data']['conditional_display']['conditions'] )
+                ? __( 'Add another condition', 'wpcf' ) : __( 'Add condition', 'wpcf' ),
             '#name' => 'button-add',
             '#attributes' => array(
                 'class' => sprintf( 'js-wpcf-condition-button-add-row %s', isset( $data['data']['conditional_display']['conditions'] ) ? 'alignright' : 'wpcf-block-center' ),
@@ -202,7 +205,7 @@ class Types_Fields_Conditional extends Types_Admin_Page
             '#type' => 'markup',
             '#markup' => sprintf(
                 '<div class="js-wpcf-advance-logic %s">',
-                $use_custom_logic? '':'hidden'
+                $use_custom_logic ? '':'hidden'
             ),
         );
         $form['custom-description'] = array(
@@ -217,10 +220,13 @@ class Types_Fields_Conditional extends Types_Admin_Page
         );
         $form['date_notice'] = array(
             '#type' => 'markup',
-            '#markup' => '<div style="display:none; margin-top:15px;" class="wpcf-cd-notice-date">'
-                         . sprintf( __( '%sDates can be entered using the date filters &raquo;%s', 'wpcf' ),
-                    '<a href="http://wp-types.com/documentation/user-guides/date-filters/" target="_blank">',
-                    '</a>' ) . '</div>',
+            '#markup' =>
+	            sprintf(
+		            '<div style="display:none; margin-top:15px;" class="wpcf-cd-notice-date">
+						<a href="%s" target="_blank">%s &raquo;</a></div>',
+	                Types_Helper_Url::get_url( 'date-filters', true ),
+		            __( 'Dates can be entered using the date filters', 'wpcf' )
+                ),
         );
         $form['toggle_close'] = array(
             '#type' => 'markup',
@@ -388,15 +394,18 @@ class Types_Fields_Conditional extends Types_Admin_Page
         }
 
         // update condtions
-        if( $conditions_set ) {
+        if( $conditions_set || ( isset( $conditions['custom'] ) && ! empty( $conditions['custom'] ) ) ) {
 
             // filter unfilled fields
             $conditions_to_save = array();
-            foreach( $conditions_set as $key => $one ) {
-                if ( empty($one['field']) ) {
-                    continue;
+
+            if( $conditions_set ) {
+                foreach( $conditions_set as $key => $one ) {
+                    if ( empty($one['field']) ) {
+                        continue;
+                    }
+                    $conditions_to_save[$key] = $one;
                 }
-                $conditions_to_save[$key] = $one;
             }
 
             $this->update_conditions(
@@ -461,6 +470,17 @@ class Types_Fields_Conditional extends Types_Admin_Page
                 $conditions['conditions']
             );
 
+            // Tokanizer ($this->transform_operators_to_text_equivalents)
+            // transforms slugs like "my-field-slug" to "my - field - slug"
+            // following will restore the slugs
+            if( isset( $sanitized_conditions['custom'] ) && ! empty( $sanitized_conditions['custom'] ) ) {
+                $sanitized_conditions['custom'] = preg_replace_callback(
+                    '#\$\(([A-z0-9]*\s[\-]\s[A-z0-9]*)*\)#',
+                    array( $this, 'callback_restore_slug_format' ),
+                    $sanitized_conditions['custom']
+                );
+            }
+
             update_post_meta( $id, '_wpcf_conditional_display', $sanitized_conditions );
 
         /*
@@ -495,6 +515,18 @@ class Types_Fields_Conditional extends Types_Admin_Page
                     $sanitized_conditions['conditions'],
                     $conditions['conditions']
                 );
+
+            // Tokanizer ($this->transform_operators_to_text_equivalents)
+            // transforms slugs like "my-field-slug" to "my - field - slug"
+            // following will restore the slugs
+            if( isset( $sanitized_conditions['custom'] ) && ! empty( $sanitized_conditions['custom'] ) ) {
+                $sanitized_conditions['custom'] = preg_replace_callback(
+                    '#\$\(([A-z0-9]*\s[\-]\s[A-z0-9]*)*\)#',
+                    array( $this, 'callback_restore_slug_format' ),
+                    $sanitized_conditions['custom']
+                );
+            }
+
 
 	        // Store the sanitized conditions.
 	        $field['data']['conditional_display'] = $sanitized_conditions;
@@ -779,4 +811,19 @@ class Types_Fields_Conditional extends Types_Admin_Page
 			return $expression;
 		}
 	}
+
+    /**
+     * Used to restore field slugs in custom logic which are ruined by Toolset_Tokenizer
+     * which transforms "my-field-slug" to "my - field - slug".
+     *
+     * Special thank to WordPress for not supporting anonymous functions. (>= PHP 5.3)
+     * 
+     * @param $condition
+     * @return string
+     * @since 2.1
+     */
+    protected function callback_restore_slug_format( $condition ) {
+        $restored_slug = str_replace( ' - ', '-', $condition[0] );
+        return $restored_slug;
+    }
 }

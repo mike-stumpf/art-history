@@ -37,23 +37,25 @@ final class Types_Page_Extension_Edit_Post {
 
 	public function prepare() {
 		// documentation urls
-		$documentation_urls = include( TYPES_DATA . '/information/documentation-urls.php' );
-
-		// add links to use analytics
-		Types_Helper_Url::add_urls( $documentation_urls );
+		Types_Helper_Url::load_documentation_urls();
 
 		// set analytics medium
 		Types_Helper_Url::set_medium( 'post_editor' );
-
-		// add informations
-		$this->prepare_informations();
+		
+		// add information
+		$this->prepare_information();
 
 		// @todo load scripts
 		if( function_exists( 'wpcf_edit_post_screen_scripts' ) )
 			wpcf_edit_post_screen_scripts();
 	}
 
-	private function prepare_informations() {
+	private function prepare_information() {
+		$setting = new Types_Setting_Preset_Information_Table();
+
+		if( ! $setting->get_value( 'show-on-post' ) )
+			return false;
+
 		$information = new Types_Information_Controller;
 		$information->prepare();
 	}

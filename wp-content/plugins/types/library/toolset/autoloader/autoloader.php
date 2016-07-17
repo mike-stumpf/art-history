@@ -12,11 +12,39 @@ final class Toolset_Autoloader {
 
 	private static $instance;
 
-	protected $paths = array();
-	protected $prefixes = array();
+	/**
+	 * @var array Multidimensional associative array:
+	 *
+	 * array(
+	 *     class prefix => array(
+	 *         path => array( ... options ... ),
+	 *         ...
+	 *     ),
+	 *     ...
+	 * )
+	 *
+	 */
+	private $paths_by_prefixes = array();
 
-	protected function __construct() {
+
+	/**
+	 * For production version of Types we use a class map
+	 * you can disable using the classmap by simply deleting /autoload_classmap.php
+	 *
+	 * Note: Not using the classmap will lower the performance significant
+	 *
+	 * @var bool|array
+	 * @since 2.1
+	 */
+	private $classmap = false;
+
+
+	private function __construct() {
 		spl_autoload_register( array( $this, 'autoload' ) );
+
+		if( file_exists( TYPES_ABSPATH . '/autoload_classmap.php' ) ) {
+			$this->classmap = include( TYPES_ABSPATH . '/autoload_classmap.php' );
+		}
 	}
 
 	public static function get_instance() {
@@ -31,81 +59,81 @@ final class Toolset_Autoloader {
 	/**
 	 * Add base path to search for class files.
 	 *
-	 * @param string $path
+	 * @param string $prefix Class prefix
+	 * @param string $path Path for given class prefix
+	 * @param array [$options] Additional options. Currently supported are:
+	 *     - file_prefix: Value that will be prepended before each file name that will be checked.
 	 * @return bool True if path was added
-	 * 
+	 *
 	 * @since 2.0
 	 */
-	public function add_path( $path ) {
+	public function add_path( $prefix, $path, $options = array() ) {
 
-		// abort if already set
-		if( in_array( $path, $this->paths ) )
-			return true;
+		if( ! array_key_exists( $prefix, $this->paths_by_prefixes ) ) {
+			$this->paths_by_prefixes[ $prefix ] = array();
 
-		// check if path is readable
-		if( is_readable( $path ) ) {
-			array_push( $this->paths, $path );
+			// We assume that most specific (longest) prefixes will have higher probability of a match.
+			// This is useful when one prefix is substring of another.
+			krsort( $this->paths_by_prefixes );
+		}
+
+		// Skip if already set
+		if( in_array( $path, array_keys( $this->paths_by_prefixes[ $prefix ] ) ) ) {
 			return true;
 		}
 
-		return false;
+		// Abort if the path is not readable
+		if( ! is_readable( $path ) ) {
+			return false;
+		}
+
+		if( !is_array( $options ) ) {
+			$options = array();
+		}
+
+		$this->paths_by_prefixes[ $prefix ][ $path ] = $options;
+		return true;
 	}
 
-	
+
 	/**
 	 * Add multiple base paths.
 	 *
+	 * @param $prefix
+	 *
 	 * @param array $paths
+	 * @param array $options
+	 *
 	 * @since 2.0
 	 */
-	public function add_paths( array $paths ) {
+	public function add_paths( $prefix, $paths, $options = array() ) {
 		// run this->addPath for each value
 		foreach( $paths as $path ) {
-			$this->add_path( $path );
+			$this->add_path( $prefix, $path, $options );
 		}
 	}
-
-	
-	public function get_paths() {
-		return $this->paths;
-	}
-
-	
-	public function add_prefix( $prefix ) {
-		// abort if already exists
-		if( in_array( $prefix, $this->prefixes ) )
-			return $this;
-
-		array_push( $this->prefixes, $prefix );
-
-		// We assume that most specific (longest) prefixes will have higher probability of a match.
-		// This is useful when one prefix is substring of another.
-		rsort( $this->prefixes );
-
-		return $this;
-	}
-	
-
-	public function get_prefixes() {
-		return $this->prefixes;
-	}
-	
 	
 
 	public function autoload( $class ) {
+		// use class map if defined
+		if( $this->classmap ) {
+			if( isset( $this->classmap[$class] ) && file_exists( $this->classmap[$class] ) ) {
+				require_once( $this->classmap[$class] );
+				return true;
+			}
 
-		if( class_exists( $class ) ) {
-			return true;
+			return false;
 		}
 
-		foreach( $this->prefixes as $prefix ) {
+		// no class map
+		foreach( $this->paths_by_prefixes as $prefix => $paths ) {
 
 			// Will be equal to $class if no replacement happens.
 			$class_without_prefix = preg_replace( '#^'.$prefix.'_#', '', $class );
 
 			if( $class != $class_without_prefix ) {
 
-				$result = $this->try_autoload_without_prefix( $class, $class_without_prefix );
+				$result = $this->try_autoload_without_prefix( $class, $class_without_prefix, $paths );
 
 				// false means we should try with other prefixes
 				if( false !== $result ) {
@@ -113,12 +141,6 @@ final class Toolset_Autoloader {
 				}
 			}
 		}
-
-		// no prefix used
-		$result = $this->try_autoload_without_prefix( $class, $class );
-		if( false !== $result )
-			return $result;
-
 
 		return false;
 	}
@@ -129,9 +151,13 @@ final class Toolset_Autoloader {
 	 *
 	 * @param string $full_class_name Full name of the class.
 	 * @param string $class_name_without_prefix Name of the class without the registered prefix.
+	 * @param array $paths Path definitions for current prefix.
+	 *
 	 * @return bool|mixed include_once() result or false if the file was not found.
+	 *
+	 * @since 2.0
 	 */
-	private function try_autoload_without_prefix( $full_class_name, $class_name_without_prefix ) {
+	private function try_autoload_without_prefix( $full_class_name, $class_name_without_prefix, $paths ) {
 
 		// explode class by _
 		$explode_class = explode( '_' , $class_name_without_prefix );
@@ -146,12 +172,11 @@ final class Toolset_Autoloader {
 			$class_path .= strtolower( $path ) . '/';
 		}
 
-		$file = $class_path . $class_filename;
-
 		// check for file in path
-		foreach( $this->get_paths() as $path ) {
+		foreach( $paths as $path => $options ) {
 
-			$next_filename = $file;
+			$file_prefix = wpcf_getarr( $options, 'file_prefix', '' );
+			$next_filename = $class_path . $file_prefix . $class_filename;
 
 			while( true ) {
 				$candidate_filename = $next_filename;
@@ -176,7 +201,6 @@ final class Toolset_Autoloader {
 
 		}
 
-		// Last attempt for legacy classes.
 		return false;
 	}
 

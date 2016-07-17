@@ -69,11 +69,12 @@ function wpcf_fields_select_meta_box_form($field) {
  */
 function wpcf_fields_select_view($params) {
     if ( isset($params['usermeta']) && !empty($params['usermeta']) ){
-		$field = wpcf_fields_get_field_by_slug( $params['field']['slug'] , 'wpcf-usermeta');
-	}
-	else{
-		$field = wpcf_fields_get_field_by_slug( $params['field']['slug'] );
-	}
+        $field = wpcf_fields_get_field_by_slug( $params['field']['slug'] , 'wpcf-usermeta');
+    }elseif( isset($params['termmeta']) && !empty($params['termmeta']) ){
+        $field = wpcf_fields_get_field_by_slug( $params['field']['slug'] , 'wpcf-termmeta');
+    }else{
+        $field = wpcf_fields_get_field_by_slug( $params['field']['slug'] );
+    }
     $output = '';
     if (!empty($field['data']['options'])) {
         $field_value = $params['field_value'];

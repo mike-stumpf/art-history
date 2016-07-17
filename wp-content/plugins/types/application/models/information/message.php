@@ -34,6 +34,9 @@ class Types_Information_Message {
 			case 'archive':
 			case 'views':
 			case 'forms':
+			case 'type':
+			case 'fields':
+			case 'taxonomies':
 				$this->type = $type;
 				break;
 		}
@@ -56,6 +59,7 @@ class Types_Information_Message {
 
 		if( is_array( $conditions ) ) {
 			foreach( $conditions as $condition ) {
+				$condition = new $condition();
 				$this->add_condition( $condition );
 			}
 		} else {
@@ -71,9 +75,8 @@ class Types_Information_Message {
 	 *
 	 * @return bool
 	 */
-	public function add_condition( $condition ) {
-		if( $condition = Types_Helper_Type_Hinting::valid( $condition, 'Types_Helper_Condition' ) )
-			$this->conditions[] = $condition;
+	public function add_condition( Types_Helper_Condition $condition ) {
+		$this->conditions[] = $condition;
 
 		return $this;
 	}
@@ -121,8 +124,21 @@ class Types_Information_Message {
 			return;
 		}
 
-		// @todo Remove once placeholder replace comes before Twig rendering
+		$on_post_edit_screen = isset( $_GET['post'] ) ? true : false;
+
 		foreach( $description as &$element ) {
+			// apply correct label
+			if( isset( $element['label'] )
+				&& is_array( $element['label'] )
+			    && array_key_exists( 'default', $element['label'] )
+			    && array_key_exists( 'post-edit', $element['label'] )
+			) {
+				$element['label'] = $on_post_edit_screen
+					? $element['label']['post-edit']
+					: $element['label']['default'];
+			}
+
+			// todo Remove once placeholder replace comes before Twig rendering
 			if( isset( $element['target'] ) ) {
 				switch( $element['target'] ) {
 					case '%POST-PERMALINK%':
@@ -133,6 +149,7 @@ class Types_Information_Message {
 						break;
 				}
 			}
+			// end remove
 
 		}
 
@@ -186,7 +203,6 @@ class Types_Information_Message {
 	 *  true  for $target[] = $link
 	 */
 	protected function add_link( &$target, $link, $in_array = false ) {
-
 		if( isset( $link['label'] ) && isset( $link['link'] ) ) {
 			$add = array(
 				'label' => $link['label'],

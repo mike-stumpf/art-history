@@ -4,6 +4,8 @@
  * Abstract factory for field definitions.
  *
  * Handles creation of the objects as well as their caching.
+ *
+ * @since 1.9
  */
 abstract class WPCF_Field_Definition_Factory {
 
@@ -27,6 +29,28 @@ abstract class WPCF_Field_Definition_Factory {
 
 
 	final private function __clone() { }
+
+
+	/**
+	 * Get a field definition foctory for given field domain.
+	 *
+	 * @param string $domain Valid field domain.
+	 * @return WPCF_Field_Definition_Factory Factory instance for given domain.
+	 * @throws InvalidArgumentException when the domain is invalid
+	 * @since 2.1
+	 */
+	public static function get_factory_by_domain( $domain ) {
+		switch( $domain ) {
+			case Types_Field_Utils::DOMAIN_POSTS:
+				return WPCF_Field_Definition_Factory_Post::get_instance();
+			case Types_Field_Utils::DOMAIN_USERS:
+				return WPCF_Field_Definition_Factory_User::get_instance();
+			case Types_Field_Utils::DOMAIN_TERMS:
+				return WPCF_Field_Definition_Factory_Term::get_instance();
+			default:
+				throw new InvalidArgumentException( 'Invalid field domain.' );
+		}
+	}
 
 
 	/**
@@ -308,7 +332,7 @@ abstract class WPCF_Field_Definition_Factory {
 
 
 	/**
-	 * @return WPCF_Field_Group_Factory
+	 * @return Types_Field_Group_Factory
 	 * @since 2.0
 	 */
 	public abstract function get_group_factory();
@@ -458,16 +482,23 @@ abstract class WPCF_Field_Definition_Factory {
 	 * Query field definitions.
 	 *
 	 * @param array $args Following arguments are recognized:
+	 *
 	 *     - filter: What field definitions should be retrieved: 'types'|'generic'|'all'
 	 *     - orderby: 'name'|'slug'|'is_under_types_control'|'field_type'
 	 *     - order: 'asc'|'desc'
 	 *     - search: String for fulltext search.
+	 *     - field_type: string Field type slug.
+	 *     - group_id: int Field group ID where this field belongs to.
+	 *     - group_slug: string Slug of an existing firld group where this field belongs to. If defined, overrides
+	 *           the group_id argument.
 	 *
 	 * @return WPCF_Field_Definition_Abstract[] Field definitions that match query arguments.
+	 *
+	 * @since 1.9
 	 */
 	public function query_definitions( $args ) {
 
-		$args = wp_parse_args( $args,  array('filter' => 'all') );
+		$args = wp_parse_args( $args,  array( 'filter' => 'all' ) );
 
 		// Get only certain type of field definitions (generic, Types or both)
 		switch( $args['filter'] ) {
@@ -487,7 +518,6 @@ abstract class WPCF_Field_Definition_Factory {
 
 		// Perform fulltext search if needed
 		$search_string = wpcf_getarr( $args, 'search', '' );
-
 		if( !empty( $search_string ) ) {
 			$matches = array();
 			foreach( $results as $definition ) {
@@ -496,6 +526,34 @@ abstract class WPCF_Field_Definition_Factory {
 				}
 			}
 			$results = $matches;
+		}
+
+		// Select only fields of desired type
+		$field_type = wpcf_getarr( $args, 'field_type' );
+		if( !empty( $field_type ) ) {
+			$type_matches = array();
+			foreach( $results as $definition ) {
+				if( $definition->get_type()->get_slug() == $field_type ) {
+					$type_matches[] = $definition;
+				}
+			}
+			$results = $type_matches;
+		}
+
+		// Select fields by field group.
+		$group_source = wpcf_getarr( $args, 'group_slug', (int) wpcf_getarr( $args, 'group_id' ) );
+		if( !empty( $group_source ) ) {
+			$group_factory = $this->get_group_factory();
+			$group = $group_factory->load_field_group( $group_source );
+			$group_matches = array();
+			if( null != $group ) {
+				foreach( $results as $field_definition ) {
+					if( $field_definition->belongs_to_group( $group ) ) {
+						$group_matches[] = $field_definition;
+					}
+				}
+			}
+			$results = $group_matches;
 		}
 
 		// Sort results
@@ -598,6 +656,31 @@ abstract class WPCF_Field_Definition_Factory {
 
 		// Clear the underlying legacy cache.
 		wpcf_admin_fields_get_fields( false, false, false, $this->get_option_name(), false, true );
+	}
+
+
+	/**
+	 * Temporary workaround to access field definitions on a very deep level. 
+	 * 
+	 * @param $field_slug
+	 * @param $definition_array
+	 * @deprecated Do not use, it will be removed.
+	 * @since 2.1
+	 */
+	public function set_field_definition_workaround( $field_slug, $definition_array ) {
+		$this->set_field_definition( $field_slug, $definition_array );
+	}
+
+
+	/**
+	 * Temporary workaround to access field definitions on a very deep level. Do not use, it will be removed.
+	 * 
+	 * @return string
+	 * @deprecated Do not use, it will be removed.
+	 * @since 2.1
+	 */
+	public function get_option_name_workaround() {
+		return $this->get_option_name();
 	}
 
 

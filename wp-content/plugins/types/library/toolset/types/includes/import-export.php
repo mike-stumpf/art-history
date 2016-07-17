@@ -877,6 +877,11 @@ function wpcf_admin_import_export_settings($data)
         }
     }
 
+	// Add form inputs for term meta
+	$term_form_additions = wpcf_admin_import_export_settings_for_terms( $data );
+
+	$form = array_merge( $form, $term_form_additions );
+
     // Check types
     if ( !empty( $data->types ) ) {
         $form['title-types'] = array(
@@ -976,6 +981,145 @@ function wpcf_admin_import_export_settings($data)
     }
 
     return $form;
+}
+
+
+/**
+ * Add form inputs related to term field group and field definition import.
+ * 
+ * @param SimpleXMLElement $data Import data from XML
+ * @return array Enlimbo form elements (yuck).
+ * @since 2.1
+ */
+function wpcf_admin_import_export_settings_for_terms( $data ) {
+
+	$form = array();
+
+	if ( !empty( $data->term_groups ) ) {
+
+		$form['title-terms'] = array(
+			'#type' => 'markup',
+			'#markup' => '<h2>' . __( 'Term field groups to be added or updated', 'wpcf' ) . '</h2>',
+		);
+
+		$group_factory = Types_Field_Group_Term_Factory::get_instance();
+
+		$groups_check = array();
+		foreach ( $data->term_groups->group as $group ) {
+			$group = (array) $group;
+
+			$group_id = $group['ID'];
+			$group_slug = $group['post_title'];
+
+			$form[ 'term-group-add-' . $group_id ] = array(
+				'#type' => 'checkbox',
+				'#name' => 'term_groups[' . $group_id . '][add]',
+				'#default_value' => true,
+				'#title' => '<strong>' . esc_html( $group_slug ) . '</strong>',
+				'#inline' => true,
+				'#after' => '<br /><br />',
+			);
+
+			$existing_groups = $group_factory->query_groups(
+				array(
+					'name' => $group_slug,
+					'post_type' => $group['post_type']
+				) 
+			);
+
+			$group_already_exists = ( count( $existing_groups ) > 0 );
+
+			if ( $group_already_exists ) {
+				$form[ 'term-group-add-' . $group_id ]['#after'] = wpcf_form_simple(
+					array(
+						'term-group-add-update-' . $group_id => array(
+							'#type' => 'radios',
+							'#name' => 'term_groups[' . $group_id . '][update]',
+							'#inline' => true,
+							'#options' => array(
+								__( 'Update', 'wpcf' ) => 'update',
+								__( 'Create new', 'wpcf' ) => 'add'
+							),
+							'#default_value' => 'update',
+							'#before' => '<br />',
+							'#after' => '<br />',
+						)
+					)
+				);
+			}
+			$groups_check[] = $group_slug;
+		}
+
+		$groups_existing = get_posts( array( 'post_type' => Types_Field_Group_Term::POST_TYPE, 'post_status' => null ) );
+
+		if ( !empty( $groups_existing ) ) {
+			$groups_to_be_deleted = array();
+			foreach ( $groups_existing as $post ) {
+				if ( !in_array( $post->post_title, $groups_check ) ) {
+					$groups_to_be_deleted['<strong>' . $post->post_title . '</strong>'] = $post->ID;
+				}
+			}
+			if ( !empty( $groups_to_be_deleted ) ) {
+				$form['title-term-groups-deleted'] = array(
+					'#type' => 'markup',
+					'#markup' => '<h2>' . __( 'Term groups to be deleted', 'wpcf' ) . '</h2>',
+				);
+				$form['term-groups-deleted'] = array(
+					'#type' => 'checkboxes',
+					'#name' => 'term-groups-to-be-deleted',
+					'#options' => $groups_to_be_deleted,
+				);
+			}
+		}
+	}
+
+	// Check term fields
+	if ( !empty( $data->term_fields ) ) {
+		$form['term-title-fields'] = array(
+			'#type' => 'markup',
+			'#markup' => '<h2>' . __( 'Term fields to be added/updated', 'wpcf' ) . '</h2>',
+		);
+		$fields_existing = wpcf_admin_fields_get_fields( false, false, false, WPCF_Field_Definition_Factory_Term::FIELD_DEFINITIONS_OPTION );
+		$fields_check = array();
+		$fields_to_be_deleted = array();
+		foreach ( $data->term_fields->field as $field ) {
+			$field = (array) $field;
+			if ( empty( $field['id'] ) || empty( $field['name'] ) ) {
+				continue;
+			}
+			$form['term-field-add-' . $field['id']] = array(
+				'#type' => 'checkbox',
+				'#name' => 'term_fields[' . $field['id'] . '][add]',
+				'#default_value' => true,
+				'#title' => '<strong>' . $field['name'] . '</strong>',
+				'#inline' => true,
+				'#after' => '<br />',
+			);
+			$fields_check[] = $field['id'];
+		}
+
+		foreach ( $fields_existing as $field_id => $field ) {
+			if ( !in_array( $field_id, $fields_check ) ) {
+				$fields_to_be_deleted['<strong>' . $field['name'] . '</strong>'] = $field['id'];
+			}
+		}
+
+		if ( !empty( $fields_to_be_deleted ) ) {
+			$form['term-title-fields-deleted'] = array(
+				'#type' => 'markup',
+				'#markup' => '<h2>' . __( 'Term ields to be deleted', 'wpcf' ) . '</h2>',
+			);
+			$form['term-fields-deleted'] = array(
+				'#type' => 'checkboxes',
+				'#name' => 'term-fields-to-be-deleted',
+				'#options' => $fields_to_be_deleted,
+			);
+		}
+	}
+
+
+	return $form;
+
 }
 
 /**

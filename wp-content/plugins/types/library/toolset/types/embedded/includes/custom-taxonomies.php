@@ -61,10 +61,21 @@ function wpcf_custom_taxonomies_init()
     $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
     if ( !empty( $custom_taxonomies ) ) {
         foreach ( $custom_taxonomies as $taxonomy => $data ) {
+            if ( 
+				! isset( $data['_builtin'] ) 
+				|| ! $data['_builtin'] 
+			) {
+                wpcf_custom_taxonomies_register( $taxonomy, $data );
+            }
+        }
+    }
+}
+function wpcf_builtin_taxonomies_init() {
+	$custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
+    if ( !empty( $custom_taxonomies ) ) {
+        foreach ( $custom_taxonomies as $taxonomy => $data ) {
             if ( isset($data['_builtin']) && $data['_builtin']) {
                 wpcf_taxonomies_register( $taxonomy, $data );
-            } else {
-                wpcf_custom_taxonomies_register( $taxonomy, $data );
             }
         }
     }

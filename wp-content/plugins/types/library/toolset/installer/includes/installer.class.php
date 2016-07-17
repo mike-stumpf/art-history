@@ -603,13 +603,14 @@ final class WP_Installer{
                         $show = call_user_func($nag['condition_cb']);
                     }
                     
-                    if(empty($this->settings['dismissed_nags'][$nag['repository_id']]) && $show){                
-                        echo '<div class="updated error"><p>';                
-                        printf(__("To get automatic updates, you need to register %s for this site. %sRegister %s%s", 'sitepress'), 
+                    if(empty($this->settings['dismissed_nags'][$nag['repository_id']]) && $show){
+                        echo '<div class="updated error otgs-is-dismissible"><p>';
+                        printf(__("To get automatic updates, you need to register %s for this site. %sRegister %s%s", 'sitepress'),
                             $nag['product_name'], '<a class="button-primary" href="' . $this->menu_url() . '">', $nag['product_name'], '</a>');
-                        
-                        echo '<br /><a class="alignright installer-dismiss-nag" href="#" data-repository="' . $nag['repository_id']  . '">' . __('Dismiss', 'sitepress') . '</a><br clear="all" />';    
-                        echo '</p></div>';
+
+                        echo '</p>';
+                        echo '<span class="installer-dismiss-nag notice-dismiss" data-repository="' . $nag['repository_id']  . '"><span class="screen-reader-text">' . __('Dismiss', 'sitepress') . '</span></span>';
+                        echo '</div>';
                     }
                 }
                 

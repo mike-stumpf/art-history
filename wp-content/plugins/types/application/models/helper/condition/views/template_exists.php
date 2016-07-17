@@ -1,74 +1,65 @@
 <?php
 
-
+/**
+ * Types_Helper_Condition_Views_Template_Exists
+ *
+ * @since 2.0
+ */
 class Types_Helper_Condition_Views_Template_Exists extends Types_Helper_Condition_Views_Views_Exist {
 
-	private static $template_id;
-	private static $template_name;
+	private static $template_id = array();
+	private static $template_name = array();
 
 	public function valid() {
-		if( self::$template_id !== null && self::$template_id !== false )
-			return true;
-
 		// if views not active
 		if( ! defined( 'WPV_VERSION' ) )
 			return false;
 
-		if( isset( $_GET['post'] ) )
-			return $this->valid_per_post();
+		$type = self::get_type_name();
 
-		return $this->valid_per_post_type();
-	}
-
-	// needed for single post edit screen
-	private function valid_per_post( ) {
-		if( function_exists( 'has_wpv_content_template' ) ) {
-			$template = has_wpv_content_template( $_GET['post'] );
-
-			if( ! $template
-			    || $template === 0
-			    || ! get_post_type( $template )
-			)
-				return false;
-
-			self::$template_id = $template;
-		}
-
-		return true;
-	}
-
-	// needed for cpt / fields group edit screen
-	private function valid_per_post_type() {
-		$cpt = Types_Helper_Condition::get_post_type();
+		if( isset( self::$template_id[$type] )
+		    && self::$template_id[$type] !== null
+		    && self::$template_id[$type] !== false )
+			return true;
 
 		$wpv_options = get_option( 'wpv_options', array() );
 
 		if( empty( $wpv_options )
-		    || ! isset( $wpv_options['views_template_for_'.$cpt->name] )
-		    || ! get_post_type( $wpv_options['views_template_for_'.$cpt->name] )
-		)
+		    || ! isset( $wpv_options['views_template_for_'.$type] )
+		    || ! get_post_type( $wpv_options['views_template_for_'.$type] )
+		) {
+			self::$template_id[$type] = false;
+			self::$template_name[$type] = false;
 			return false;
+		}
 
-		$title = get_the_title( $wpv_options['views_template_for_'.$cpt->name] );
-		self::$template_id = $wpv_options['views_template_for_'.$cpt->name];
-		self::$template_name = $title;
+		$title = get_the_title( $wpv_options['views_template_for_'.$type] );
+		self::$template_id[$type] = $wpv_options['views_template_for_'.$type];
+		self::$template_name[$type] = $title;
+
 		return true;
 	}
 
 	public static function get_template_id() {
-		if( self::$template_id === null ) {
-			$self = new Types_Helper_Condition_Views_Template_Exists();
-			$self->valid();
-		}
+		$type = self::get_type_name();
 
-		return self::$template_id;
+		if( isset( self::$template_id[$type] ) )
+			return self::$template_id[$type];
+
+		// not set yet
+		$self = new Types_Helper_Condition_Views_Template_Exists();
+
+		if( $self->valid() )
+			return self::get_template_id();
 	}
 
 	public static function get_template_name() {
-		if( self::$template_name === null )
-			self::$template_name = get_the_title( self::get_template_id() );
+		$type = self::get_type_name();
 
-		return self::$template_name;
+		if( ! isset( self::$template_name[$type] ) )
+			self::$template_name[$type] = get_the_title( self::get_template_id() );
+
+		return self::$template_name[$type];
 	}
 
 }

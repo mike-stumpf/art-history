@@ -59,11 +59,11 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 				'default'  => 'side',
 				'priority' => 'high',
 			),
-			'types_where' => array(
+			/* 'types_where' => array(
 				'callback' => array($this, 'sidebar_group_conditions'),
-				'title'    => __( 'Where to Include These Fields', 'wpcf' ),
+				'title'    => __( 'Where to include this Field Group', 'wpcf' ),
 				'default'  => 'side',
-			),
+			), */
 		);
 
 		/** Admin styles **/
@@ -115,6 +115,7 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 		$this->current_user_can_edit = WPCF_Roles::user_can_create( 'custom-field' );
 
 		// If it's update, get data
+		// Note (by christian 3 June 2016): "Update" means: we're on group edit page and not on creating a new one.
 		if( isset( $_REQUEST[ $this->get_id ] ) ) {
 			$this->update = wpcf_admin_fields_get_group( intval( $_REQUEST[ $this->get_id ] ) );
 			if( empty( $this->update ) ) {
@@ -178,11 +179,11 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 
 		$form['table-1-open'] = array(
 			'#type'   => 'markup',
-			'#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Field Group name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
+			'#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
 		);
 		$table_row            = '<tr><td><LABEL></td><td><ERROR><BEFORE><ELEMENT><AFTER></td></tr>';
 		$form['title']        = array(
-			'#title'      => sprintf( '%s <b>(%s)</b>', __( 'Field Group name', 'wpcf' ), __( 'required', 'wpcf' ) ),
+			'#title'      => sprintf( '%s <b>(%s)</b>', __( 'Name', 'wpcf' ), __( 'required', 'wpcf' ) ),
 			'#type'       => 'textfield',
 			'#name'       => 'wpcf[group][name]',
 			'#id'         => 'wpcf-group-name',
@@ -222,6 +223,26 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 			'#type'   => 'markup',
 			'#markup' => '</tbody></table>',
 		);
+
+		/**
+		 * Where to include these field group
+		 */
+
+		$form['table-2-open'] = array(
+			'#type'   => 'markup',
+			'#markup' => '<table class="wpcf-types-form-table wpcf-where-to-include widefat"><thead><tr><th colspan="2">' . __( 'Where to include this Field Group', 'wpcf' ) . '</th></tr></thead><tbody>',
+		);
+
+		$form['table-2-content'] = array(
+			'#type'   => 'markup',
+			'#markup' => '<tr><td>'.$this->sidebar_group_conditions().'</td></tr>',
+		);
+
+		$form['table-2-close'] = array(
+			'#type'   => 'markup',
+			'#markup' => '</tbody></table>',
+		);
+
 
 		/**
 		 * fields
@@ -272,8 +293,7 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 
 		// if not saved yet, print message and abort
 		if( $this->update['id'] === 0 ) {
-			$this->print_notice( __( 'Please save first, than you can select where to display these fields.', 'wpcf' ) );
-			return;
+			return $this->print_notice( __( 'Please save first, then you can select where to display this Field Group.', 'wpcf' ), 'no-wrap', false );
 		}
 
 		// supported post types
@@ -308,9 +328,34 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 		}
 		sort( $currently_supported );
 
+		$tax_currently_supported = array();
+		$form_tax                = array();
+		
+		if(
+			isset( $this->update['taxonomies'] )
+			&& is_array( $this->update['taxonomies'] )
+			&& ! empty( $this->update['taxonomies'] )
+		) {
+			foreach( $this->update['taxonomies'] as $taxonomy_slug => $taxonomy ) {
+				foreach( $taxonomy as $key => $term ) {
+					$tax_currently_supported[ $term['term_taxonomy_id'] ] = $term['name'];
+					$form_tax[ $term['term_taxonomy_id'] ] = array(
+						'#type'       => 'hidden',
+						'#name'       => 'wpcf[group][taxonomies][' . $taxonomy_slug . '][' . $term['term_taxonomy_id'] . ']',
+						'#id'         => 'wpcf-form-groups-support-tax-' . $term['term_taxonomy_id'],
+						'#attributes' => array(
+							'data-wpcf-label' => $term['name']
+						),
+						'#value'      => $term['term_taxonomy_id'],
+						'#inline'     => true,
+					);
+				}
+			}
+		}
+
 		/*
 		 * Taxonomies
-		 */
+
 		$taxonomies              = apply_filters( 'wpcf_group_form_filter_taxonomies', get_taxonomies( '', 'objects' ) );
 		$tax_currently_supported = array();
 		$form_tax                = array();
@@ -328,6 +373,7 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 			if( in_array( $category_slug, $skip_categories ) )
 				continue;
 
+
 			// get all terms of tax
 			$terms = apply_filters( 'wpcf_group_form_filter_terms', get_terms( $category_slug, array('hide_empty' => false) ) );
 
@@ -343,6 +389,8 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 						$tax_currently_supported[ $term->term_taxonomy_id ] = $term->name;
 					}
 				}
+				
+				error_log( 'update-taxonomies ' . print_r( $this->update['taxonomies'], true ) );
 				$form_tax[ $term->term_taxonomy_id ] = array(
 					'#type'       => 'hidden',
 					'#name'       => 'wpcf[group][taxonomies][' . $category_slug . '][' . $term->term_taxonomy_id . ']',
@@ -358,7 +406,9 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 					'#inline'     => true,
 				);
 			}
-		}
+
+		}*/
+
 
 		/**
 		 * Filter templates
@@ -446,16 +496,22 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 		// start form
 		$form = array();
 
+		// container for better styling
+		$form['where-to-include-inner-container'] = array(
+			'#type'   => 'markup',
+			'#markup' => '<div class="wpcf-where-to-include-inner"><div class="wpcf-conditions-container">'
+		);
+
 		// Description: no conditions set so far
 		$form['supports-msg-conditions-none'] = array(
 			'#type'   => 'markup',
-			'#markup' => sprintf( '<p class="wpcf-fields-group-conditions-description ' . 'js-wpcf-fields-group-conditions-none">%s</p>', __( 'By default this group of fields will appear when editing all content. ' . 'Select specific post types, terms or templates to limit the fields ' . 'to specific locations in the WordPress admin.', 'wpcf' ) ),
+			'#markup' => sprintf( '<p class="wpcf-fields-group-conditions-description ' . 'js-wpcf-fields-group-conditions-none">%s</p>', __( 'By default <b>this group of fields</b> will appear when editing <b>all content.</b><br /><br />Select specific Post Types, Terms, Templates or set Data-dependent filters to limit the fields to specific locations and/or conditions in the WordPress admin.', 'wpcf' ) ),
 		);
 
 		// Description: conditions set
 		$form['supports-msg-conditions'] = array(
 			'#type'   => 'markup',
-			'#markup' => sprintf( '<p class="wpcf-fields-group-conditions-description ' . 'js-wpcf-fields-group-conditions-set">%s</p>', __( 'This Field Group is used with:', 'wpcf' ) ),
+			'#markup' => sprintf( '<p class="wpcf-fields-group-conditions-description ' . 'js-wpcf-fields-group-conditions-set">%s</p>', __( 'This Post Field Group is used with:', 'wpcf' ) ),
 		);
 
 		// Description: Post Types set
@@ -506,7 +562,16 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 			'#markup' => '</div>'
 		);
 
+		$form['conditions-container-close'] = array(
+			'#type'   => 'markup',
+			'#markup' => '</div>'
+		);
+
 		// Edit Button
+		$form['edit-button-container'] = array(
+			'#type'   => 'markup',
+			'#markup' => '<div class="wpcf-edit-button-container">'
+		);
 		$form += $this->filter_wrap( 'wpcf-filter-dialog-edit', array(
 			'data-wpcf-buttons-apply'   => esc_attr__( 'Apply', 'wpcf' ),
 			'data-wpcf-buttons-cancel'  => esc_attr__( 'Cancel', 'wpcf' ),
@@ -516,6 +581,10 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 			'data-wpcf-message-any'     => esc_attr__( 'Not Selected', 'wpcf' ),
 			'data-wpcf-message-loading' => esc_attr__( 'Please Wait, Loading…', 'wpcf' ),
 		), true );
+		$form['where-to-include-inner-container-close'] = array(
+			'#type'   => 'markup',
+			'#markup' => '</div></div>' // also close for 'edit-button-container'
+		);
 
 		// Filter Association
 		if( $this->current_user_can_edit ) {
@@ -530,6 +599,7 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 				'#type'          => 'radios',
 				'#name'          => 'wpcf[group][filters_association]',
 				'#id'            => 'wpcf-fields-form-filters-association',
+				'#options-after' => '',
 				'#options'       => array(
 					__( 'when <b>ANY</b> condition is met', 'wpcf' )   => 'any',
 					__( 'when <b>ALL</b> conditions are met', 'wpcf' ) => 'all',
@@ -539,7 +609,7 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 					: 'any',
 				'#inline'        => true,
 				'#before'        => '<div id="wpcf-fields-form-filters-association-form"' . $display . '>',
-				'#after'         => '<div id="wpcf-fields-form-filters-association-summary" ' . 'style="margin-top:10px;font-style:italic;margin-bottom:15px;"></div></div>',
+				'#after'         => '<div id="wpcf-fields-form-filters-association-summary" ' . 'style="font-style:italic;clear:both;"></div></div>',
 			);
 			// settings
 			/*
@@ -567,7 +637,7 @@ class Types_Admin_Edit_Custom_Fields_Group extends Types_Admin_Edit_Fields {
 		 * render form
 		 */
 		$form = wpcf_form( __FUNCTION__, $form );
-		echo $form->renderForm();
+		return $form->renderForm();
 	}
 
 	public function types_styling_editor() {
@@ -800,6 +870,7 @@ var wpcfDefaultCss = ' . json_encode( base64_encode( $admin_styles_value ) ) . '
 								'data-wpcf-value'  => esc_attr( $term->term_taxonomy_id ),
 								'data-wpcf-slug'   => esc_attr( $term->slug ),
 								'data-wpcf-name'   => esc_attr( $term->name ),
+								'data-wpcf-taxonomy-slug' => esc_attr( $category_slug ),
 								'data-wpcf-prefix' => ''
 							),
 						);
@@ -1035,10 +1106,15 @@ var wpcfDefaultCss = ' . json_encode( base64_encode( $admin_styles_value ) ) . '
 		$this->save_condition_taxonomies( $group_id );
 
 		// redirect
-		wp_safe_redirect( esc_url_raw( add_query_arg( array(
+		$args = array(
 			'page'        => 'wpcf-edit',
 			$this->get_id => $group_id
-		), admin_url( 'admin.php' ) ) ) );
+		);
+
+		if( isset( $_GET['ref'] ) )
+			$args['ref'] = $_GET['ref'];
+
+		wp_safe_redirect( esc_url_raw( add_query_arg( $args, admin_url( 'admin.php' ) ) ) );
 
 		die;
 	}

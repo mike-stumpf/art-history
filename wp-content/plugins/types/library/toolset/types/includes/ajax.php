@@ -1,6 +1,52 @@
 <?php
 
 /**
+ * With Toolset Dashboard we need the ability to redirect back to the Dashboard if the user came from the Dashboard
+ * for this we introduced the wpcf_ref parameter
+ *
+ * @return array
+ * @since 2.1
+ */
+function wpcf_ajax_group_delete_redirect() {
+
+    // on group edit page
+    if( isset( $_GET['wpcf_ref'] ) ) {
+
+        $group_type = get_post_type( $_GET['group_id'] );
+
+        if( $_GET['wpcf_ref'] == 'dashboard' ) {
+            $redirect = admin_url( 'admin.php?page=toolset-dashboard' );
+        } else {
+            switch( $group_type ) {
+                case 'wp-types-group':
+                    $redirect = admin_url( 'admin.php?page=wpcf-cf' );
+                    break;
+                case 'wp-types-term-group':
+                    $redirect = admin_url( 'admin.php?page=wpcf-termmeta-listing' );
+                    break;
+                case 'wp-types-user-group':
+                    $redirect = admin_url( 'admin.php?page=wpcf-um' );
+                    break;
+            }
+        }
+
+        return array(
+                'output'                   => '',
+                'execute'                  => 'redirect',
+                'wpcf_redirect'            => $redirect,
+                'wpcf_nonce_ajax_callback' => wp_create_nonce( 'execute' ),
+            );
+    // on listing page
+    } else {
+        return array(
+            'output' => '',
+            'execute' => 'reload',
+            'wpcf_nonce_ajax_callback' => wp_create_nonce('execute'),
+        );
+    }
+}
+
+/**
  * All AJAX calls go here.
  *
  * @global object $wpdb
@@ -177,14 +223,12 @@ function wpcf_ajax()
     case 'delete_usermeta_group':
         require_once WPCF_INC_ABSPATH . '/fields.php';
         require_once WPCF_INC_ABSPATH . '/usermeta.php';
+
+        $redirect = wpcf_ajax_group_delete_redirect();
+
         wpcf_admin_fields_delete_group(intval($_GET['group_id']), TYPES_USER_META_FIELD_GROUP_CPT_NAME);
-        echo json_encode(
-            array(
-                'output' => '',
-                'execute' => 'reload',
-                'wpcf_nonce_ajax_callback' => wp_create_nonce('execute'),
-            )
-        );
+        echo json_encode( $redirect );
+
         break;
 
     case 'usermeta_insert_existing':
@@ -252,19 +296,16 @@ function wpcf_ajax()
 
     case 'delete_group':
         require_once WPCF_INC_ABSPATH . '/fields.php';
+
+        $redirect = wpcf_ajax_group_delete_redirect();
         wpcf_admin_fields_delete_group(intval($_GET['group_id']));
-        echo json_encode(
-            array(
-                'output' => '',
-                'execute' => 'reload',
-                'wpcf_nonce_ajax_callback' => wp_create_nonce('execute'),
-            )
-        );
+
+        echo json_encode( $redirect );
         break;
 
 	    case 'deactivate_term_group':
 		    require_once WPCF_INC_ABSPATH . '/fields.php';
-		    $success = wpcf_admin_fields_deactivate_group(intval($_GET['group_id']), WPCF_Field_Group_Term::POST_TYPE);
+		    $success = wpcf_admin_fields_deactivate_group(intval($_GET['group_id']), Types_Field_Group_Term::POST_TYPE);
 		    if ($success) {
 			    echo json_encode(
 				    array(
@@ -280,7 +321,7 @@ function wpcf_ajax()
 
 	    case 'activate_term_group':
 		    require_once WPCF_INC_ABSPATH . '/fields.php';
-		    $success = wpcf_admin_fields_activate_group(intval($_GET['group_id']), WPCF_Field_Group_Term::POST_TYPE);
+		    $success = wpcf_admin_fields_activate_group(intval($_GET['group_id']), Types_Field_Group_Term::POST_TYPE);
 		    if ($success) {
 			    echo json_encode(
 				    array(
@@ -296,14 +337,12 @@ function wpcf_ajax()
 
 	    case 'delete_term_group':
 		    require_once WPCF_INC_ABSPATH . '/fields.php';
-		    wpcf_admin_fields_delete_group(intval($_GET['group_id']), WPCF_Field_Group_Term::POST_TYPE);
-		    echo json_encode(
-			    array(
-				    'output' => '',
-				    'execute' => 'reload',
-				    'wpcf_nonce_ajax_callback' => wp_create_nonce('execute'),
-			    )
-		    );
+
+            $redirect = wpcf_ajax_group_delete_redirect();
+		    wpcf_admin_fields_delete_group(intval($_GET['group_id']), Types_Field_Group_Term::POST_TYPE);
+
+            echo json_encode( $redirect );
+
 		    break;
 
 	    case 'deactivate_post_type':
@@ -616,13 +655,34 @@ function wpcf_ajax()
         unset($custom_taxonomies[$custom_taxonomy]);
         update_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $custom_taxonomies);
         wpcf_admin_deactivate_content('taxonomy', $custom_taxonomy);
-        echo json_encode(
-            array(
-                'output' => '',
-                'execute' => 'reload',
-                'wpcf_nonce_ajax_callback' => wp_create_nonce('execute'),
-            )
-        );
+
+        // on group edit page
+        if( isset( $_GET['wpcf_ref'] ) ) {
+
+            $redirect = $_GET['wpcf_ref'] == 'dashboard'
+                ? admin_url( 'admin.php?page=toolset-dashboard' )
+                : admin_url( 'admin.php?page=wpcf-ctt' );
+
+            echo json_encode(
+                array(
+                    'output' => '',
+                    'execute' => 'redirect',
+                    'wpcf_redirect' => $redirect,
+                    'wpcf_nonce_ajax_callback' => wp_create_nonce('execute'),
+                )
+            );
+            // on listing page
+        } else {
+            echo json_encode(
+                array(
+                    'output' => '',
+                    'execute' => 'reload',
+                    'wpcf_nonce_ajax_callback' => wp_create_nonce('execute'),
+                )
+            );
+        }
+
+
         break;
 
     case 'add_radio_option':

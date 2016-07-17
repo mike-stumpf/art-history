@@ -37,7 +37,7 @@ abstract class WPCF_Field_Definition_Abstract {
 
 
 	/**
-	 * @return WPCF_Field_Group[]
+	 * @return Types_Field_Group[]
 	 */
 	public abstract function get_associated_groups();
 
@@ -52,9 +52,23 @@ abstract class WPCF_Field_Definition_Abstract {
 	 */
 	public function is_match( $search_string ) {
 		return (
-			WPCF_Utils::is_string_match( $search_string, $this->get_name() )
-			|| WPCF_Utils::is_string_match( $search_string, $this->get_slug() )
+			Types_Utils::is_string_match( $search_string, $this->get_name() )
+			|| Types_Utils::is_string_match( $search_string, $this->get_slug() )
 		);
+	}
+
+
+	/**
+	 * @return string[] Slugs of field groups where this field belongs to.
+	 * @since 2.1
+	 */
+	private function get_group_slugs() {
+		$groups = $this->get_associated_groups();
+		$group_slugs = array();
+		foreach( $groups as $group ) {
+			$group_slugs[] = $group->get_slug();
+		}
+		return $group_slugs;
 	}
 
 
@@ -71,18 +85,12 @@ abstract class WPCF_Field_Definition_Abstract {
 	 */
 	public function to_json() {
 		
-		$groups = $this->get_associated_groups();
-		$group_slugs = array();
-		foreach( $groups as $group ) {
-			$group_slugs[] = $group->get_slug();
-		}
-		
 		$object_data = array(
 			'isUnderTypesControl' => $this->is_under_types_control(),
 			'slug' => $this->get_slug(),
 			'metaKey' => $this->get_slug(),
 			'displayName' => $this->get_name(),
-			'groups' => $group_slugs
+			'groups' => $this->get_group_slugs()
 		);
 		
 		return $object_data;

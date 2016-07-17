@@ -43,8 +43,8 @@ var wptCond = (function ($) {
     $.fn.condSlideFadeDown = function (speed, easing, callback) {
         easing = easing || 'linear';
         return this.each(function () {
-            $(this).animate({opacity: 'show', height: 'show'}, speed, easing, function () {
-                $(this).css('height', 'auto');
+            $(this).fadeIn(speed, function () {
+                //$(this).css('height', 'auto');
                 if ($.browser.msie) {
                     this.style.removeAttribute('filter');
                 }
@@ -52,14 +52,24 @@ var wptCond = (function ($) {
                     callback.call(this);
                 }
             });
+
+//            $(this).animate({opacity: 'show', height: 'show'}, speed, easing, function () {
+//                $(this).css('height', 'auto');
+//                if ($.browser.msie) {
+//                    this.style.removeAttribute('filter');
+//                }
+//                if ($.isFunction(callback)) {
+//                    callback.call(this);
+//                }
+//            });
         });
     };
 
     $.fn.condSlideFadeUp = function (speed, easing, callback) {
         easing = easing || 'linear';
         return this.each(function () {
-            $(this).animate({opacity: 'hide', height: 'hide'}, speed, easing, function () {
-                $(this).css('height', 'auto');
+            $(this).fadeOut(speed, function () {
+                //$(this).css('height', 'auto');
                 if ($.browser.msie) {
                     this.style.removeAttribute('filter');
                 }
@@ -67,6 +77,16 @@ var wptCond = (function ($) {
                     callback.call(this);
                 }
             });
+
+//            $(this).animate({opacity: 'hide', height: 'hide'}, speed, easing, function () {
+//                $(this).css('height', 'auto');
+//                if ($.browser.msie) {
+//                    this.style.removeAttribute('filter');
+//                }
+//                if ($.isFunction(callback)) {
+//                    callback.call(this);
+//                }
+//            });
         });
     };
 
@@ -110,7 +130,7 @@ var wptCond = (function ($) {
          */
         if ($trigger.length < 1) {
             // make sure to try cred field only once tssupp-1142
-            if( trigger.indexOf( 'cred-' ) == -1 )
+            if (trigger.indexOf('cred-') == -1)
                 $trigger = _getTrigger('cred-' + trigger, formID);
 
             if (wptCondDebug)
@@ -668,7 +688,7 @@ var wptCond = (function ($) {
                         var val_array = '';
 
                         if (wptCondDebug) {
-                            console.log();
+                            //console.log();
                         }
 
                         if (value instanceof Array) {
@@ -757,11 +777,11 @@ var wptCond = (function ($) {
         } else {
             effectmode = 'slide';
         }
-		
-		var data_for_events = {
-			container:	$el,
-			visible:	show
-		};
+
+        var data_for_events = {
+            container: $el,
+            visible: show
+        };
 
         if (show) {
             if ($el.hasClass('wpt-date') && 'object' == typeof wptDate) {
@@ -772,32 +792,33 @@ var wptCond = (function ($) {
             switch (effectmode) {
                 case 'fade-slide':
                     setTimeout(function () {
-                        $el.stop(true).condSlideFadeDown(dur, 'linear', function() {
-							$( document ).trigger( 'js_event_toolset_forms_conditional_field_toggled', data_for_events );
-						});
+                        $el.stop(true).condSlideFadeDown('linear', function () {
+                            $(document).trigger('js_event_toolset_forms_conditional_field_toggled', data_for_events);
+                        });
                     }, delay);
                     break;
                 case 'slide':
                     setTimeout(function () {
-                        $el.stop(true).slideDown(dur, 'linear', function() {
+                        $el.stop(true).slideDown('linear', function () {
                             $el.css('height', 'auto');
-							$( document ).trigger( 'js_event_toolset_forms_conditional_field_toggled', data_for_events );
+                            $(document).trigger('js_event_toolset_forms_conditional_field_toggled', data_for_events);
                         });
                     }, delay);
                     break;
                 case 'fade':
                     setTimeout(function () {
-                        $el.stop(true).fadeIn(dur, 'fast', function() {
-							$( document ).trigger( 'js_event_toolset_forms_conditional_field_toggled', data_for_events );
-						});
+                        $el.stop(true).fadeIn('fast', function () {
+                            $(document).trigger('js_event_toolset_forms_conditional_field_toggled', data_for_events);
+                        });
                     }, delay);
                     break;
                 case 'none':
+                    $el.show();
                     break;
                 default:
-                    $el.show('fast', function() {
-						$( document ).trigger( 'js_event_toolset_forms_conditional_field_toggled', data_for_events );
-					});
+                    $el.show('fast', function () {
+                        $(document).trigger('js_event_toolset_forms_conditional_field_toggled', data_for_events);
+                    });
                     break;
             }
             $($el).find('input, textarea, button, select').prop("disabled", false);
@@ -806,32 +827,33 @@ var wptCond = (function ($) {
             switch (effectmode) {
                 case 'fade-slide':
                     setTimeout(function () {
-                        $el.stop(true).condSlideFadeUp(dur, 'linear', function() {
-							$( document ).trigger( 'js_event_toolset_forms_conditional_field_toggled', data_for_events );
-						});
+                        $el.stop(true).condSlideFadeUp('linear', function () {
+                            $(document).trigger('js_event_toolset_forms_conditional_field_toggled', data_for_events);
+                        });
                     }, delay);
                     break;
                 case 'slide':
                     setTimeout(function () {
-                        $el.stop(true).slideUp(dur, 'linear', function() {
+                        $el.stop(true).slideUp('linear', function () {
                             $el.css('height', 'auto');
-							$( document ).trigger( 'js_event_toolset_forms_conditional_field_toggled', data_for_events );
+                            $(document).trigger('js_event_toolset_forms_conditional_field_toggled', data_for_events);
                         });
                     }, delay);
                     break;
                 case 'fade':
                     setTimeout(function () {
-                        $el.stop(true).fadeOut(dur, 'fast', function() {
-							$( document ).trigger( 'js_event_toolset_forms_conditional_field_toggled', data_for_events );
-						});
+                        $el.stop(true).fadeOut('fast', function () {
+                            $(document).trigger('js_event_toolset_forms_conditional_field_toggled', data_for_events);
+                        });
                     }, delay);
                     break;
                 case 'none':
+                    $el.hide();
                     break;
                 default:
-                    $el.hide('fast', function() {
-						$( document ).trigger( 'js_event_toolset_forms_conditional_field_toggled', data_for_events );
-					});
+                    $el.hide('fast', function () {
+                        $(document).trigger('js_event_toolset_forms_conditional_field_toggled', data_for_events);
+                    });
                     break;
             }
             $($el).find('input, textarea, button, select').prop('disabled', true);

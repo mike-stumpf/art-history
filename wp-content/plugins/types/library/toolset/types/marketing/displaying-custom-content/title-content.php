@@ -28,6 +28,9 @@ if( ( isset( $_REQUEST['post'] ) && isset( $_REQUEST['action'] ) )
 
 }
 
+Types_Helper_Url::load_documentation_urls();
+Types_Helper_Url::set_medium( $medium );
+
 return array(
 	'title' => __('Displaying Custom Content', 'wpcf'),
 	'content' => '
@@ -40,7 +43,7 @@ return array(
                     ' . __( 'The complete Toolset package lets you display custom content on the site’s front-end easily, without writing PHP code.', 'wpcf' ) . '
                 </p>
 
-                 <a target="_blank" href="https://wp-types.com/landing/toolset-vs-php/?utm_source=typesplugin&utm_medium=' . $medium . '&utm_term=compare-toolset-php&utm_content=promobox&utm_campaign=types"><b>' . __( 'Toolset vs. PHP comparison', 'wpcf' ) . '</b></a>
+                 <a target="_blank" href="'. Types_Helper_Url::get_url( 'compare-toolset-php', true ) . '"><b>' . __( 'Toolset vs. PHP comparison', 'wpcf' ) . '</b></a>
             </div>
 
 
@@ -64,7 +67,14 @@ return array(
                 </p>
 
                 <p>
-                    ' . __( 'Use <a href="https://wp-types.com/documentation/functions/" target="_blank">Types fields API</a> to display custom fields in your PHP templates.', 'wpcf' ) . '
+                    ' . sprintf(
+							__( 'Use %s to display custom fields in your PHP templates.', 'wpcf' ),
+							sprintf(
+								'<a href="%s" target="_blank">%s</a>',
+								Types_Helper_Url::get_url( 'types-fields-api', true ),
+								__( 'Types fields API', 'wpcf' )
+							)
+						) . '
                 </p>
             </div>
         </div>'

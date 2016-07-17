@@ -174,7 +174,8 @@ Common styles for all the Toolset family
 Toolset Primary Button Style - use with .button.button-primary-toolset classnames
 ---------------------------------------------------------------------------- */
 
-.wp-core-ui .button-primary-toolset {
+.wp-core-ui .button-primary-toolset,
+.wp-core-ui .button.button-primary-toolset {
 	background: #f6921e;
 	border-color: #EF6223;
  	-webkit-box-shadow: inset 0 1px 0 rgba(239, 239, 239, 0.5), 0 1px 0 rgba(0,0,0,.15);
@@ -187,7 +188,11 @@ Toolset Primary Button Style - use with .button.button-primary-toolset classname
 .wp-core-ui .button-primary-toolset.hover,
 .wp-core-ui .button-primary-toolset:hover,
 .wp-core-ui .button-primary-toolset.focus,
-.wp-core-ui .button-primary-toolset:focus {
+.wp-core-ui .button-primary-toolset:focus,
+.wp-core-ui .button.button-primary-toolset.hover,
+.wp-core-ui .button.button-primary-toolset:hover,
+.wp-core-ui .button.button-primary-toolset.focus,
+.wp-core-ui .button.button-primary-toolset:focus {
 	background: #EF6223;
 	border-color: #EF6223;
 	-webkit-box-shadow: inset 0 1px 0 rgba(239, 239, 239, 0.5);

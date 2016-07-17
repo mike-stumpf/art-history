@@ -87,18 +87,29 @@ function wpcf_embedded_after_setup_theme_hook()
  */
 function wpcf_init_custom_types_taxonomies()
 {
-    // register post types first
+    // register taxonomies first
+	// because custom taxonomies might have rewrite rules that used to have priority over post type rewrite rules, and we keep backwards compatibility
+	// for example, a taxonomy "topic" with rewrite "video/topic" assigned to a "video" post type
+	// - if "video" is registered first, top-level topic archives will render as 404
+	// - if "topic" is registered first, top-level "topic" terms will have archive pages and "video" posts will have single pages
+	// note that custom taxonomies on register_taxonomy do not check whether the post types they register to do exist or not
+    $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
+    if ( !empty( $custom_taxonomies ) ) {
+        require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-taxonomies.php';
+        wpcf_custom_taxonomies_init();
+    }
+	
+    // register post types
     $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
     if ( !empty( $custom_types ) ) {
         require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-types.php';
         wpcf_custom_types_init();
     }
 
-    // and than taxonomies, because register_taxonomy_for_object_type() checks if post type is available
-    $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
+    // and then manage builtin taxonomies registration for post types
+	// because we use register_taxonomy_for_object_type(), which checks if the post type is available
     if ( !empty( $custom_taxonomies ) ) {
-        require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-taxonomies.php';
-        wpcf_custom_taxonomies_init();
+		wpcf_builtin_taxonomies_init();
     }
 
 }
@@ -649,10 +660,11 @@ function wpcf_is_embedded()
 /**
  * Returns post type settings.
  *
- * @param type $post_type
- * @return type
+ * @param string [$post_type]
+ * @return array
+ * @since unknown
  */
-function wpcf_get_custom_post_type_settings($item)
+function wpcf_get_custom_post_type_settings($item = '')
 {
     $custom = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
     return !empty( $custom[$item] ) ? $custom[$item] : array();
@@ -661,8 +673,9 @@ function wpcf_get_custom_post_type_settings($item)
 /**
  * Returns Taxonomy settings.
  *
- * @param type $taxonomy
- * @return type
+ * @param string $item
+ * @return array
+ * @since unknown
  */
 function wpcf_get_custom_taxonomy_settings($item)
 {
@@ -829,7 +842,7 @@ function wpcf_get_all_fields_slugs($fields)
  *
  * @return array Array of taxonomies.
  *
- * @deprecated Use WPCF_Utils::get_builtin_taxonomies() instead.
+ * @deprecated Use Types_Utils::get_builtin_taxonomies() instead.
  */
 function wpcf_get_builtin_in_taxonomies($output = 'names')
 {

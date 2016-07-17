@@ -3,35 +3,10 @@
  * @version 1.4
  * @revision 18/01/2016 17:08
  */
-
 //Backbone.Model Overrides
-if( Backbone && Backbone.Model )
-{
-    Backbone.Model.prototype._super = function(funcName){
-        if( funcName === undefined ) return null;
-        return this.constructor.prototype[funcName].apply(this, _.rest(arguments) );
-    };
-    // nested models!  Might just override the internal representation of this...
-    _.extend(Backbone.Model.prototype, {
-        // Version of toJSON that traverses nested models
-        toJSON: function() {
-            var obj = _.clone(this.attributes);
-            _.each(_.keys(obj), function(key) {
-                if(!_.isUndefined(obj[key]) && !_.isNull(obj[key]) && _.isFunction(obj[key].toJSON)) {
-                    obj[key] = obj[key].toJSON();
-                }
-            });
-            return obj;
-        }
-    });
 
-    _.extend(Backbone.Collection.prototype, {
-        // Version of toJSON that traverses nested models in collections
-        toJSON: function() {
-            return this.map(function(model){ return model.toJSON(); });
-        }
-    });
-}
+window.Toolset = window.Toolset || {};
+
 //Backbone.View Overrides
 if( Backbone && Backbone.View )
 {
@@ -494,6 +469,9 @@ if (typeof jQuery.fn.wpvToolsetHelp === 'undefined') {
             fadeInSpeed: 'fast',
             fadeOutSpeed: 'fast',
             displayLoader: true,
+            css:{
+                "opacity":"0.4"
+            },
             class: null
         };
 
@@ -505,10 +483,14 @@ if (typeof jQuery.fn.wpvToolsetHelp === 'undefined') {
             if (!$overlayContainer.data('has-overlay')) {
                 $overlayEl
                     .appendTo($overlayContainer)
+                    .css(prms.css)
                     .hide()
                     .fadeIn(prms.fadeInSpeed, function () {
                         $overlayContainer.data('has-overlay', true);
                         $overlayContainer.data('overlay-el', $overlayEl);
+                        if( typeof options.onOpen === 'function' ){
+                            options.onOpen.call(this, arguments);
+                        }
                     });
             }
         };
@@ -517,6 +499,9 @@ if (typeof jQuery.fn.wpvToolsetHelp === 'undefined') {
             if ($overlayContainer.data('has-overlay')) {
                 $overlayContainer.data('overlay-el')
                     .fadeOut(prms.fadeOutSpeed, function () {
+                        if( options && typeof options.onRemove === 'function' ){
+                            options.onRemove.call(this, arguments);
+                        }
                         $overlayEl.remove();
                         $overlayContainer.data('has-overlay', false);
                     });
@@ -1232,7 +1217,7 @@ if (typeof _ !== 'undefined' && typeof _.capitalize === 'undefined') {
 WPV_Toolset.Utils.has_shortcode = function (string) {
     var search = /\[(\[?)(\w*?\-*?\w*?)*?(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*(?:\[(?!\/\2\])[^\[]*)*)(\[\/\2\]))?)(\]?)/g;
     return decodeURIComponent(string).search(search) !== -1;
-}
+};
 
 
 /**
@@ -1261,23 +1246,455 @@ WPV_Toolset.Utils.versionCompare = function(left, right) {
 };
 
 
+/**
+ * Get a query argument value from a URL.
+ *
+ * @param {string} name Argument name.
+ * @param {string} url Source URL. Optional. If missing, current page URL will be used.
+ * @returns {string|null}
+ * @since 2.1
+ * @link http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+ */
+WPV_Toolset.Utils.getParameterByName = function(name, url) {
+
+    if (!url) {
+        url = window.location.href;
+    }
+
+    name = name.replace(/[\[\]]/g, "\\$&");
+
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)", "i");
+
+    var results = regex.exec(url);
+
+    if(!results) {
+        return null;
+    }
+
+    if(!results[2]) {
+        return '';
+    }
+
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+};
 
 
-    WPV_Toolset.Utils._template = function( template, data, settings ){
-        var options = _.defaults({}, settings, _.templateSettings),
-            _template = null;
+/**
+ * Add, update or remove query string argument.
+ *
+ * @param {string} key Argument name.
+ * @param {string} [value] Argument value. Not supplying a value will remove the parameter, supplying one will
+ *     add/update the argument.
+ * @param {string} [url] If no URL is supplied, it will be grabbed from window.location
+ * @returns {string}
+ * @link http://stackoverflow.com/a/11654596/3191395
+ */
+WPV_Toolset.Utils.updateUrlQuery = function(key, value, url) {
+    if(!url) {
+        url = window.location.href;
+    }
+    var re = new RegExp("([?&])" + key + "=.*?(&|#|$)(.*)", "gi");
+    var hash;
 
-        if( WPV_Toolset.Utils.versionCompare(_.VERSION, '1.7') >= 0 ){
-            _template = _.template(template, options);
-            return _template(data);
+    if (re.test(url)) {
+        if (typeof value !== 'undefined' && value !== null) {
+            return url.replace(re, '$1' + key + "=" + value + '$2$3');
         } else {
-            return _.template(template, data, options);
+            hash = url.split('#');
+            url = hash[0].replace(re, '$1$3').replace(/(&|\?)$/, '');
+            if(typeof hash[1] !== 'undefined' && hash[1] !== null) {
+                url += '#' + hash[1];
+            }
+            return url;
         }
-    };
+    } else {
+        if (typeof value !== 'undefined' && value !== null) {
+            var separator = url.indexOf('?') !== -1 ? '&' : '?';
+            hash = url.split('#');
+            url = hash[0] + separator + key + '=' + value;
+            if (typeof hash[1] !== 'undefined' && hash[1] !== null) {
+                url += '#' + hash[1];
+            }
+            return url;
+        } else {
+            return url;
+        }
+    }
+};
 
-    // override dialog whenever toolset is active and take possession
-    jQuery.extend(jQuery.ui.dialog.prototype.options, {
-        dialogClass:'toolset-ui-dialog'
-    });
 
+/**
+ * Tools for manipulating spinners in a native WP way.
+ *
+ * If WP changes the behaviour, we'll need only to update this object.
+ *
+ * @type {{create: WPV_Toolset.Utils.Spinner.create, show: WPV_Toolset.Utils.Spinner.show, hide: WPV_Toolset.Utils.Spinner.hide, find: WPV_Toolset.Utils.Spinner.find}}
+ */
+WPV_Toolset.Utils.Spinner = {
+    create: function() {
+        return jQuery('<span class="spinner"></span>');
+    },
+    show: function(spinner, show) {
+        if(typeof(show) == 'undefined') {
+            show = true;
+        }
+
+        if(!show) {
+            WPV_Toolset.Utils.Spinner.hide(spinner);
+            return;
+        }
+
+        spinner.addClass('is-active');
+    },
+    hide: function(spinner) {
+        spinner.removeClass('is-active');
+    },
+    find: function(parentElement) {
+        return parentElement.find('.spinner');
+    }
+};
+
+
+/**
+ * AJAX call helper.
+ *
+ * WIP, to be merged with WPV_Toolset.Utils.do_ajax_post().
+ *
+ * @type {{parseResponse: WPV_Toolset.Utils.Ajax.parseResponse, call: WPV_Toolset.Utils.Ajax.call}}
+ * @since 2.1
+ */
+WPV_Toolset.Utils.Ajax = {
+
+    /**
+     * Ensure that response is always an object with the success property.
+     *
+     * If it's not, return a dummy object indicating a failure.
+     *
+     * @param response {*} Response from the AJAX call.
+     * @returns {{success: boolean}} Sanitized response.
+     *
+     * @since 2.1
+     */
+    parseResponse: function(response) {
+        if( typeof(response.success) === 'undefined' ) {
+            console.log("parseResponse: no success value", response);
+            return { success: false };
+        } else {
+            return response;
+        }
+    },
+
+
+    /**
+     * Perform an AJAX call on field definitions.
+     *
+     * @param {*} data AJAX call parameters. Needs to include 'action' and 'wpnonce'.
+     * @param {function} successCallback Callback to be used after AJAX call is completed. It will get two parameters,
+     *     the complete AJAX response and the 'data' element for convenience.
+     * @param {function} [failCallback] Analogous to successCallback for the case of failure. If missing,
+     *     successCallback will be used instead.
+     *
+     * @since 2.1
+     */
+    call: function(data, successCallback, failCallback) {
+
+        if( typeof(failCallback) == 'undefined' ) {
+            failCallback = successCallback;
+        }
+
+        jQuery.post({
+            async: true,
+            url: ajaxurl,
+            data: data,
+
+            success: function(originalResponse) {
+                var response = WPV_Toolset.Utils.Ajax.parseResponse(originalResponse);
+
+                if(response.success) {
+                    successCallback(response, response.data || {});
+                } else {
+                    failCallback(response, response.data || {});
+                }
+            },
+
+            error: function( ajaxContext ) {
+                console.log('Error:', ajaxContext.responseText);
+                failCallback({ success: false, data: {} }, {});
+            }
+        });
+
+    }
+
+};
+
+
+WPV_Toolset.Utils._template = function( template, data, settings ){
+    var options = _.defaults({}, settings, _.templateSettings),
+        _template = null;
+
+    if( WPV_Toolset.Utils.versionCompare(_.VERSION, '1.7') >= 0 ){
+        _template = _.template(template, options);
+        return _template(data);
+    } else {
+        return _.template(template, data, options);
+    }
+};
+
+// override dialog whenever toolset is active and take possession
+jQuery.extend(jQuery.ui.dialog.prototype.options, {
+    dialogClass:'toolset-ui-dialog'
+});
+
+
+if ( typeof Toolset.add_qt_editor_buttons !== 'function' ) {
+    Toolset.add_qt_editor_buttons = function( qt_instance, editor_instance ) {
+        var activeUrlEditor, html;
+        QTags._buttonsInit();
+        var editorInstance = {};
+        editorInstance[qt_instance.id] = editor_instance;
+
+        for ( var button_name in qt_instance.theButtons ) {
+            if ( qt_instance.theButtons.hasOwnProperty( button_name ) ) {
+                qt_instance.theButtons[button_name].old_callback = qt_instance.theButtons[button_name].callback;
+                if ( qt_instance.theButtons[button_name].id == 'img' ){
+                    qt_instance.theButtons[button_name].callback = function( element, canvas, ed ) {
+                        var t = this,
+                            id = jQuery( canvas ).attr( 'id' ),
+                            selection = editorInstance[id].getSelection(),
+                            e = "http://",
+                            g = prompt( quicktagsL10n.enterImageURL, e ),
+                            f = prompt( quicktagsL10n.enterImageDescription, "" );
+                        t.tagStart = '<img src="'+g+'" alt="'+f+'" />';
+                        selection = t.tagStart;
+                        t.closeTag( element, ed );
+                        editorInstance[id].replaceSelection( selection, 'end' );
+                        editorInstance[id].focus();
+                    }
+                } else if ( qt_instance.theButtons[button_name].id == 'close' ) {
+
+                } else if ( qt_instance.theButtons[button_name].id == 'link' ) {
+                    var t = this;
+                    qt_instance.theButtons[button_name].callback =
+                        function ( b, c, d, e ) {
+                            activeUrlEditor = c;
+                            var f,g=this;
+                            return "undefined" != typeof wpLink ?void wpLink.open(d.id) : (e||(e="http://"), void(g.isOpen(d)===!1 ? (f=prompt(quicktagsL10n.enterURL,e), f && (g.tagStart='<a href="'+f+'">', a.TagButton.prototype.callback.call(g,b,c,d))) : a.TagButton.prototype.callback.call(g,b,c,d)))
+                        };
+                    jQuery( '#wp-link-submit' ).off();
+                    jQuery( '#wp-link-submit' ).on( 'click', function( event ) {
+                        event.preventDefault();
+                        if ( wpLink.isMCE() ) {
+                            wpLink.mceUpdate();
+                        } else {
+                            var id = jQuery( activeUrlEditor ).attr('id'),
+                                selection = editorInstance[id].getSelection(),
+                                inputs = {},
+                                attrs, text, title, html;
+                            inputs.wrap = jQuery('#wp-link-wrap');
+                            inputs.backdrop = jQuery( '#wp-link-backdrop' );
+                            if ( jQuery( '#link-target-checkbox' ).length > 0 ) {
+                                // Backwards compatibility - before WordPress 4.2
+                                inputs.text = jQuery( '#link-title-field' );
+                                attrs = wpLink.getAttrs();
+                                text = inputs.text.val();
+                                if ( ! attrs.href ) {
+                                    return;
+                                }
+                                // Build HTML
+                                html = '<a href="' + attrs.href + '"';
+                                if ( attrs.target ) {
+                                    html += ' target="' + attrs.target + '"';
+                                }
+                                if ( text ) {
+                                    title = text.replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace( /"/g, '&quot;' );
+                                    html += ' title="' + title + '"';
+                                }
+                                html += '>';
+                                html += text || selection;
+                                html += '</a>';
+                                t.tagStart = html;
+                                selection = t.tagStart;
+                            } else {
+                                // WordPress 4.2+
+                                inputs.text = jQuery( '#wp-link-text' );
+                                attrs = wpLink.getAttrs();
+                                text = inputs.text.val();
+                                if ( ! attrs.href ) {
+                                    return;
+                                }
+                                // Build HTML
+                                html = '<a href="' + attrs.href + '"';
+                                if ( attrs.target ) {
+                                    html += ' target="' + attrs.target + '"';
+                                }
+                                html += '>';
+                                html += text || selection;
+                                html += '</a>';
+                                selection = html;
+                            }
+                            jQuery( document.body ).removeClass( 'modal-open' );
+                            inputs.backdrop.hide();
+                            inputs.wrap.hide();
+                            jQuery( document ).trigger( 'wplink-close', inputs.wrap );
+                            editorInstance[id].replaceSelection( selection, 'end' );
+                            editorInstance[id].focus();
+                            return false;
+                        }
+                    });
+                } else {
+                    qt_instance.theButtons[button_name].callback = function( element, canvas, ed ) {
+                        var id = jQuery( canvas ).attr( 'id' ),
+                            t = this,
+                            selection = editorInstance[id].getSelection();
+                        if ( selection.length > 0 ) {
+                            if ( !t.tagEnd ) {
+                                selection = selection + t.tagStart;
+                            } else {
+                                selection = t.tagStart + selection + t.tagEnd;
+                            }
+                        } else {
+                            if ( !t.tagEnd ) {
+                                selection = t.tagStart;
+                            } else if ( t.isOpen( ed ) === false ) {
+                                selection = t.tagStart;
+                                t.openTag( element, ed );
+                            } else {
+                                selection = t.tagEnd;
+                                t.closeTag( element, ed );
+                            }
+                        }
+                        editorInstance[id].replaceSelection(selection, 'end');
+                        editorInstance[id].focus();
+                    }
+                }
+            }
+        }
+    }
+}
+
+if ( typeof Toolset.add_qt_editor_buttons !== 'function' ) {
+    Toolset.add_qt_editor_buttons = function( qt_instance, editor_instance ) {
+        var activeUrlEditor, html;
+        QTags._buttonsInit();
+        var editorInstance = {};
+        editorInstance[qt_instance.id] = editor_instance;
+
+        for ( var button_name in qt_instance.theButtons ) {
+            if ( qt_instance.theButtons.hasOwnProperty( button_name ) ) {
+                qt_instance.theButtons[button_name].old_callback = qt_instance.theButtons[button_name].callback;
+                if ( qt_instance.theButtons[button_name].id == 'img' ){
+                    qt_instance.theButtons[button_name].callback = function( element, canvas, ed ) {
+                        var t = this,
+                            id = jQuery( canvas ).attr( 'id' ),
+                            selection = editorInstance[id].getSelection(),
+                            e = "http://",
+                            g = prompt( quicktagsL10n.enterImageURL, e ),
+                            f = prompt( quicktagsL10n.enterImageDescription, "" );
+                        t.tagStart = '<img src="'+g+'" alt="'+f+'" />';
+                        selection = t.tagStart;
+                        t.closeTag( element, ed );
+                        editorInstance[id].replaceSelection( selection, 'end' );
+                        editorInstance[id].focus();
+                    }
+                } else if ( qt_instance.theButtons[button_name].id == 'close' ) {
+
+                } else if ( qt_instance.theButtons[button_name].id == 'link' ) {
+                    var t = this;
+                    qt_instance.theButtons[button_name].callback =
+                        function ( b, c, d, e ) {
+                            activeUrlEditor = c;
+                            var f,g=this;
+                            return "undefined" != typeof wpLink ?void wpLink.open(d.id) : (e||(e="http://"), void(g.isOpen(d)===!1 ? (f=prompt(quicktagsL10n.enterURL,e), f && (g.tagStart='<a href="'+f+'">', a.TagButton.prototype.callback.call(g,b,c,d))) : a.TagButton.prototype.callback.call(g,b,c,d)))
+                        };
+                    jQuery( '#wp-link-submit' ).off();
+                    jQuery( '#wp-link-submit' ).on( 'click', function( event ) {
+                        event.preventDefault();
+                        if ( wpLink.isMCE() ) {
+                            wpLink.mceUpdate();
+                        } else {
+                            var id = jQuery( activeUrlEditor ).attr('id'),
+                                selection = editorInstance[id].getSelection(),
+                                inputs = {},
+                                attrs, text, title, html;
+                            inputs.wrap = jQuery('#wp-link-wrap');
+                            inputs.backdrop = jQuery( '#wp-link-backdrop' );
+                            if ( jQuery( '#link-target-checkbox' ).length > 0 ) {
+                                // Backwards compatibility - before WordPress 4.2
+                                inputs.text = jQuery( '#link-title-field' );
+                                attrs = wpLink.getAttrs();
+                                text = inputs.text.val();
+                                if ( ! attrs.href ) {
+                                    return;
+                                }
+                                // Build HTML
+                                html = '<a href="' + attrs.href + '"';
+                                if ( attrs.target ) {
+                                    html += ' target="' + attrs.target + '"';
+                                }
+                                if ( text ) {
+                                    title = text.replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace( /"/g, '&quot;' );
+                                    html += ' title="' + title + '"';
+                                }
+                                html += '>';
+                                html += text || selection;
+                                html += '</a>';
+                                t.tagStart = html;
+                                selection = t.tagStart;
+                            } else {
+                                // WordPress 4.2+
+                                inputs.text = jQuery( '#wp-link-text' );
+                                attrs = wpLink.getAttrs();
+                                text = inputs.text.val();
+                                if ( ! attrs.href ) {
+                                    return;
+                                }
+                                // Build HTML
+                                html = '<a href="' + attrs.href + '"';
+                                if ( attrs.target ) {
+                                    html += ' target="' + attrs.target + '"';
+                                }
+                                html += '>';
+                                html += text || selection;
+                                html += '</a>';
+                                selection = html;
+                            }
+                            jQuery( document.body ).removeClass( 'modal-open' );
+                            inputs.backdrop.hide();
+                            inputs.wrap.hide();
+                            jQuery( document ).trigger( 'wplink-close', inputs.wrap );
+                            editorInstance[id].replaceSelection( selection, 'end' );
+                            editorInstance[id].focus();
+                            return false;
+                        }
+                    });
+                } else {
+                    qt_instance.theButtons[button_name].callback = function( element, canvas, ed ) {
+                        var id = jQuery( canvas ).attr( 'id' ),
+                            t = this,
+                            selection = editorInstance[id].getSelection();
+                        if ( selection.length > 0 ) {
+                            if ( !t.tagEnd ) {
+                                selection = selection + t.tagStart;
+                            } else {
+                                selection = t.tagStart + selection + t.tagEnd;
+                            }
+                        } else {
+                            if ( !t.tagEnd ) {
+                                selection = t.tagStart;
+                            } else if ( t.isOpen( ed ) === false ) {
+                                selection = t.tagStart;
+                                t.openTag( element, ed );
+                            } else {
+                                selection = t.tagEnd;
+                                t.closeTag( element, ed );
+                            }
+                        }
+                        editorInstance[id].replaceSelection(selection, 'end');
+                        editorInstance[id].focus();
+                    }
+                }
+            }
+        }
+    }
+}
 

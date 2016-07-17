@@ -123,9 +123,11 @@ final class Types_Asset_Help_Tab_Loader {
 			return null;
 		}
 
+		$twig = $this->get_twig();
+		
 		return array(
 			'title' => wpcf_getarr( $config, 'title' ),
-			'content' => $this->get_twig()->render( wpcf_getarr( $config, 'template' ), wpcf_getarr( $config, 'context' ) )
+			'content' => $twig->render( wpcf_getarr( $config, 'template' ), wpcf_getarr( $config, 'context' ) )
 		);
 	}
 

@@ -622,7 +622,7 @@ function wpcf_fields_type_action( $type, $func = '', $args = array() ) {
 function wpcf_fields_get_shortcode( $field, $add = '', $content = '' )
 {
     $shortcode = '[';
-    $shortcode .= 'types field="' . $field['slug'] . '"' . $add;
+    $shortcode .= "types field='" . $field['slug'] . "'" . $add;
     $shortcode .= ']' . $content . '[/types]';
     $shortcode = apply_filters( 'wpcf_fields_shortcode', $shortcode, $field );
     $shortcode = apply_filters( 'wpcf_fields_shortcode_type_' . $field['type'], $shortcode, $field );
@@ -632,7 +632,7 @@ function wpcf_fields_get_shortcode( $field, $add = '', $content = '' )
 
 function wpcf_termmeta_get_shortcode( $field, $add = '', $content = '' ) {
     $shortcode = '[';
-    $shortcode .= 'types termmeta="' . $field['slug'] . '"' . $add;
+    $shortcode .= "types termmeta='" . $field['slug'] . "'" . $add;
     $shortcode .= ']' . $content . '[/types]';
     $shortcode = apply_filters( 'wpcf_fields_shortcode', $shortcode, $field );
     $shortcode = apply_filters( 'wpcf_fields_shortcode_type_' . $field['type'], $shortcode, $field );
@@ -659,7 +659,7 @@ function wpcf_usermeta_get_shortcode( $field, $add = '', $content = '' ) {
             $add .= ' user_from_this_loop="true"';
     }*/
     $shortcode = '[';
-    $shortcode .= 'types usermeta="' . $field['slug'] . '"' . $add;
+    $shortcode .= "types usermeta='" . $field['slug'] . "'" . $add;
     $shortcode .= ']' . $content . '[/types]';
     $shortcode = apply_filters( 'wpcf_fields_shortcode', $shortcode, $field );
     $shortcode = apply_filters( 'wpcf_fields_shortcode_type_' . $field['type'], $shortcode, $field );

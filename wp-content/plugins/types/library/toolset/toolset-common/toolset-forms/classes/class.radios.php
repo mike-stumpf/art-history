@@ -20,17 +20,17 @@ class WPToolset_Field_Radios extends FieldFactory {
         $form = array();
         $options = array();
 
-        if (!is_admin()) {
-            $new_options = array();
-            foreach ($data['options'] as $key => $option) {
-                $tmp = $option['value'];
-                $option['value'] = $option['types-value'];
-                $option['types-value'] = $tmp;
-                $new_options[$key] = $option;
-                unset($tmp);
-            }
-            $data['options'] = $new_options;
-        }
+//        if (!is_admin()) {
+//            $new_options = array();
+//            foreach ($data['options'] as $key => $option) {
+//                $tmp = $option['value'];
+//                $option['value'] = $option['types-value'];
+//                $option['types-value'] = $tmp;
+//                $new_options[$key] = $option;
+//                unset($tmp);
+//            }
+//            $data['options'] = $new_options;
+//        }
 
         foreach ($data['options'] as $option) {
             $one_option_data = array(
@@ -103,7 +103,7 @@ class WPToolset_Field_Radios extends FieldFactory {
 			'wpml_action' => $this->getWPMLAction(),
             '#after' => '<input type="hidden" name="_wptoolset_radios[' . $this->getId() . ']" value="1" />',
         );
-
+        
         if (!is_admin()) {// TODO maybe add a doing_ajax() check too, what if we want to load a form using AJAX?
             $form_attr['#before'] = '<ul class="wpt-form-set wpt-form-set-radios wpt-form-set-radios-' . $name . '">';
             $form_attr['#after'] = '</ul>';

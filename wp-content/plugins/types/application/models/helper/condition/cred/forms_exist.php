@@ -1,6 +1,10 @@
 <?php
 
-
+/**
+ * Types_Helper_Condition_Cred_Forms_Exist
+ *
+ * @since 2.0
+ */
 class Types_Helper_Condition_Cred_Forms_Exist extends Types_Helper_Condition_Cred_Active {
 
 	public static $forms_per_post_type;

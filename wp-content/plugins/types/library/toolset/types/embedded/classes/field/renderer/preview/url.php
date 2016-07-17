@@ -10,7 +10,7 @@ class WPCF_Field_Renderer_Preview_URL extends WPCF_Field_Renderer_Preview_Base {
 	protected function render_single( $value ) {
 
 		if( is_string( $value ) && !empty( $value ) ) {
-
+			
 			$url_components = parse_url( $value );
 			if( false == $url_components ) {
 				return '';
@@ -55,7 +55,9 @@ class WPCF_Field_Renderer_Preview_URL extends WPCF_Field_Renderer_Preview_Base {
 		$url_query = ( empty( $url_query ) ? '' : '?' . $url_query );
 
 		$url_path = wpcf_getarr( $url_components, 'path' );
-		if( empty( $url_query ) ) {
+		$path_ends_with_slash = ( substr( $url_path, -1 ) == '/' );
+
+		if( empty( $url_query ) && $path_ends_with_slash ) {
 			// Omit last slash when it would be the last label character
 			$url_path = substr( $url_path, 0, strlen( $url_path ) -1 );
 		}

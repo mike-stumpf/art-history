@@ -13,10 +13,7 @@ class Types_Information_Table extends Types_Information_Container {
 	 *
 	 * @return bool
 	 */
-	public function add_message( $message ) {
-		if( ! $message = Types_Helper_Type_Hinting::valid( $message, 'Types_Information_Message' ) )
-			return false;
-
+	public function add_message( Types_Information_Message $message ) {
 		if( $message->get_type() )
 			switch( $message->get_type() ) {
 				case 'template':
@@ -38,14 +35,28 @@ class Types_Information_Table extends Types_Information_Container {
 			}
 	}
 
-	public function get_template() {
+	public function get_template( $force = false ) {
+		$post_type = Types_Helper_Condition::get_post_type();
+
+		if( ! $force ) {
+			$allowed_columns = apply_filters( 'types_information_table_columns', array_fill_keys( array( 'template', 'archive', 'views', 'forms' ), '' ), $post_type->name );
+
+			if( ! isset( $allowed_columns['template'] ) )
+				return false;
+		}
+		
 		return $this->template;
 	}
 
-	public function get_archive() {
+	public function get_archive( $force = false ) {
 		$post_type = Types_Helper_Condition::get_post_type();
-		if( $post_type->name == 'post' ||  $post_type->name == 'page' )
-			return false;
+
+		if( ! $force ) {
+			$allowed_columns = apply_filters( 'types_information_table_columns', array_fill_keys( array( 'template', 'archive', 'views', 'forms' ), '' ), $post_type->name );
+
+			if( ! isset( $allowed_columns['archive'] ) )
+				return false;
+		}
 
 		return $this->archive;
 	}

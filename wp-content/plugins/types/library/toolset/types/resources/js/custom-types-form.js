@@ -9,7 +9,11 @@ jQuery(document).ready(function($){
     /**
      * setup title
      */
-    $('.js-wpcf-singular').html($('#post-body-content .js-wpcf-slugize-source').val());
+    var labelPostType = $('#post-body-content .js-wpcf-slugize-source').val() != ''
+        ? $('#post-body-content .js-wpcf-slugize-source').val()
+        : $('#post-body-content .js-wpcf-slugize-source' ).data('anonymous-post-type');
+
+    $('.js-wpcf-singular').html( labelPostType );
     $('#post-body-content').on('keyup input cut paste', '.js-wpcf-slugize-source', function() {
         $('.js-wpcf-singular').html($(this).val());
     });

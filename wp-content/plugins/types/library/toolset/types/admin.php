@@ -97,7 +97,6 @@ function wpcf_admin_init_hook()
 {
     wp_register_style('wpcf-css-embedded', WPCF_EMBEDDED_RES_RELPATH . '/css/basic.css', array(), WPCF_VERSION );
 
-    wp_enqueue_style( 'wpcf-promo-tabs', WPCF_EMBEDDED_RES_RELPATH . '/css/tabs.css', array(), WPCF_VERSION );
     wp_enqueue_style('toolset-dashicons');
 
 }
@@ -574,7 +573,6 @@ function wpcf_admin_page_add_options( $name, $label)
 function wpcf_admin_menu_summary_cpt_ctt_hook()
 {
     do_action( 'wpcf_admin_page_init' );
-    wp_enqueue_style( 'wpcf-promo-tabs', WPCF_RES_RELPATH . '/css/tabs.css', array(), WPCF_VERSION );
     wpcf_admin_load_collapsible();
     require_once WPCF_INC_ABSPATH . '/custom-types.php';
     require_once WPCF_INC_ABSPATH . '/custom-taxonomies.php';
@@ -653,6 +651,11 @@ function wpcf_admin_menu_edit_type_hook()
     wp_enqueue_style('wp-jquery-ui-dialog');
     add_action( 'admin_footer', 'wpcf_admin_types_form_js_validation' );
     wpcf_post_relationship_init();
+
+	// New page controller script.
+	$asset_manager = Types_Asset_Manager::get_instance();
+	$asset_manager->enqueue_scripts( Types_Asset_Manager::SCRIPT_PAGE_EDIT_POST_TYPE );
+
     /**
      * add form
      */
@@ -712,6 +715,11 @@ function wpcf_admin_menu_edit_tax_hook()
     wp_enqueue_script( 'wpcf-taxonomy-form',
         WPCF_RES_RELPATH . '/js/'
         . 'taxonomy-form.js', array( 'jquery' ), WPCF_VERSION );
+
+	// New page controller script.
+	$asset_manager = Types_Asset_Manager::get_instance();
+	$asset_manager->enqueue_scripts( Types_Asset_Manager::SCRIPT_PAGE_EDIT_TAXONOMY );
+
     add_action( 'admin_footer', 'wpcf_admin_tax_form_js_validation' );
     require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-taxonomies.php';
     require_once WPCF_INC_ABSPATH . '/custom-taxonomies-form.php';
@@ -1401,7 +1409,7 @@ function wpcf_settings_save_wpml_settings() {
 function wpcf_add_admin_header($title, $add_new = false, $add_new_title = false)
 {
     echo '<div class="wrap">';
-    echo '<h2>', $title;
+    echo '<h1>', $title;
     if ( !$add_new_title ) {
         $add_new_title = __('Add New', 'wpcf');
     }

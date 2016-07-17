@@ -1,38 +1,23 @@
 <?php
 
+/**
+ * Types_Helper_Condition_Layouts_Template_Exists
+ *
+ * @since 2.0
+ */
 class Types_Helper_Condition_Layouts_Template_Exists extends Types_Helper_Condition_Template {
 
-	public static $layout_id;
-	public static $layout_name;
+	public static $layout_id = array();
+	public static $layout_name = array();
 
 	public function valid() {
-		if( self::$layout_id !== null && self::$layout_id !== false )
-			return true;
-
-		$post = wpcf_admin_get_edited_post();
-		if( ! empty( $post ) )
-			return $this->valid_per_post( $post );
-
-		return $this->valid_per_post_type();
-
-	}
-
-	// needed for single post edit screen
-	private function valid_per_post( $post ) {
-		if( ! class_exists( 'WPDD_Utils' ) || ! method_exists( 'WPDD_Utils', 'page_has_layout' )  || ! is_object( $post ) )
+		if( ! defined( 'WPDDL_DEVELOPMENT' ) && ! defined( 'WPDDL_PRODUCTION' ) )
 			return false;
 
-		if( self::$layout_id = WPDD_Utils::page_has_layout( $post->ID ) ) {
-			self::$layout_id = WPDD_Utils::get_layout_id_from_post_name( self::$layout_id );
+		$type = self::get_type_name();
+
+		if( isset( self::$layout_id[$type] ) && self::$layout_id[$type] !== null && self::$layout_id !== false )
 			return true;
-		}
-
-		return false;
-	}
-
-	// needed for cpt / fields group edit screen
-	private function valid_per_post_type() {
-		$cpt = Types_Helper_Condition::get_post_type();
 
 		global $wpdb;
 
@@ -43,34 +28,41 @@ class Types_Helper_Condition_Layouts_Template_Exists extends Types_Helper_Condit
 			$setting->meta_value = unserialize( $setting->meta_value );
 
 			if( is_array( $setting->meta_value )
-			    && in_array( $cpt->name, $setting->meta_value ) ) {
+			    && in_array( $type, $setting->meta_value ) ) {
 
 				if( get_post_status( $setting->post_id) == 'trash' )
 					continue;
 
 				$title = get_the_title( $setting->post_id );
-				self::$layout_id = $setting->post_id;
-				self::$layout_name = $title;
+				self::$layout_id[$type] = $setting->post_id;
+				self::$layout_name[$type] = $title;
 				return true;
 			}
 		}
 
+		self::$layout_id[$type] = false;
+		self::$layout_name[$type] = false;
 		return false;
+
 	}
 
 	public static function get_layout_id() {
-		if( self::$layout_id === null ) {
+		$type = self::get_type_name();
+
+		if( ! isset( self::$layout_id[$type] ) ) {
 			$self = new Types_Helper_Condition_Layouts_Template_Exists();
 			$self->valid();
 		}
 
-		return self::$layout_id;
+		return self::$layout_id[$type];
 	}
 
 	public static function get_layout_name() {
-		if( self::$layout_name === null )
-			self::$layout_name = get_the_title( self::get_layout_id() );
+		$type = self::get_type_name();
 
-		return self::$layout_name;
+		if( ! isset( self::$layout_name[$type] ) )
+			self::$layout_name[$type] = get_the_title( self::get_layout_id() );
+
+		return self::$layout_name[$type];
 	}
 }

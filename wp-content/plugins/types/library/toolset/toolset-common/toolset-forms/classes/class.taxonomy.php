@@ -13,7 +13,7 @@ class WPToolset_Field_Taxonomy extends WPToolset_Field_Textfield {
     public function init() {
         $this->objValues = array();
 
-        $terms = wp_get_post_terms(CredForm::$current_postid, $this->getName(), array("fields" => "all"));
+        $terms = apply_filters('toolset_filter_taxonomy_terms', wp_get_post_terms(CredForm::$current_postid, $this->getName(), array("fields" => "all")));
         $i = 0;
         foreach ($terms as $n => $term) {
             $this->values .= ($i == 0) ? $term->slug : "," . $term->slug;
@@ -21,12 +21,10 @@ class WPToolset_Field_Taxonomy extends WPToolset_Field_Textfield {
             $i++;
         }
 
-        wp_register_script('wptoolset-taxonomy-field', 
-                WPTOOLSET_FORMS_RELPATH . '/js/taxonomy.js', 
-                array('wptoolset-forms'), WPTOOLSET_FORMS_VERSION, true);
-                
+        wp_register_script('wptoolset-taxonomy-field', WPTOOLSET_FORMS_RELPATH . '/js/taxonomy.js', array('wptoolset-forms'), WPTOOLSET_FORMS_VERSION, true);
+
         wp_localize_script('wptoolset-taxonomy-field', 'wptoolset_taxonomy_settings', array(
-            'ajaxurl' => admin_url( 'admin-ajax.php', null ),
+            'ajaxurl' => admin_url('admin-ajax.php', null),
             'values' => $this->values,
             'name' => $this->getName(),
             'form' => WPTOOLSET_FORMS_RELPATH,
@@ -34,18 +32,26 @@ class WPToolset_Field_Taxonomy extends WPToolset_Field_Textfield {
         ));
 
         wp_enqueue_script('wptoolset-taxonomy-field');
-        
+
         //add_action('wp_footer', array($this, 'javascript_autocompleter'));
     }
 
-    public function javascript_autocompleter() {
-        echo '<script type="text/javascript">
-                    jQuery(document).ready(function() {
+    /**
+     * function used when ajax is on in order to init taxonomies
+     * @return type
+     */
+    public function initTaxonomyFunction() {
+        return '<script type="text/javascript">
+                    function initCurrentTaxonomy() {
                             initTaxonomies("' . $this->values . '", "' . $this->getName() . '", "' . WPTOOLSET_FORMS_RELPATH . '", "' . $this->_nameField . '");
-                    });
+                    }
             </script>';
     }
 
+    /**
+     * metaform
+     * @return type
+     */
     public function metaform() {
         $use_bootstrap = array_key_exists('use_bootstrap', $this->_data) && $this->_data['use_bootstrap'];
         $attributes = $this->getAttr();
@@ -121,7 +127,7 @@ class WPToolset_Field_Taxonomy extends WPToolset_Field_Textfield {
                 'style' => $show ? '' : 'display:none;'
             ),
             '#before' => $before,
-            '#after' => $after,
+            '#after' => $after . $this->initTaxonomyFunction(),
         );
 
         $this->set_metaform($metaform);
@@ -150,10 +156,10 @@ class WPToolset_Field_Taxonomy extends WPToolset_Field_Textfield {
                 <div style='position:relative;line-height:0.9em;margin:2px 0;<?php if ($tid != 0) echo 'margin-left:15px'; ?>' class='myzebra-taxonomy-hierarchical-checkbox'>
                     <label class='myzebra-style-label'><input type='checkbox' name='<?php echo $name; ?>' value='<?php echo $tid; ?>' <?php if (isset($values[$tid])) echo 'checked="checked"'; ?> /><span class="myzebra-checkbox-replace"></span>
                         <span class='myzebra-checkbox-label-span' style='position:relative;font-size:12px;display:inline-block;margin:0;padding:0;margin-left:15px'><?php echo $names[$tid]; ?></span></label>
-                <?php
-                if (isset($childs[$tid]))
-                    echo $this->buildCheckboxes($tid, $childs, $names);
-                ?>
+                        <?php
+                        if (isset($childs[$tid]))
+                            echo $this->buildCheckboxes($tid, $childs, $names);
+                        ?>
                 </div>
                 <?php
             }

@@ -20,7 +20,7 @@ final class WPCF_Field_Renderer_Preview_Radio extends WPCF_Field_Renderer_Previe
 			return '';
 		}
 
-		$output = $option->get_label();
+		$output = $option->get_display_value( true );
 		
 		return sanitize_text_field( $output );
 	}

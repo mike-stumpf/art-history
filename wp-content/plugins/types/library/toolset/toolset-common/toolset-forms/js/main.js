@@ -90,6 +90,11 @@ function showHideMostPopularButton(taxonomy, form)
     }
 }
 
+jQuery(document).off('click', '.js-wpt-taxonomy-popular-show-hide', null);
+jQuery(document).off('click', '.js-wpt-taxonomy-popular-add', null);
+jQuery(document).off('click', '.js-wpt-taxonomy-add-new', null);
+jQuery(document).off('keypress', '.js-wpt-new-taxonomy-title', null);
+
 jQuery(document).on('click', '.js-wpt-taxonomy-popular-show-hide', function () {
     showHideMostPopularTaxonomy(this);
 });
@@ -119,11 +124,11 @@ jQuery(document).on('click', '.js-wpt-taxonomy-popular-add', function () {
 function setTaxonomyFromPopular(slug, taxonomy, el)
 {
     var form = jQuery(el).closest('form');
-    var tmp_tax = slug;
-    if (tmp_tax.trim() == '')
+    var tmp_tax = String(slug);
+    if (typeof tmp_tax === "undefined" || tmp_tax.trim() == '')
         return;
     var tax = jQuery('input[name=' + taxonomy + ']', form).val();
-    var arr = tax.split(',');
+    var arr = String(tax).split(',');
     if (jQuery.inArray(tmp_tax, arr) !== -1)
         return;
     var toadd = (tax == '') ? tmp_tax : tax + ',' + tmp_tax;
@@ -171,6 +176,8 @@ function setTaxonomy(taxonomy, el)
 {
     var form = jQuery(el).closest('form');
     var tmp_tax = jQuery('input[name=tmp_' + taxonomy + ']', form).val();
+	var rex = /<\/?(a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|bdi|bdo|bgsound|big|blink|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup|data|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|input|ins|isindex|kbd|keygen|label|legend|li|link|listing|main|map|mark|marquee|menu|menuitem|meta|meter|nav|nobr|noframes|noscript|object|ol|optgroup|option|output|p|param|plaintext|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|spacer|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video|wbr|xmp)\b[^<>]*>/ig;
+    tmp_tax = _.escape(tmp_tax.replace(rex, "")).trim();
     if (tmp_tax.trim() == '')
         return;
     var tax = jQuery('input[name=' + taxonomy + ']', form).val();
@@ -341,16 +348,6 @@ toolsetForms.CRED_taxonomy = function () {
         });
     }
 
-    jQuery(document).on('click', '.js-wpt-hierarchical-taxonomy-add-new-show-hide', function () {
-        if (jQuery(this).val() == jQuery(this).data('close')) {
-            jQuery(this).val(jQuery(this).data('open')).removeClass('btn-cancel');
-        } else {
-            jQuery(this).val(jQuery(this).data('close')).addClass('btn-cancel');
-        }
-        var thiz = jQuery(this), taxonomy = thiz.data('taxonomy');
-        self.add_new_show_hide(taxonomy, this);
-    });
-
 //cred-286
 //    self.add_new_show_hide = function (taxonomy, button) {
 //        var form = jQuery(button).closest('form');
@@ -368,11 +365,22 @@ toolsetForms.CRED_taxonomy = function () {
         self.hide_parent_button_if_no_terms(taxonomy, button);
     }
 
-    jQuery(document).on('click', '.js-wpt-hierarchical-taxonomy-add-new', function () {
+    jQuery('.js-wpt-hierarchical-taxonomy-add-new').on('click', function () {
         var thiz = jQuery(this),
                 taxonomy = thiz.data('taxonomy');
         self.add_taxonomy(taxonomy, this);
     });
+    
+    jQuery('.js-wpt-hierarchical-taxonomy-add-new-show-hide').on('click', function () {
+        if (jQuery(this).val() == jQuery(this).data('close')) {
+            jQuery(this).val(jQuery(this).data('open')).removeClass('btn-cancel');
+        } else {
+            jQuery(this).val(jQuery(this).data('close')).addClass('btn-cancel');
+        }
+        var thiz = jQuery(this), taxonomy = thiz.data('taxonomy');
+        self.add_new_show_hide(taxonomy, this);
+    });    
+    
     /*
      jQuery(document).on('keypress', '.js-wpt-new-taxonomy-title', function(e) {
      if( 13 === e.keyCode ) {

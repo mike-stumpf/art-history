@@ -30,12 +30,14 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 		$this->process_bulk_action();
 
 		$search_string = isset( $_POST['s'] ) ? mb_strtolower( trim( $_POST['s'] ) ) : null;
+		
 		$query_args    = array(
 			'orderby' => sanitize_text_field( wpcf_getget( 'orderby', 'post_title' ) ),
 			'order' => sanitize_text_field( wpcf_getget( 'order', 'asc' ) ),
+			'types_search' => $search_string
 		);
 
-		$groups = WPCF_Field_Group_Term_Factory::get_instance()->query_groups( $query_args, $search_string );
+		$groups = Types_Field_Group_Term_Factory::get_instance()->query_groups( $query_args );
 
 		/**
 		 * REQUIRED for pagination. Let's figure out what page the user is currently
@@ -85,7 +87,7 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 	function get_columns() {
 		$columns = array(
 			'cb' => '<input type="checkbox" />', //Render a checkbox instead of text
-			'title' => __( 'Group Name', 'wpcf' ),
+			'title' => __( 'Name', 'wpcf' ),
 			'description' => __( 'Description', 'wpcf' ),
 			'status' => __( 'Active', 'wpcf' ),
 			'taxonomies' => __( 'Taxonomies', 'wpcf' ),
@@ -116,7 +118,7 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 
 
 	/**
-	 * @param $item WPCF_Field_Group_Term
+	 * @param $item Types_Field_Group_Term
 	 *
 	 * @return string
 	 */
@@ -126,7 +128,7 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 
 
 	/**
-	 * @param $item WPCF_Field_Group_Term
+	 * @param $item Types_Field_Group_Term
 	 *
 	 * @return string
 	 */
@@ -137,7 +139,7 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 		} else {
 			$taxonomy_labels = array();
 			foreach( $taxonomies as $taxonomy_slug ) {
-				$taxonomy_labels[] = WPCF_Utils::taxonomy_slug_to_label( $taxonomy_slug );
+				$taxonomy_labels[] = Types_Utils::taxonomy_slug_to_label( $taxonomy_slug );
 			}
 			$output = implode( ', ', $taxonomy_labels );
 		}
@@ -147,7 +149,7 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 
 
 	/**
-	 * @param $item WPCF_Field_Group_Term
+	 * @param $item Types_Field_Group_Term
 	 *
 	 * @return string
 	 */
@@ -157,8 +159,9 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 
 
 	/**
-	 * @param WPCF_Field_Group_Term $item
-	 * @return string
+	 * @param Types_Field_Group_Term $item
+	 * 
+*@return string
 	 */
 	function column_title( $item ) {
 		// todo use icl_post_link here
@@ -225,8 +228,9 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 	/**
 	 * @see WP_List_Table::::single_row_columns()
 	 *
-	 * @param WPCF_Field_Group_Term $item A singular item
-	 * @return string
+	 * @param Types_Field_Group_Term $item A singular item
+	 * 
+*@return string
 	 */
 	function column_cb( $item ) {
 		if ( WPCF_Roles::user_can_edit( 'term-field', array( 'id' => $item->get_id() ) ) ) {
@@ -286,7 +290,7 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 				case 'delete':
 					$wpdb->delete(
 						$wpdb->posts,
-						array( 'ID' => $field_group_id, 'post_type' => WPCF_Field_Group_Term::POST_TYPE ),
+						array( 'ID' => $field_group_id, 'post_type' => Types_Field_Group_Term::POST_TYPE ),
 						array( '%d', '%s' )
 					);
 					break;
@@ -294,7 +298,7 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 					$wpdb->update(
 						$wpdb->posts,
 						array( 'post_status' => 'draft' ),
-						array( 'ID' => $field_group_id, 'post_type' => WPCF_Field_Group_Term::POST_TYPE ),
+						array( 'ID' => $field_group_id, 'post_type' => Types_Field_Group_Term::POST_TYPE ),
 						array( '%s' ),
 						array( '%d', '%s' )
 					);
@@ -310,7 +314,7 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 					break;
 			}
 		}
-		wp_cache_delete( md5( 'group::_get_group' . WPCF_Field_Group_Term::POST_TYPE ), 'types_cache_groups' );
+		wp_cache_delete( md5( 'group::_get_group' . Types_Field_Group_Term::POST_TYPE ), 'types_cache_groups' );
 
 	}
 
@@ -321,7 +325,7 @@ class WPCF_Page_Listing_Termmeta_Table extends WPCF_Page_Listing_Table {
 	 * @since 3.1.0
 	 * @access public
 	 *
-	 * @param WPCF_Field_Group_Term $item The current item
+	 * @param Types_Field_Group_Term $item The current item
 	 */
 	public function single_row( $item ) {
 		static $row_class = '';

@@ -332,10 +332,10 @@ class FormFactory extends FormAbstract
         return $field;
     }
 
-    protected function _checkValidation( $config ) {
+    protected function _checkValidation( $config ) {        
         if ( isset( $config['validation'] ) && is_null( $this->_validation ) ) {
             require_once 'class.validation.php';
-            $this->_validation = new WPToolset_Forms_Validation( $this->nameForm );
+            $this->_validation = new WPToolset_Forms_Validation( $this->nameForm , isset($config['form_settings']) ? $config['form_settings'] : "" );
         }
     }
 

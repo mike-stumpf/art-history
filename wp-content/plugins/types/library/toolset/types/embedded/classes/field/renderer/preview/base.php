@@ -22,21 +22,23 @@ abstract class WPCF_Field_Renderer_Preview_Base extends WPCF_Field_Renderer_Abst
 	 * WPCF_Field_Renderer_Preview_Base constructor.
 	 *
 	 * @param WPCF_Field_Instance_Abstract $field
-	 * @param array $args Preview renderer settings: 
-	 *     - maximum_item_count => Maximum count of field values that should be displayed.  
+	 * @param array $args Preview renderer settings:
+	 *     - maximum_item_count => Maximum count of field values that should be displayed.
 	 *     - maximum_item_length => Maximum length of single item.
+	 *     - maximum_total_length => Maximum length of output.
 	 *     - value_separator => Separator to be used between multiple field values.
 	 *     - ellipsis => Ellipsis to be added when some field values are omitted.
-	 * 
+	 *
 	 *     Specialized renderers may interpret the settings in a different way or add their own.
 	 *
-	 * @since 1.9.1 
+	 * @since 1.9.1
 	 */
 	public function __construct( $field, $args = array() ) {
 		parent::__construct( $field );
-		
+
 		$this->args = wpcf_ensarr( $args );
 	}
+
 
 	/**
 	 * Render the field value. Handle both single and repetitive fields.
@@ -70,16 +72,18 @@ abstract class WPCF_Field_Renderer_Preview_Base extends WPCF_Field_Renderer_Abst
 		}
 
 		$output = implode( $this->get_value_separator(), $output_values );
-			
-		$maximum_total_length = $this->get_maximum_total_length();
-		$is_limited_by_max_total_length = ( 0 < $maximum_total_length && $maximum_total_length < strlen( $output ) );
-		if( $is_limited_by_max_total_length ) {
-			$output = substr( $output, 0, $maximum_total_length );
+		$ellipsis = $this->get_ellipsis();
+
+		$is_limited_by_max_total_length = $this->limit_by_maximum_total_length( $output );
+
+		$needs_separator = $is_limited_by_max_count && ! $is_limited_by_max_total_length;
+		$needs_ellipsis = ( $is_limited_by_max_count || $is_limited_by_max_total_length );
+
+		if( $needs_separator ) {
+			$output .= $this->get_value_separator();
 		}
-		
-		$needs_ellipsis = ( $is_limited_by_max_count || $is_limited_by_max_total_length ); 
 		if( $needs_ellipsis ) {
-			$output .= $this->get_ellipsis();
+			$output .= $ellipsis;
 		}
 
 		if( $echo ) {
@@ -87,6 +91,27 @@ abstract class WPCF_Field_Renderer_Preview_Base extends WPCF_Field_Renderer_Abst
 		}
 
 		return $output;
+	}
+
+
+	/**
+	 * Apply maximum total length limit on a value.
+	 *
+	 * @param string &$value Value to be shortened if needed.
+	 * @return bool True if the limit was applied.
+	 * @since 2.1
+	 */
+	protected function limit_by_maximum_total_length( &$value ) {
+		$ellipsis = $this->get_ellipsis();
+		$ellipsis_length = strlen( $ellipsis );
+
+		$maximum_total_length = $this->get_maximum_total_length();
+		$is_limited_by_max_total_length = ( 0 < $maximum_total_length && $maximum_total_length < strlen( $value ) );
+		if( $is_limited_by_max_total_length ) {
+			$value = substr( $value, 0, $maximum_total_length - $ellipsis_length );
+		}
+
+		return $is_limited_by_max_total_length;
 	}
 
 
@@ -140,7 +165,7 @@ abstract class WPCF_Field_Renderer_Preview_Base extends WPCF_Field_Renderer_Abst
 	 * @since 1.9.1
 	 */
 	protected function get_ellipsis() {
-		return wpcf_getarr( $this->args, 'ellipsis', $this->get_value_separator() . '...' );
+		return wpcf_getarr( $this->args, 'ellipsis', '...' );
 	}
-	
+
 }

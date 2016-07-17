@@ -1,6 +1,10 @@
 <?php
 
-
+/**
+ * Types_Helper_Output_Meta_Box
+ *
+ * @since 2.0
+ */
 class Types_Helper_Output_Meta_Box implements Types_Helper_Output_Interface {
 
 	private $output;

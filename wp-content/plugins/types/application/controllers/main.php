@@ -10,7 +10,6 @@
  */
 final class Types_Main {
 	
-	
 	private static $instance;
 	
 	public static function get_instance() {
@@ -44,13 +43,56 @@ final class Types_Main {
 	public function on_init() {
 		if( is_admin() ) {
 			if( defined( 'DOING_AJAX' ) ) {
+				$this->mode = self::MODE_AJAX;
 				Types_Ajax::initialize();
 			} else {
+				$this->mode = self::MODE_ADMIN;
 				Types_Admin::initialize();
 			}
 		} else {
+			$this->mode = self::MODE_FRONTEND;
 			Types_Frontend::initialize();
 		}
+	}
+
+
+	/**
+	 * @var string One of the MODE_* constants.
+	 */
+	private $mode = self::MODE_UNDEFINED;
+
+	const MODE_UNDEFINED = '';
+	const MODE_AJAX = 'ajax';
+	const MODE_ADMIN = 'admin';
+	const MODE_FRONTEND = 'frontend';
+
+	/**
+	 * Get current plugin mode.
+	 *
+	 * Possible values are:
+	 * - MODE_UNDEFINED before the main controller initialization is completed
+	 * - MODE_AJAX when doing an AJAX request
+	 * - MODE_ADMIN when showing a WP admin page
+	 * - MODE_FRONTEND when rendering a frontend page
+	 *
+	 * @return string
+	 * @since 2.1
+	 */
+	public function get_plugin_mode() {
+		return $this->mode;
+	}
+
+
+	/**
+	 * Determine whether a WP admin page is being loaded.
+	 *
+	 * Note that the behaviour differs from the native is_admin() which will return true also for AJAX requests.
+	 * 
+	 * @return bool
+	 * @since 2.1
+	 */
+	public function is_admin() {
+		return ( $this->get_plugin_mode() == self::MODE_ADMIN );
 	}
 
 
@@ -59,6 +101,7 @@ final class Types_Main {
 	 * 
 	 * Initialize the Toolset Common library with the new loader. 
 	 * Initialize asset manager if we're not doing an AJAX call.
+	 * Initialize the Types hook API.
 	 * 
 	 * @since 2.0
 	 */
@@ -69,6 +112,8 @@ final class Types_Main {
 		if( !defined( 'DOING_AJAX' ) ) {
 			Types_Assets::get_instance()->initialize_scripts_and_styles();
 		}
+		
+		Types_Api::initialize();
 	}
 
 

@@ -333,22 +333,18 @@
     },
 
     dismiss_nag: function(){
-        
+
         var thisa = jQuery(this);
-        
-        jQuery('<span class="spinner"></span>').css({display: 'inline-block', float: 'left'}).appendTo(thisa);
-        
+
         data = {action: 'installer_dismiss_nag', repository: jQuery(this).data('repository')}
-        
-        jQuery.ajax({url: ajaxurl, type: 'POST', dataType:'json', data: data, success: 
+
+        jQuery.ajax({url: ajaxurl, type: 'POST', dataType:'json', data: data, success:
             function(ret){
-                thisa.parent().parent().remove();
+                thisa.closest('.otgs-is-dismissible').remove();
             }
         });
-        
-        return false;
 
-        
+        return false;
     },
     
     toggle_subpackages: function(){

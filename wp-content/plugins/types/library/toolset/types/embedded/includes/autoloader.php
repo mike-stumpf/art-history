@@ -18,11 +18,28 @@ final class WPCF_Autoloader {
 
 	protected $paths = array();
 
+
 	protected $prefixes = array();
+
+
+	/**
+	 * For production version of Types we use a class map
+	 * you can disable using the classmap by simply deleting /autoload_classmap.php
+	 *
+	 * Note: Not using the classmap will lower the performance significant
+	 *
+	 * @var bool|array
+	 * @since 2.1
+	 */
+	private $classmap = false;
 
 
 	protected function __construct() {
 		spl_autoload_register( array( $this, 'autoload' ) );
+
+		if( file_exists( WPCF_ABSPATH . '/autoload_classmap.php' ) ) {
+			$this->classmap = include( WPCF_ABSPATH . '/autoload_classmap.php' );
+		}
 	}
 
 
@@ -87,9 +104,14 @@ final class WPCF_Autoloader {
 
 
 	public function autoload( $class ) {
+		// use class map if defined
+		if( $this->classmap ) {
+			if( isset( $this->classmap[$class] ) && file_exists( $this->classmap[$class] ) ) {
+				require_once( $this->classmap[$class] );
+				return true;
+			}
 
-		if( class_exists( $class ) ) {
-			return true;
+			return false;
 		}
 
 		foreach( $this->prefixes as $prefix ) {

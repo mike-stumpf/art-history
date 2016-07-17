@@ -7,7 +7,7 @@
  *
  * @since 1.9
  */
-final class WPCF_Field_Instance_Term extends WPCF_Field_Instance {
+class WPCF_Field_Instance_Term extends WPCF_Field_Instance {
 
 	
 	/**

@@ -7,15 +7,16 @@ var wptRep = (function ($) {
     var count = {};
     function init() {
         // Reorder label and description for repetitive
+		// Note that we target usual labels and descriptions but a classname can be used to keep some auxiliar items
         $('.js-wpt-repetitive').each(function () {
             var $this = $(this),
                     $parent;
             if ($('body').hasClass('wp-admin')) {
-                var title = $('label', $this).first().clone();
-                var description = $('.description', $this).first().clone();
+                var title = $('label:not(.js-wpt-auxiliar-label)', $this).first().clone();
+                var description = $('.description:not(.js-wpt-auxiliar-description)', $this).first().clone();
                 $('.js-wpt-field-item', $this).each(function () {
-                    $('label', $this).remove();
-                    $('.description', $this).remove();
+                    $('label:not(.js-wpt-auxiliar-label)', $this).remove();
+                    $('.description:not(.js-wpt-auxiliar-description)', $this).remove();
                 });
                 $this.prepend(description).prepend(title);
             }
@@ -34,7 +35,8 @@ var wptRep = (function ($) {
             }
         });
         // Add field
-        $('.js-wpt-repadd').on('click', function (e) {
+        $(document).off('click','.js-wpt-repadd', null);
+        $(document).on('click','.js-wpt-repadd', function (e) {
             e.preventDefault();
             var $this = $(this),
                     parent,
@@ -47,8 +49,9 @@ var wptRep = (function ($) {
                 // Get template from the footer templates by wpt-id data attribute
                 tpl = $('<div>' + $('#tpl-wpt-field-' + $this.data('wpt-id')).html() + '</div>');
                 // Remove label and descriptions from the template
-                $('label', tpl).first().remove();
-                $('.description', tpl).first().remove();
+				// Note that we target usual labels and descriptions but a classname can be used to keep some auxiliar items
+                $('label:not(.js-wpt-auxiliar-label)', tpl).first().remove();
+                $('.description:not(.js-wpt-auxiliar-description)', tpl).first().remove();
                 // Adjust ids and labels where needed for the template content
                 $('[id]', tpl).each(function () {
                     var $this = $(this), uniqueId = _.uniqueId('wpt-form-el');
@@ -99,7 +102,9 @@ var wptRep = (function ($) {
             return false;
         });
         // Delete field
-        $('.js-wpt-field-items').on('click', '.js-wpt-repdelete', function (e) {
+        $(document).off('click', '.js-wpt-repdelete', null);
+        $(document).on('click', '.js-wpt-repdelete', function (e) {
+        //$('.js-wpt-field-items').on('click', '.js-wpt-repdelete', function (e) {
             e.preventDefault();
             $parent = $(this).closest('.js-wpt-field-items');
             if ($('body').hasClass('wp-admin')) {

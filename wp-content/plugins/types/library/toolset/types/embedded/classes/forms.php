@@ -100,10 +100,12 @@ class Enlimbo_Forms_Wpcf
                             $this );
                     do_action( 'wpcf_form_autohandle_redirection_' . $id, $form,
                             $this );
-                    if ( !isset( $form['#form']['redirection'] ) ) {
-                        header( 'Location: ' . $_SERVER['REQUEST_URI'] );
-                    } else if ( $form['#form']['redirection'] != false ) {
-                        header( 'Location: ' . $form['#form']['redirection'] );
+                    if( ! headers_sent() ) {
+                        if ( !isset( $form['#form']['redirection'] ) ) {
+                            header( 'Location: ' . $_SERVER['REQUEST_URI'] );
+                        } else if ( $form['#form']['redirection'] != false ) {
+                            header( 'Location: ' . $form['#form']['redirection'] );
+                        }
                     }
                 }
             }
@@ -764,7 +766,9 @@ class Enlimbo_Forms_Wpcf
         }
 
         $before = '';
-        $after = '<br >';
+        $after = isset($element['#options-after'])
+            ? $element['#options-after']
+            : '<br >';
         $list = false;
 
         if (

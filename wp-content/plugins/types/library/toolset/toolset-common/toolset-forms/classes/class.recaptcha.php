@@ -23,7 +23,7 @@ class WPToolset_Field_Recaptcha extends WPToolset_Field_Textfield {
         $this->privkey = isset($attr['private_key']) ? $attr['private_key'] : '';
 
         global $sitepress;
-        $lang = substr(get_locale(), 0 , 2);         
+        $lang = substr(get_locale(), 0, 2);
         if (isset($sitepress)) {
             if (isset($_GET['source_lang'])) {
                 $src_lang = $_GET['source_lang'];
@@ -60,7 +60,7 @@ class WPToolset_Field_Recaptcha extends WPToolset_Field_Textfield {
         $capture = '';
         if ($this->pubkey || !is_admin()) {
             try {
-                $capture = '<div class="g-recaptcha" data-sitekey="' . $this->pubkey . '"></div>';
+                $capture = '<div class="g-recaptcha" data-sitekey="' . $this->pubkey . '"></div><div class="recaptcha_error" style="color:#aa0000;display:none;">' . __('Please validate reCAPTCHA', 'wpv-views') . '</div>';
             } catch (Exception $e) {
                 //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/188424989/comments
                 if (current_user_can('manage_options')) {

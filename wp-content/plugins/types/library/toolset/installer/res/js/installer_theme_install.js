@@ -79,16 +79,19 @@ var installer_theme_extended_object = {
 			//We only want to post to AJAX if its an OTGS tab
 		 	jQuery.post(installer_theme_install_localize.ajaxurl, data, function(response) {	
 		 		//AJAX response
-		 		var myObject = jQuery.parseJSON(response);		 		
-		 		var tab_selected= myObject.output;
-		 		if (data_sort in js_array) {		 			
-			 		if (!(installer_theme_install_localize.js_array_installer[tab_selected]['registration_status'])) {	
-			 			//Not registered, no theme response		 			
-			 			var unregistered_message= myObject.unregistered_messages;		 					 			
-			 			jQuery('.no-themes').html(unregistered_message);
-			 		}
-		 		}
-		 		
+		 		var myObject = jQuery.parseJSON(response);
+		 		if (typeof myObject != "undefined") {		 			
+		 			if(myObject.hasOwnProperty("output")){
+				 		var tab_selected= myObject.output;
+				 		if (data_sort in js_array) {		 			
+					 		if (!(installer_theme_install_localize.js_array_installer[tab_selected]['registration_status'])) {	
+					 			//Not registered, no theme response		 			
+					 			var unregistered_message= myObject.unregistered_messages;		 					 			
+					 			jQuery('.no-themes').html(unregistered_message);
+					 		}
+				 		}	 				
+		 			}
+		 		}		 		
 		 	});						
 		}
 };

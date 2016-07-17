@@ -1,39 +1,57 @@
 <?php
 
+/**
+ * Types_Helper_Condition_Layouts_Archive_Exists
+ *
+ * @since 2.0
+ */
 class Types_Helper_Condition_Layouts_Archive_Exists extends Types_Helper_Condition_Template {
 
-	private static $layout_id;
-	private static $layout_name;
+	private static $layout_id = array();
+	private static $layout_name = array();
 
 	public function valid() {
-		if( ! defined( 'WPDDL_GENERAL_OPTIONS' ) )
+		if( ! defined( 'WPDDL_DEVELOPMENT' ) && ! defined( 'WPDDL_PRODUCTION' ) )
 			return false;
 
-		$cpt = Types_Helper_Condition::get_post_type();
+		$type = self::get_type_name();
 
 		$layouts = get_option( WPDDL_GENERAL_OPTIONS, array() );
 
-		if( ! array_key_exists( 'layouts_cpt_' . $cpt->name, $layouts ) )
-			return false;
+		// for type 'post'
+		if( $type == 'post' ) {
+			self::$layout_id[$type] = array_key_exists( 'layouts_home-blog-page', $layouts )
+				? $layouts['layouts_home-blog-page']
+				: false;
 
-		self::$layout_id = $layouts['layouts_cpt_' . $cpt->name];
+			return self::$layout_id[$type];
+		}
 
-		return true;
+		// all cpts
+		self::$layout_id[$type] = array_key_exists( 'layouts_cpt_' . $type, $layouts )
+			? self::$layout_id[$type] = $layouts['layouts_cpt_' . $type]
+			: false;
+
+		return self::$layout_id[$type];
 	}
 
 	public static function get_layout_id() {
-		if( self::$layout_id === null ) {
+		$type = self::get_type_name();
+
+		if( ! isset( self::$layout_id[$type] ) ) {
 			$self = new Types_Helper_Condition_Layouts_Archive_Exists();
 			$self->valid();
 		}
 
-		return self::$layout_id;
+		return self::$layout_id[$type];
 	}
 
 	public static function get_layout_name() {
-		if( self::$layout_name === null )
-			self::$layout_name = get_the_title( self::get_layout_id() );
+		$type = self::get_type_name();
 
-		return self::$layout_name;
+		if( !isset( self::$layout_name[$type] ) )
+			self::$layout_name[$type] = get_the_title( self::get_layout_id() );
+
+		return self::$layout_name[$type];
 	}
 }

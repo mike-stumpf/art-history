@@ -18,6 +18,7 @@ final class Types_Admin_Menu {
 	// All (non-legacy) page slugs.
 	const PAGE_NAME_FIELD_CONTROL = 'types-field-control';
 	const PAGE_NAME_HELPER        = 'types-helper'; // hidden page
+	const PAGE_NAME_DASHBOARD     = 'types-dashboard';
 
 
 	private static $instance;
@@ -40,6 +41,9 @@ final class Types_Admin_Menu {
 	private function __construct() {
 		// Priority is hardcoded by filter documentation.
 		add_filter( 'toolset_filter_register_menu_pages', array( $this, 'on_admin_menu' ), 10 );
+
+		// Load Dashboard
+		Types_Page_Dashboard::get_instance();
 	}
 
 
@@ -57,7 +61,6 @@ final class Types_Admin_Menu {
 	 * @since 2.0
 	 */
 	public function on_admin_menu( $pages ) {
-
 		// Add legacy pages
 		$pages = wpcf_admin_toolset_register_menu_pages( $pages );
 
@@ -65,7 +68,6 @@ final class Types_Admin_Menu {
 		if( !empty( $page_name ) ) {
 			$pages = $this->maybe_add_ondemand_submenu( $pages, $page_name );
 		}
-
 		return $pages;
 	}
 
@@ -84,12 +86,10 @@ final class Types_Admin_Menu {
 	 */
 	private function maybe_add_ondemand_submenu( $pages, $page_name ) {
 		$page = null;
-
 		switch( $page_name ) {
 			case self::PAGE_NAME_FIELD_CONTROL:
 				$page = Types_Page_Field_Control::get_instance();
 				break;
-
 			case self::PAGE_NAME_HELPER:
 				Types_Page_Hidden_Helper::get_instance();
 				break;

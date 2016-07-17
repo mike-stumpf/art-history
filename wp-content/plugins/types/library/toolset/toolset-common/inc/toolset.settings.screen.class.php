@@ -42,8 +42,8 @@ if ( ! class_exists( 'Toolset_Settings_Screen' ) ) {
 		public function register_settings_page_in_menu( $pages ) {
 			$pages[] = array(
 				'slug'			=> 'toolset-settings',
-				'menu_title'	=> __( 'Settings', 'wp-cred' ),
-				'page_title'	=> __( 'Settings', 'wp-cred' ),
+				'menu_title'	=> __( 'Settings', 'wpv-views' ),
+				'page_title'	=> __( 'Settings', 'wpv-views' ),
 				'callback'		=> array( $this, 'settings_page' )
 			);
 			return $pages;
@@ -53,6 +53,7 @@ if ( ! class_exists( 'Toolset_Settings_Screen' ) ) {
 			// Admin bar settings
 			add_filter( 'toolset_filter_toolset_register_settings_general_section',	array( $this, 'toolset_admin_bar_settings' ), 10, 2 );
 			add_action( 'wp_ajax_toolset_update_toolset_admin_bar_options',			array( $this, 'toolset_update_toolset_admin_bar_options' ) );
+			add_filter( 'toolset_filter_force_unset_shortcode_generator_option',	array( $this, 'force_unset_shortcode_generator_option_to_disable' ), 99 );
 		}
 
 
@@ -116,7 +117,17 @@ if ( ! class_exists( 'Toolset_Settings_Screen' ) ) {
 					<?php echo $settings_menu; ?>
 				</p>
 				<?php echo $settings_content; ?>
-
+				<div class="toolset-debug-info-helper">
+					<p>
+					<?php
+					echo sprintf(
+						__( 'Need help? Grab some %1$sdebug information%2$s.', 'wpv-views' ),
+						'<a href="' . admin_url( 'admin.php?page=toolset-debug-information' ) . '">',
+						'</a>'
+					);
+					?>
+					</p>
+				</div>
 			</div>
 			<?php
 		}
@@ -215,13 +226,20 @@ if ( ! class_exists( 'Toolset_Settings_Screen' ) ) {
 				wp_send_json_error( $data );
 			}
 			$frontend			= ( isset( $_POST['frontend'] ) ) ? sanitize_text_field( $_POST['frontend'] ) : 'true';
-			$backend			= wpv_getpost( 'backend', null, array( 'disable', 'editor', 'always' ) );
+			$backend			= ( isset( $_POST['backend'] ) && in_array( $_POST['backend'], array( 'disable', 'editor', 'always' ) ) ) ? sanitize_text_field( $_POST['backend'] ) : null;
 			if ( null != $backend ) {
 				$toolset_options['shortcodes_generator'] = $backend;
 			}
 			$toolset_options['show_admin_bar_shortcut'] = ( $frontend == 'true' ) ? 'on' : 'off';
 			$toolset_options->save();
 			wp_send_json_success();
+		}
+		
+		public function force_unset_shortcode_generator_option_to_disable( $state ) {
+			if ( $state == 'unset' ) {
+				$state = 'disable';
+			}
+			return $state;
 		}
 
 	}

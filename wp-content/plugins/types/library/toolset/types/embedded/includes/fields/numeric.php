@@ -20,8 +20,8 @@ function wpcf_fields_numeric() {
 
     return array(
         'id' => 'wpcf-numeric',
-        'title' => __( 'Numeric', 'wpcf' ),
-        'description' => __( 'Numeric', 'wpcf' ),
+        'title' => __( 'Number', 'wpcf' ),
+        'description' => __( 'Number', 'wpcf' ),
         'validate' => array(
             'required' => array(
                 'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' ),

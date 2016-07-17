@@ -16,7 +16,7 @@ final class WPCF_Field_Renderer_Preview_Address extends WPCF_Field_Renderer_Prev
 	 */
 	protected function render_single( $value ) {
 
-		if( !is_string( $value ) ) {
+		if( !is_string( $value ) || empty( $value ) ) {
 			return '';
 		}
 		
@@ -27,10 +27,19 @@ final class WPCF_Field_Renderer_Preview_Address extends WPCF_Field_Renderer_Prev
 		if( 0 < $max_length && $max_length < strlen( $label ) ) {
 			$label = substr( $label, 0, $max_length - 3 ) . '...';
 		}
+
+		$url = esc_url(
+			add_query_arg(
+				array(
+					'q' => $value
+				),
+				'http://maps.google.com/'
+			)
+		);
 		
 		$link = sprintf(
-			'<a target="_blank" href="http://maps.google.com/?q=%s">%s</a>',
-			esc_attr( $value ),
+			'<a target="_blank" href="%s">%s</a>',
+			$url,
 			sanitize_text_field( $label )	
 		);
 		

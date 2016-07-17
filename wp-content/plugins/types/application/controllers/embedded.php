@@ -21,8 +21,10 @@ final class Types_Embedded {
 
 	public static function initialize() {
 		if( file_exists( TYPES_ABSPATH . '/embedded.lock' )
-		    || ( defined( 'TYPES_EMBEDDED') && TYPES_EMBEDDED === true ) )
+		    || ( defined( 'TYPES_EMBEDDED') && TYPES_EMBEDDED === true )
+		) {
 			new self();
+		}
 	}
 
 }

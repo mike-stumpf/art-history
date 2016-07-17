@@ -101,6 +101,11 @@ function types_render_field( $field_id = null, $params = array(), $content = nul
     // Set post ID to global
     $post_id = get_the_ID();
 
+    // support also 'id' like our shortcode [types] does
+    // @since 2.1
+    if( ! isset( $params['post_id'] ) && isset( $params['id'] ) && substr( $params['id'], 0, 1) !== '$' )
+        $params['post_id'] = $params['id'];
+
     // Check if other post required
     if ( isset( $params['post_id'] ) ) {
         // If numeric value

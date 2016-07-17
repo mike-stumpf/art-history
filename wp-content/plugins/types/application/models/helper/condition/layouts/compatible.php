@@ -1,6 +1,10 @@
 <?php
 
-
+/**
+ * Types_Helper_Condition_Layouts_Compatible
+ *
+ * @since 2.0
+ */
 class Types_Helper_Condition_Layouts_Compatible extends Types_Helper_Condition_Template {
 
 	public function __construct() {

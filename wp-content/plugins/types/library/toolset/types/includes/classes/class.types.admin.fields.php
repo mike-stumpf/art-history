@@ -303,7 +303,7 @@ class Types_Admin_Fields extends Types_Admin_Page
             $this->print_notice_and_die(
                 sprintf(
                     __(
-                        'You can include Post Fields in the <b>listing page for %s</b>. Add Post Fields to this Post Type and you will be able to select which ones will display in the listing page.',
+                        'You can include some Post Fields in the <b>listing page for %s</b>. Add Field Group(s) to this Post Type and you will be able to select which fields will be displayed in the listing page.',
                         'wpcf'
                     ),
                     $post_type['labels']['name']
@@ -327,7 +327,7 @@ class Types_Admin_Fields extends Types_Admin_Page
             '#type' => 'markup',
             '#markup' => sprintf(
                 '<p class="description">%s</p>',
-                __('Check which fields should be shown on this Post Type list as a columns.', 'wpcf')
+                __('Check which fields should be shown on this Post Type list as columns. (NOTE: Some fields cannot be shown due to their complexity)', 'wpcf')
             ),
         );
 
@@ -586,7 +586,19 @@ class Types_Admin_Fields extends Types_Admin_Page
             case 'textarea':
             case 'video':
             case 'wysiwyg':
-                continue;
+                $options[$field] = array(
+                    '#name' => sprintf($option_name, esc_attr($data['meta_key'])),
+                    '#title' => sprintf( '%s <small>(%s)</small>', $data['name'], $data['type']),
+                    '#value' => 0,
+                    '#inline' => true,
+                    '#before' => '<li class="js-wpcf-tooltip wpcf-custom-field-disabled" data-tooltip="'.__( 'This field cannot be shown in Post Type listing due to its complexity.', 'types' ).'">',
+                    '#after' => '</li>',
+                    '#default_value' => 0,
+                    '#attributes' => array(
+                        'disabled' => 'disabled',
+                    ),
+                );
+                    continue;
             default:
                 $options[$field] = array(
                     '#name' => sprintf($option_name, esc_attr($data['meta_key'])),

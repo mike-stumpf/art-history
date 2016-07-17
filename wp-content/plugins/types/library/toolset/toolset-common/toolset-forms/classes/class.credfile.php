@@ -68,11 +68,9 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
 
         wp_enqueue_style('progress_bar-style', $stylepath . 'progress_bar.css');
 
-        if (!wp_script_is('jquery')) {
-            wp_enqueue_script('jquery', $scriptpath . 'jquery.min.js', array(), '', false);
-        }
-        wp_enqueue_script('jquery-ui-script', $scriptpath . 'jquery-ui.min.js', array('jquery'), '', true);
-        wp_enqueue_script('jquery-ui-widget-script', $scriptpath . 'jquery.ui.widget.js', array('jquery'), '', true);
+        wp_enqueue_script('jquery-ui-core');
+        wp_enqueue_script('jquery-ui-widget');
+        wp_enqueue_script('jquery-ui-progressbar');
         //wp_enqueue_script('jtmpl-script', $scriptpath . 'tmpl.min.js', array('jquery'), '', true);
         wp_enqueue_script('load-image-all-script', $scriptpath . 'load-image.all.min.js', array('jquery'), '', true);
         //wp_enqueue_script('canvas-to-blob-script', $scriptpath . 'canvas-to-blob.min.js', array('jquery'), '', true);
@@ -137,14 +135,14 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
             $delete_input_showhide = ' style="display:none"';
         }
 
-        if ($name == '_featured_image') {
-            $title = __('Featured Image', 'wpv-views');
-            if (!$is_empty) {
-                if (preg_match('/src="([\w\d\:\/\._-]*)"/', $value, $_v)) {
-                    $value = $_v[1];
-                }
-            }
-        }
+//        if ($name == '_featured_image') {
+//            $title = __('Featured Image', 'wpv-views');
+//            if (!$is_empty) {
+//                if (preg_match('/src="([\w\d\:\/\._-]*)"/', $value, $_v)) {
+//                    $value = $_v[1];
+//                }
+//            }
+//        }
 
         if (!$is_empty) {
             $pathinfo = pathinfo($value);
@@ -186,10 +184,10 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
             '#type' => 'markup',
             '#markup' => '<input type="button" style="display:none" data-action="undo" class="js-wpt-credfile-undo wpt-credfile-undo' . $button_extra_classnames . '" value="' . esc_attr(__('Restore original', 'wpv-views')) . '" />',
         );
-        $form[] = array(
-            '#type' => 'markup',
-            '#markup' => '<input type="button"' . $delete_input_showhide . ' data-action="delete" class="js-wpt-credfile-delete wpt-credfile-delete' . $button_extra_classnames . '" value="' . esc_attr(__('Clear', 'wpv-views')) . '" />',
-        );
+//        $form[] = array(
+//            '#type' => 'markup',
+//            '#markup' => '<input type="button"' . $delete_input_showhide . ' data-action="delete" class="js-wpt-credfile-delete wpt-credfile-delete' . $button_extra_classnames . '" value="' . esc_attr(__('Clear', 'wpv-views')) . '" />',
+//        );
         $form[] = array(
             '#type' => 'hidden',
             '#name' => $name,
@@ -217,9 +215,12 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
         }
 
         if ($has_image) {
+            //$delete_butt = "<input id='butt_{$id}' style='width:100%;margin-top:2px;margin-bottom:2px;' type='button' value='" . __('delete', 'wpv-views') . "' rel='{$preview_file}' class='delete_ajax_file'>";
+            $delete_butt = '<input type="button"' . $delete_input_showhide . ' data-action="delete" class="js-wpt-credfile-delete wpt-credfile-delete' . $button_extra_classnames . '" value="' . __('delete', 'wpv-views') . '" style="width:100%;margin-top:2px;margin-bottom:2px;" />';
+
             $form[] = array(
                 '#type' => 'markup',
-                '#markup' => '<span class="js-wpt-credfile-preview  wpt-credfile-preview"><img id="' . $id . '_image" src="' . $preview_file . '" title="' . $preview_file . '" alt="' . $preview_file . '" class="js-wpt-credfile-preview-item wpt-credfile-preview-item" /></span>',
+                '#markup' => '<span class="js-wpt-credfile-preview wpt-credfile-preview"><img id="' . $id . '_image" src="' . $preview_file . '" title="' . $preview_file . '" alt="' . $preview_file . '" class="js-wpt-credfile-preview-item wpt-credfile-preview-item" style="max-width:150px"/>' . $delete_butt . '</span>',
             );
         } else {
             //if ( !$is_empty )

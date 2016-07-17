@@ -22,6 +22,7 @@ if ( typeof WPV_Toolset.only_img_src_allowed_here === "undefined" ) {
 	*/
 	WPV_Toolset.only_img_src_allowed_here = [
 		'wpv-pagination-spinner-image',
+		'wpv-archive-pagination-uploaded-spinner-image',
 		'wpv-dps-spinner-image',
 		'wpv_filter_meta_html_css',
 		'wpv_filter_meta_html_js',

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Types_Page_Hidden_Helper
+ *
+ * @since 2.0
+ */
 class Types_Page_Hidden_Helper extends Types_Page_Abstract {
 
 	private static $instance;
@@ -66,10 +71,14 @@ class Types_Page_Hidden_Helper extends Types_Page_Abstract {
 				case 'new-wordpress-archive':
 					$this->redirect_url = $this->new_wordpress_archive_action( $_GET['type'] );
 					break;
+				case 'new-post-field-group':
+					$this->redirect_url = $this->new_post_field_group_action( $_GET['type'] );
+					break;
 			}
 
 		}
 
+		$this->redirect_url = $this->add_params_to_url( $this->redirect_url );
 		$this->redirect();
 	}
 
@@ -121,6 +130,38 @@ class Types_Page_Hidden_Helper extends Types_Page_Abstract {
 		}
 
 		return false;
+	}
+
+	private function new_post_field_group_action( $type ) {
+
+		$type_object = get_post_type_object( $type );
+		$title = sprintf( __( 'Field Group for %s', 'types' ), $type_object->labels->name );
+		$name = sanitize_title( $title );
+
+		$new_post_field_group = Types_Field_Group_Post_Factory::get_instance()->create( $name, $title, 'publish' );
+
+		if( ! $new_post_field_group )
+			return false;
+
+		$new_post_field_group->assign_post_type( $type );
+
+		$url = isset( $_GET['ref'] )
+			? 'admin.php?page=wpcf-edit&group_id='.$new_post_field_group->get_id().'&ref='.$_GET['ref']
+			: 'admin.php?page=wpcf-edit&group_id='.$new_post_field_group->get_id();
+
+		return admin_url( $url );
+	}
+
+	private function add_params_to_url( $url ) {
+		// forward parameter toolset_help_video
+		if( isset( $_GET['toolset_help_video'] ) )
+			$url = add_query_arg( 'toolset_help_video', $_GET['toolset_help_video'], $url );
+
+		// forward parameter ref
+		if( isset( $_GET['ref'] ) )
+			$url = add_query_arg( 'ref', $_GET['ref'], $url );
+
+		return $url;
 	}
 
 	/**

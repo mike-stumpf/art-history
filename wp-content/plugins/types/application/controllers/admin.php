@@ -30,18 +30,26 @@ final class Types_Admin {
 	
 	private function on_init() {
 
+		Types_Upgrade::initialize();
+
 		// Load Twig - this is a bit hacky way to do it, see Types_Twig_Autoloader class for explanation.
 		Types_Twig_Autoloader::register();
 
-		// Load Menu - won't be loaded in embedded version.
-		if( apply_filters( 'types_register_pages', true ) )
+		// Load menu - won't be loaded in embedded version.
+		if( apply_filters( 'types_register_pages', true ) ) {
 			Types_Admin_Menu::initialize();
+		}
 
-		// load page extensions
-		$this->page_extensions();
+		$this->init_page_extensions();
 	}
 
-	private function page_extensions() {
+
+	/**
+	 * Add hooks for loading page extensions.
+	 *
+	 * @since 2.1
+	 */
+	private function init_page_extensions() {
 		// extensions for post edit page
 		add_action( 'load-post.php', array( 'Types_Page_Extension_Edit_Post', 'get_instance' ) );
 
@@ -50,5 +58,20 @@ final class Types_Admin {
 
 		// extension for post fields edit page
 		add_action( 'load-toolset_page_wpcf-edit', array( 'Types_Page_Extension_Edit_Post_Fields', 'get_instance' ) );
+
+		// settings
+		add_action( 'load-toolset_page_toolset-settings', array( $this, 'init_settings' ) );
 	}
+
+
+	/**
+	 * Initialize the extension for the Toolset Settings page.
+	 * 
+	 * @since 2.1
+	 */
+	public function init_settings() {
+		$settings = new Types_Page_Extension_Settings();
+		$settings->build();
+	}
+
 }

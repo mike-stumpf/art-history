@@ -323,7 +323,12 @@ function wpcf_admin_metabox_relationship($post_type)
         '#type' => 'markup',
         '#markup' => sprintf(
             '<p class="description">%s</p>',
-            __('Parent/child relationship lets you connect between posts of different types. When you edit a parent, you will see its children listed in a table and you can edit the fields of the children. When you edit a child, you can choose the parents. On the front-end, you can display a list of children or information about the parents. <a href="https://wp-types.com/documentation/user-guides/creating-post-type-relationships/?utm_source=typesplugin&utm_medium=postedit&utm_campaign=parent_child_relationship" target="_blank">Parent/child documentation</a>.', 'wpcf')
+            sprintf(
+	            '%s <a href="%s" target="_blank">%s</a>.',
+	            __( 'Parent/child relationship lets you connect between posts of different types. When you edit a parent, you will see its children listed in a table and you can edit the fields of the children. When you edit a child, you can choose the parents. On the front-end, you can display a list of children or information about the parents.', 'wpcf'),
+	            Types_Helper_Url::get_url( 'post-relationship', true, 'parent_child_relationship', Types_Helper_Url::UTM_MEDIUM_POSTEDIT ),
+	            __( 'Parent/child documentation', 'wpcf' )
+            )
         )
     );
     $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );

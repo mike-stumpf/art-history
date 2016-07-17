@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Types_Helper_Condition_Single_No_Fields
+ *
+ * @since 2.0
+ */
 class Types_Helper_Condition_Single_No_Fields extends Types_Helper_Condition_Single_Missing {
 
 	public function valid() {
@@ -22,7 +27,7 @@ class Types_Helper_Condition_Single_No_Fields extends Types_Helper_Condition_Sin
 			return false;
 
 		// check for fields, abort if there results in true
-		if( $file->search( 'types_render_field' ) )
+		if( $file->search( array( 'types_render_field', 'wpcf-' ) ) )
 			return false;
 
 		return true;

@@ -38,10 +38,7 @@ final class Types_Page_Extension_Edit_Post_Fields {
 
 	public function prepare() {
 		// documentation urls
-		$documentation_urls = include( TYPES_DATA . '/information/documentation-urls.php' );
-
-		// add links to use analytics
-		Types_Helper_Url::add_urls( $documentation_urls );
+		Types_Helper_Url::load_documentation_urls();
 
 		// set analytics medium
 		Types_Helper_Url::set_medium( 'field_group_editor' );
@@ -52,6 +49,11 @@ final class Types_Page_Extension_Edit_Post_Fields {
 	}
 
 	private function prepare_informations() {
+		$setting = new Types_Setting_Preset_Information_Table();
+
+		if( ! $setting->get_value( 'show-on-field-group' ) )
+			return false;
+
 		$information = new Types_Information_Controller;
 		$information->prepare();
 	}

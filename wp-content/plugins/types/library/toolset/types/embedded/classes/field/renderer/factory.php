@@ -8,7 +8,7 @@
  *
  * @since 1.9.1
  */
-final class WPCF_Field_Renderer_Factory {
+class WPCF_Field_Renderer_Factory {
 
 	private static $instance = null;
 
@@ -51,7 +51,7 @@ final class WPCF_Field_Renderer_Factory {
 			case Types_Field_Type_Definition_Factory::FILE:
 			case Types_Field_Type_Definition_Factory::VIDEO:
 				return new WPCF_Field_Renderer_Preview_File( $field, $args );
-				
+
 			case Types_Field_Type_Definition_Factory::COLORPICKER:
 				return new WPCF_Field_Renderer_Preview_Colorpicker( $field, $args );
 
@@ -64,7 +64,7 @@ final class WPCF_Field_Renderer_Factory {
 
 			case Types_Field_Type_Definition_Factory::CHECKBOX:
 				return new WPCF_Field_Renderer_Preview_Checkbox( $field, $args );
-			
+
 			case Types_Field_Type_Definition_Factory::CHECKBOXES:
 				return new WPCF_Field_Renderer_Preview_Checkboxes( $field, $args );
 

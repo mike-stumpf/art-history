@@ -1,12 +1,26 @@
 <?php
 /*
-  Plugin Name: Toolset Types
-  Plugin URI: http://wordpress.org/extend/plugins/types/
-  Description: Toolset Types defines custom content in WordPress. Easily create custom post types, fields and taxonomy and connect everything together.
-  Author: OnTheGoSystems
-  Author URI: http://www.onthegosystems.com
-  Version: 2.0.1
- */
+Plugin Name: Toolset Types
+Plugin URI: http://wordpress.org/extend/plugins/types/
+Description: Toolset Types defines custom content in WordPress. Easily create custom post types, fields and taxonomy and connect everything together.
+Author: OnTheGoSystems
+Author URI: http://www.onthegosystems.com
+Version: 2.1
+License: GPLv2 or later
+
+Types is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+any later version.
+
+Types is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Types. If not, see http://www.gnu.org/licenses/gpl-2.0.html.
+*/
 
 // abort if called directly
 if( !function_exists( 'add_action' ) )
@@ -14,7 +28,7 @@ if( !function_exists( 'add_action' ) )
 
 // version
 if( ! defined( 'TYPES_VERSION' ) )
-	define( 'TYPES_VERSION', '2.0.1' );
+	define( 'TYPES_VERSION', '2.1' );
 
 // backward compatibility
 if ( ! defined( 'WPCF_VERSION' ) )
@@ -22,7 +36,7 @@ if ( ! defined( 'WPCF_VERSION' ) )
 
 // release notes
 if( ! defined( 'TYPES_RELEASE_NOTES' ) )
-	define( 'TYPES_RELEASE_NOTES', 'https://wp-types.com/version/types-2-0/?utm_source=typesplugin&utm_campaign=types&utm_medium=release-notes-admin-notice&utm_term=Types 2.0 release notes' );
+	define( 'TYPES_RELEASE_NOTES', 'https://wp-types.com/version/types-2-1/?utm_source=typesplugin&utm_campaign=types&utm_medium=release-notes-admin-notice&utm_term=Types 2.1 release notes' );
 
 /*
  * Path Constants
@@ -40,3 +54,10 @@ if( ! defined( 'TYPES_DATA' ) )
  * Bootstrap Types
  */
 require_once( dirname( __FILE__ ) . '/application/bootstrap.php' );
+
+
+//
+// Activation and deactivation hooks must be defined in the main file.
+//
+register_deactivation_hook( __FILE__, 'wpcf_deactivation_hook' );
+register_activation_hook( __FILE__, 'wpcf_activation_hook' );

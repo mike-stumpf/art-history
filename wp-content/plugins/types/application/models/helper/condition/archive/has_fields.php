@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Types_Helper_Condition_Archive_Has_Fields
+ *
+ * @since 2.0
+ */
 class Types_Helper_Condition_Archive_Has_Fields extends Types_Helper_Condition_Archive_No_Fields {
 
 	public function valid() {

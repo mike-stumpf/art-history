@@ -101,7 +101,6 @@ class Toolset_Common_Bootstrap {
 		) {
 			$this->register_parser();
 		}
-		
 	}
 	
 	public function register_res() {
@@ -111,7 +110,7 @@ class Toolset_Common_Bootstrap {
 			// Use the class provided by Ric
 			require_once( TOOLSET_COMMON_PATH . '/inc/toolset.assets.manager.class.php' );
 			$this->assets_manager = Toolset_Assets_Manager::getInstance();
-			self::$sections_loaded = $sections_loaded;
+			self::$sections_loaded = apply_filters('toolset_register_assets_section', $sections_loaded);
 		}
 	}
 	
@@ -137,7 +136,7 @@ class Toolset_Common_Bootstrap {
 			if ( ! class_exists( 'Toolset_Enlimbo_Forms' ) ) {
 				require_once( TOOLSET_COMMON_PATH . '/lib/enlimbo.forms.class.php' );
 			}
-			self::$sections_loaded = $sections_loaded;
+			self::$sections_loaded = apply_filters('toolset_register_library_section', $sections_loaded);
 		}
 	}
 	
@@ -189,7 +188,8 @@ class Toolset_Common_Bootstrap {
 			require_once( TOOLSET_COMMON_PATH . '/inc/toolset.compatibility.php' );
 			require_once( TOOLSET_COMMON_PATH . '/inc/toolset.function.helpers.php' );
 			require_once( TOOLSET_COMMON_PATH . '/deprecated.php' );
-			self::$sections_loaded = $sections_loaded;
+
+			self::$sections_loaded = apply_filters('toolset_register_include_section', $sections_loaded);
 		}
 	}
 	
@@ -204,7 +204,11 @@ class Toolset_Common_Bootstrap {
 			$sections_loaded[] = 'toolset_dialogs';
 			require_once( TOOLSET_COMMON_PATH . '/utility/dialogs/toolset.dialog-boxes.class.php' );
 		}
-		self::$sections_loaded = $sections_loaded;
+        if( ! in_array('toolset_help_videos', $sections_loaded) ){
+            $sections_loaded[] = 'toolset_help_videos';
+            require_once( TOOLSET_COMMON_PATH . '/utility/help-videos/toolset-help-videos.php' );
+        }
+		self::$sections_loaded = apply_filters('toolset_register_utility_section', $sections_loaded);
 	}
 	
 	public function register_debug() {
@@ -212,7 +216,7 @@ class Toolset_Common_Bootstrap {
 		if ( ! in_array( 'toolset_debug', $sections_loaded ) ) {
 			$sections_loaded[] = 'toolset_debug';
 			require_once( TOOLSET_COMMON_PATH . '/debug/debug-information.php' );
-			self::$sections_loaded = $sections_loaded;
+			self::$sections_loaded = apply_filters('toolset_register_debug_section', $sections_loaded);
 		}
 	}
 	
@@ -223,7 +227,7 @@ class Toolset_Common_Bootstrap {
 			if ( ! class_exists( 'WPToolset_Forms_Bootstrap' ) ) {
 				require_once TOOLSET_COMMON_PATH . '/toolset-forms/bootstrap.php';
 			}
-			self::$sections_loaded = $sections_loaded;
+			self::$sections_loaded = apply_filters('toolset_register_forms_section', $sections_loaded);
 		}
 	}
 	
@@ -234,7 +238,7 @@ class Toolset_Common_Bootstrap {
 			require_once( TOOLSET_COMMON_PATH . '/visual-editor/editor-addon-generic.class.php' );
 			require_once( TOOLSET_COMMON_PATH . '/visual-editor/editor-addon.class.php' );
 			require_once( TOOLSET_COMMON_PATH . '/visual-editor/views-editor-addon.class.php' );
-			self::$sections_loaded = $sections_loaded;
+			self::$sections_loaded = apply_filters('toolset_register_visual_editor_section', $sections_loaded);
 		}
 	}
 	
@@ -245,7 +249,7 @@ class Toolset_Common_Bootstrap {
 			if ( ! class_exists( 'Toolset_Regex' ) ) {
 				require_once( TOOLSET_COMMON_PATH . '/expression-parser/parser.php' );
 			}
-			self::$sections_loaded = $sections_loaded;
+			self::$sections_loaded = apply_filters('toolset_register_parsers_section', $sections_loaded);
 		}
 	}
 	

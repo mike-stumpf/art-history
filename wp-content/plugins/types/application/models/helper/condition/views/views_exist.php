@@ -1,6 +1,10 @@
 <?php
 
-
+/**
+ * Types_Helper_Condition_Views_Views_Exist
+ *
+ * @since 2.0
+ */
 class Types_Helper_Condition_Views_Views_Exist extends Types_Helper_Condition_Views_Active {
 
 	public static $views_per_post_type;

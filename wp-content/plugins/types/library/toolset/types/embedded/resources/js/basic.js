@@ -222,6 +222,9 @@ jQuery(document).ready(function(){
                         )
                     ) {
                         switch(data.execute) {
+                            case 'redirect':
+                                window.location = data.wpcf_redirect;
+                                break;
                             case 'reload':
                                 location.reload();
                                 break;

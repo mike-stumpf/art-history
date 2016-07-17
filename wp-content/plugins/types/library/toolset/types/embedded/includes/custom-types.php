@@ -511,7 +511,7 @@ function wpcf_dashboard_glance_items($elements)
 
         $text = _n( $data['labels']['singular_name'], $data['labels']['name'], intval($num_posts->publish) );
         $elements[] = sprintf(
-            '<a href="%s"%s>%d %s</a>',
+            '<a href="%s"%s>%s %s</a>',
             esc_url(
                 add_query_arg(
                     array(

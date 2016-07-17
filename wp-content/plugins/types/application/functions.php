@@ -7,32 +7,6 @@
  * @since 2.0
  */
 
-
-if ( !function_exists( 'get_called_class' ) ) {
-
-	/**
-	 * PHP 5.2 support.
-	 *
-	 * get_called_class() is only in PHP >= 5.3, this is a workaround.
-	 *
-	 * @since 1.9
-	 */
-	function get_called_class() {
-		$bt = debug_backtrace();
-		$l = 0;
-		do {
-			$l++;
-			$lines = file( $bt[ $l ]['file'] );
-			$callerLine = $lines[ $bt[ $l ]['line'] - 1 ];
-			preg_match( '/([a-zA-Z0-9\_]+)::' . $bt[ $l ]['function'] . '/', $callerLine, $matches );
-		} while( $matches[1] === 'parent' && $matches[1] );
-
-		return $matches[1];
-	}
-}
-
-
-
 if( !function_exists( 'wpcf_getpost' ) ) {
 
 	/**

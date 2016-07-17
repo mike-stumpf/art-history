@@ -31,10 +31,7 @@ final class Types_Page_Extension_Edit_Post_Type {
 
 	public function prepare() {
 		// documentation urls
-		$documentation_urls = include( TYPES_DATA . '/information/documentation-urls.php' );
-
-		// add links to use analytics
-		Types_Helper_Url::add_urls( $documentation_urls );
+		Types_Helper_Url::load_documentation_urls();
 
 		// set analytics medium
 		Types_Helper_Url::set_medium( 'cpt_editor' );
@@ -45,6 +42,11 @@ final class Types_Page_Extension_Edit_Post_Type {
 	}
 
 	private function prepare_informations() {
+		$setting = new Types_Setting_Preset_Information_Table();
+
+		if( ! $setting->get_value( 'show-on-post-type' ) )
+			return false;
+
 		$information = new Types_Information_Controller;
 		$information->prepare();
 	}

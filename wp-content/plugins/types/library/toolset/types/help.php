@@ -16,6 +16,9 @@
  */
 function wpcf_admin_help($page, $contextual_help = '')
 {
+	Types_Helper_Url::load_documentation_urls();
+	Types_Helper_Url::set_medium( Types_Helper_Url::UTM_MEDIUM_HELP );
+
     $help = '';
     switch ($page) {
         // Post Fields (list)
@@ -27,7 +30,11 @@ function wpcf_admin_help($page, $contextual_help = '')
                 .PHP_EOL
                 .sprintf(
                     __('You can read more about Post Fields in this tutorial: %s.', 'wpcf'),
-                    '<a href="http://wp-types.com/user-guides/using-custom-fields/" target="_blank">http://wp-types.com/user-guides/using-custom-fields/ &raquo;</a>'
+                    sprintf(
+	                    '<a href="%s" target="_blank">%s &raquo;</a>',
+	                    Types_Helper_Url::get_url( 'using-post-fields', true, 'using-custom-fields' ),
+	                    Types_Helper_Url::get_url( 'using-post-fields', false, false, false, false )
+                    )
                 )
                 .PHP_EOL
                 .PHP_EOL
@@ -59,11 +66,13 @@ function wpcf_admin_help($page, $contextual_help = '')
             $help .= sprintf('<h4>%s</h4>', __('Post Fields', 'wpcf'));
             $help .= '<ul>';
             $help .= sprintf(
-                '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/using-custom-fields/#1?utm_source=typesplugin&utm_medium=help&utm_term=adding-fields&utm_campaign=types">%s &raquo;</a></li>',
+                '<li><a target="_blank" href="%s">%s &raquo;</a></li>',
+                Types_Helper_Url::get_url( 'adding-fields', true ),
                 __('Adding post fields to content', 'wpcf')
             );
             $help .= sprintf(
-                '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/displaying-wordpress-custom-fields/?utm_source=typesplugin&utm_medium=help&utm_term=displaying-fields&utm_campaign=types">%s &raquo;</a></li>',
+                '<li><a target="_blank" href="%s">%s &raquo;</a></li>',
+                Types_Helper_Url::get_url( 'displaying-fields', true ),
                 __('Displaying post fields on front-end', 'wpcf')
             );
             $help .= '</ul>';
@@ -72,11 +81,13 @@ function wpcf_admin_help($page, $contextual_help = '')
             $help .= sprintf('<h4>%s</h4>', __('User Fields', 'wpcf'));
             $help .= '<ul>';
             $help .= sprintf(
-                '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/user-fields/?utm_source=typesplugin&utm_medium=help&utm_term=adding-user-fields&utm_campaign=types">%s &raquo;</a></li>',
+                '<li><a target="_blank" href="%s">%s &raquo;</a></li>',
+                Types_Helper_Url::get_url( 'adding-user-fields', true ),
                 __('Adding user fields to user profiles', 'wpcf')
             );
             $help .= sprintf(
-                '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/displaying-wordpress-user-fields/?utm_source=typesplugin&utm_medium=help&utm_term=displaying-user-fields&utm_campaign=types">%s &raquo;</a></li>',
+                '<li><a target="_blank" href="%s">%s &raquo;</a></li>',
+                Types_Helper_Url::get_url( 'displaying-user-fields', true ),
                 __('Displaying user fields on front-end', 'wpcf')
             );
             $help .= '</ul>';
@@ -85,26 +96,31 @@ function wpcf_admin_help($page, $contextual_help = '')
 	        $help .= sprintf(
 		        '<h4>%s</h4>
 				<ul>
-					<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/term-fields/?utm_source=typesplugin&utm_medium=help&utm_term=adding-term-fields&utm_campaign=types">%s &raquo;</a></li>
-					<li><a target="_blank" href="https://wp-types.com/documentation/user-guides/displaying-wordpress-term-fields/?utm_source=typesplugin&utm_medium=help&utm_term=displaying-term-fields&utm_campaign=types">%s &raquo;</a></li>
+					<li><a target="_blank" href="%s">%s &raquo;</a></li>
+					<li><a target="_blank" href="%s">%s &raquo;</a></li>
 				</ul>',
 		        __( 'Term Fields', 'wpcf' ),
+		        Types_Helper_Url::get_url( 'adding-term-fields', true ),
 		        __( 'Adding term fields to taxonomies', 'wpcf' ),
+		        Types_Helper_Url::get_url( 'displaying-term-fields', true ),
 		        __( 'Displaying term fields on front-end', 'wpcf' )
 	        );
 
             $help .= sprintf('<h4>%s</h4>', __('Post Types and Taxonomy', 'wpcf'));
             $help .= '<ul>';
             $help .= sprintf(
-                '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/create-a-custom-post-type/?utm_source=typesplugin&utm_medium=help&utm_term=custom-post-types&utm_campaign=types">%s &raquo;</a></li>',
+                '<li><a target="_blank" href="%s">%s &raquo;</a></li>',
+                Types_Helper_Url::get_url( 'custom-post-types', true ),
                 __('Creating and using post types', 'wpcf')
             );
             $help .= sprintf(
-                '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/create-custom-taxonomies/?utm_source=typesplugin&utm_medium=help&utm_term=custom-taxonomy&utm_campaign=types">%s &raquo;</a></li>',
+                '<li><a target="_blank" href="%s">%s &raquo;</a></li>',
+                Types_Helper_Url::get_url( 'custom-taxonomy', true ),
                 __('Arranging content with Taxonomy', 'wpcf')
             );
             $help .= sprintf(
-                '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/creating-post-type-relationships/?utm_source=typesplugin&utm_medium=help&utm_term=post-relationship&utm_campaign=types">%s &raquo;</a></li>',
+                '<li><a target="_blank" href="%s">%s &raquo;</a></li>',
+                Types_Helper_Url::get_url( 'post-relationship', true ),
                 __('Creating parent / child relationships', 'wpcf')
             );
             $help .= '</ul>';
@@ -120,7 +136,11 @@ function wpcf_admin_help($page, $contextual_help = '')
                 .PHP_EOL
                 .sprintf(
                     __('You can read more about Post Types and Taxonomies in this tutorial. %s', 'wpcf'),
-                    '<a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a>'
+                    sprintf(
+	                    '<a href="%s" target="_blank">%s &raquo;</a>',
+	                    Types_Helper_Url::get_url( 'custom-post-types', true ),
+	                    Types_Helper_Url::get_url( 'custom-post-types', false, false, false, false )
+                    )
                 )
                 .PHP_EOL
                 .PHP_EOL
@@ -152,7 +172,11 @@ function wpcf_admin_help($page, $contextual_help = '')
                .PHP_EOL
                .sprintf(
                     __('You can read more about Post Types and Taxonomies in this tutorial. %s', 'wpcf'),
-                    '<a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a>'
+		            sprintf(
+			            '<a href="%s" target="_blank">%s &raquo;</a>',
+			            Types_Helper_Url::get_url( 'custom-post-types', true ),
+			            Types_Helper_Url::get_url( 'custom-post-types', false, false, false, false )
+		            )
                 )
                 .PHP_EOL
                 .PHP_EOL
@@ -301,12 +325,24 @@ function wpcf_admin_help($page, $contextual_help = '')
     }
 
 	// to keep already translated strings
-	$help = str_replace( 'href="https://wp-types.com/user-guides/create-a-custom-post-type/"', 'href="https://wp-types.com/documentation/user-guides/create-a-custom-post-type/?utm_source=typesplugin&utm_medium=help&utm_term=custom-post-types&utm_campaign=types"', $help );
-	$help = str_replace( 'href="http://wp-types.com/user-guides/create-a-custom-post-type/"', 'href="https://wp-types.com/documentation/user-guides/create-a-custom-post-type/?utm_source=typesplugin&utm_medium=help&utm_term=custom-post-types&utm_campaign=types"', $help );
-	$help = str_replace( 'href="http://wp-types.com/user-guides/create-custom-taxonomies/"', 'href="https://wp-types.com/documentation/user-guides/create-custom-taxonomies/?utm_source=typesplugin&utm_medium=help&utm_term=custom-taxonomy&utm_campaign=types"', $help );
-	$help = str_replace( 'href="http://wp-types.com/user-guides/using-custom-fields/"', 'href="https://wp-types.com/user-guides/using-custom-fields/?utm_source=typesplugin&utm_medium=help&utm_term=post-fields&utm_campaign=types"', $help );
+	$help = str_replace(
+		'href="https://wp-types.com/user-guides/create-a-custom-post-type/"',
+		'href="' . Types_Helper_Url::get_url( 'custom-post-types', true ) . '"', $help
+	);
+	$help = str_replace(
+		'href="http://wp-types.com/user-guides/create-a-custom-post-type/"',
+		'href="' . Types_Helper_Url::get_url( 'custom-post-types', true ) . '"', $help 
+	);
+	$help = str_replace( 
+		'href="http://wp-types.com/user-guides/create-custom-taxonomies/"', 
+		'href="' . Types_Helper_Url::get_url( 'custom-taxonomy', true ) . '"', $help 
+	);
+	$help = str_replace( 
+		'href="http://wp-types.com/user-guides/using-custom-fields/"', 
+		'href="' . Types_Helper_Url::get_url( 'using-post-fields', true, 'post-fields' ) . '"', $help 
+	);
 	
-    return wpautop($help);
+    return wpautop( $help );
 }
 
 /**

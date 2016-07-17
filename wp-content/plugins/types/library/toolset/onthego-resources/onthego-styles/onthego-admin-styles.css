@@ -3,7 +3,8 @@
 **
 */
 /* ADMIN MENU ICONS */
-li#toplevel_page_wpcf-cpt div.wp-menu-image:before, li#toplevel_page_wpcf-cpt .dashicons-admin-generic:before{
+li#toplevel_page_wpcf-cpt div.wp-menu-image:before, li#toplevel_page_wpcf-cpt .dashicons-admin-generic:before,
+li#toplevel_page_toolset-dashboard div.wp-menu-image:before, li#toplevel_page_toolset-dashboard .dashicons-admin-generic:before{
     font-family: "onthegosystems-icons"!important;
     content: "\f12a";
     font-size: 22px!important;

@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * Types_Helper_Condition_Archive_No_Fields
+ *
+ * @since 2.0
+ */
 class Types_Helper_Condition_Archive_No_Fields extends Types_Helper_Condition_Archive_Missing {
 
 	public function valid() {
@@ -24,7 +30,7 @@ class Types_Helper_Condition_Archive_No_Fields extends Types_Helper_Condition_Ar
 			return false;
 
 		// check for fields, abort if there results in true
-		if( $file->search( 'types_render_field' ) )
+		if( $file->search( array( 'types_render_field', 'wpcf-' ) ) )
 			return false;
 
 		return true;

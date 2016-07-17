@@ -75,11 +75,16 @@ class Types_Dialog_Box extends Toolset_DialogBoxes {
 	 * @since 2.0
 	 */
 	protected function late_register_assets() {
+		/*
+		 * Toolset_DialogBoxes::register_styles() no longer exists
+		 * https://git.onthegosystems.com/toolset/toolset-common/commit/cb176128ac8382cebbad46a39848b4c76fdcc7a7
+		 *
 		// Get script and styles from parent methods, and register them manually.
 		$styles = $this->register_styles( array() );
 		foreach( $styles as $style ) {
 			Types_Asset_Manager::get_instance()->register_toolset_style( $style );
 		}
+		*/
 
 		$scripts = $this->register_scripts( array() );
 		foreach( $scripts as $script ) {

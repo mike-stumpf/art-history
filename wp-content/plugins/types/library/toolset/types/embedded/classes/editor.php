@@ -335,8 +335,8 @@ class WPCF_Editor
                 // Add additional parameters if required
                 $shortcode = $this->_add_parameters_to_shortcode( $shortcode, $_POST );
                 // Insert shortcode
-                echo '<script type="text/javascript">jQuery(function(){tedFrame.close(\''
-                . $shortcode . '\', \'' . esc_js( $shortcode ) . '\');});</script>';
+                echo '<script type="text/javascript">jQuery(function(){tedFrame.close("'
+                . $shortcode . '", "' . esc_js( $shortcode ) . '");});</script>';
             } else {
                 echo '<div class="message error"><p>'
                 . __( 'Shortcode generation failed', 'wpcf' ) . '</p></div>';
@@ -400,6 +400,15 @@ class WPCF_Editor
             $shortcode = preg_replace( '/\[types([^\]]*)/', '$0 ' . $post_id,
                     $shortcode );
         }
+
+        // replace double quotes with single quotes types-554
+        $search_for_double_quotes = array(
+            '#(?<=[A-z]\=)(\")#',     // opening "
+            '#(\")(?= [A-z]{1,}\=)#', // closing " followed by another parameter
+            '#(\")(?=\s*\])#',        // closing " for the last parameter
+        );
+        $shortcode = preg_replace( $search_for_double_quotes, "'", $shortcode );
+
         return $shortcode;
     }
 

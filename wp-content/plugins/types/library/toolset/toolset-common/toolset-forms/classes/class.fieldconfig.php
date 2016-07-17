@@ -27,9 +27,18 @@ if (!class_exists("FieldConfig")) {
         private $validation = array();
         private $attr;
         private $add_time = false;
+        private $form_settings;
 
         public function __construct() {
             
+        }
+
+        public function getForm_settings() {
+            return $this->form_settings;
+        }
+
+        public function setForm_settings($form_settings) {
+            $this->form_settings = $form_settings;
         }
 
         public function setRepetitive($repetitive) {
@@ -59,11 +68,25 @@ if (!class_exists("FieldConfig")) {
                     if (isset($field_arr['data']['date_and_time']) && 'and_time' == $field_arr['data']['date_and_time']) {
                         $this->add_time = true;
                     }
+                    if (isset($field_arr['value']['timestamp'])) {
+                        $this->default_value = array('timestamp' => $field_arr['value']['timestamp']);
+                    } else {
+                        //In Edit + Ajax call the object contains array of 5 elements timestamps only 1 and 5 (starting from 0) contains number timestamp
+                        if (isset($field_arr['value'][1]['timestamp']) &&
+                                is_numeric($field_arr['value'][1]['timestamp']))
+                            $this->default_value = array('timestamp' => $field_arr['value'][1]['timestamp']);
+                    }
                     break;
                 case 'checkboxes':
-                    if (is_array($field_arr['attr']['default']) && count($field_arr['attr']['default'])) {
-                        $this->default_value = isset($field_arr['attr']['default'][0]) ? $field_arr['attr']['default'][0] : "";
-                    }
+                    /* Output for Toolset common must be:
+                     * [option_key] => 1 
+                     */
+                    $def = array();
+                    if (!empty($field_arr['value']))
+                        foreach ($field_arr['value'] as $n => $value) {
+                            $def[$value] = 1;
+                        }
+                    $this->default_value = $def;
                     break;
 
                 case 'select':
@@ -76,8 +99,17 @@ if (!class_exists("FieldConfig")) {
                                     break;
                                 }
                             }
-                    } else
-                        $this->default_value = isset($field_arr['attr']['actual_value'][0]) ? $field_arr['attr']['actual_value'][0] : null;
+                    } else {
+                        if (isset($field_arr['attr']['actual_value'])) {
+                            //This value is not array if from parent
+                            if (is_array($field_arr['attr']['actual_value']))
+                                $this->default_value = isset($field_arr['attr']['actual_value'][0]) ? $field_arr['attr']['actual_value'][0] : null;
+                            else
+                                $this->default_value = isset($field_arr['attr']['actual_value']) ? $field_arr['attr']['actual_value'] : null;
+                        } else {
+                            $this->default_value = null;
+                        }                        
+                    }
                     break;
 
                 case 'radios':
@@ -85,13 +117,11 @@ if (!class_exists("FieldConfig")) {
                     break;
 
                 case 'checkbox':
-                    $this->default_value = isset($field_arr['data']['checked']) ? $field_arr['data']['checked'] : false;
-                    /* if (!$this->default_value)
-                      $this->default_value = isset($field_arr['data']['set_value']) && $field_arr['data']['set_value'] == 'y' ? true : false; */
+                    $this->default_value = $field_arr['value']; //isset($field_arr['data']['checked']) ? $field_arr['data']['checked'] : false;
                     break;
 
                 default:
-                    $this->default_value = isset($field_arr['attr']['preset_value']) ? $field_arr['attr']['preset_value'] : "";
+                    $this->default_value = $field_arr['value'];
                     break;
             }
         }
@@ -105,8 +135,8 @@ if (!class_exists("FieldConfig")) {
                 case 'checkboxes':
                     $actual_titles = isset($attrs['actual_titles']) ? $attrs['actual_titles'] : array();
                     foreach ($actual_titles as $refvalue => $title) {
-                        $value = $attrs['actual_values'][$refvalue];
-                        $arr[$refvalue] = array('value' => $refvalue, 'title' => $title, 'name' => $name, 'data-value' => $value);
+                        $_value = $attrs['actual_values'][$refvalue];
+                        $arr[$refvalue] = array('value' => $refvalue, 'title' => $title, 'name' => $name, 'data-value' => $_value);
                         if (in_array($refvalue, $attrs['default'])) {
                             $arr[$refvalue]['checked'] = true;
                         }
@@ -126,11 +156,11 @@ if (!class_exists("FieldConfig")) {
                     $actual_titles = isset($attrs['actual_titles']) ? $attrs['actual_titles'] : array();
                     foreach ($actual_titles as $refvalue => $title) {
                         $arr[$refvalue] = array(
-                            'value' => $refvalue,
+                            'value' => $attrs['actual_values'][$refvalue],
                             'title' => $title,
                             'checked' => false,
                             'name' => $refvalue,
-                            'types-value' => $attrs['actual_values'][$refvalue],
+                            'types-value' => $refvalue,
                         );
                     }
                     break;
@@ -157,7 +187,8 @@ if (!class_exists("FieldConfig")) {
                 'add_time' => $this->getAddTime(),
                 'validation' => array(),
                 'display' => $this->getDisplay(),
-                'attribute' => $this->getAttr()
+                'attribute' => $this->getAttr(),
+                'form_settings' => $this->getForm_settings()
             );
             return $this->config;
         }

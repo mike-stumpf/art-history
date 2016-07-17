@@ -1,16 +1,5 @@
 <?php
 
-if( ! defined( 'TYPES_VERSION' ) )
-    define( 'TYPES_VERSION', '1.9' );
-
-if( ! defined( 'TYPES_RELEASE_NOTES' ) )
-    define( 'TYPES_RELEASE_NOTES', 'https://wp-types.com/version/types-1-9/?utm_source=typesplugin&utm_campaign=types&utm_medium=release-notes-admin-notice&utm_term=Types 1.9 release notes' );
-
-
-/**
- *
- *
- */
 // make sure that WPCF_VERSION in embedded/bootstrap.php is the same!
 if ( ! defined( 'WPCF_VERSION' ) )
     define( 'WPCF_VERSION', TYPES_VERSION );
@@ -54,9 +43,6 @@ add_action( 'plugins_loaded', 'wpcf_init' );
 // init hook for module manager
 add_action( 'init', 'wpcf_wp_init' );
 
-register_deactivation_hook( __FILE__, 'wpcf_deactivation_hook' );
-register_activation_hook( __FILE__, 'wpcf_activation_hook' );
-
 
 add_action( 'after_setup_theme', 'wpcf_initialize_autoloader_full', 20 );
 
@@ -89,6 +75,8 @@ function wpcf_deactivation_hook()
  * Activation hook.
  *
  * Reset some of data.
+ * 
+ * @deprecated
  */
 function wpcf_activation_hook()
 {
@@ -486,8 +474,8 @@ function wpcf_upgrade_stored_taxonomies_with_builtin() {
 	$stored_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
 
 	if( empty( $stored_taxonomies ) || !isset( $stored_taxonomies['category'] ) || !isset( $stored_taxonomies['post_tag'] ) ) {
-		require_once WPCF_ABSPATH . '/embedded/classes/utils.php';
-		$taxonomies = WPCF_Utils::object_to_array_deep( get_taxonomies( array( 'public' => true, '_builtin' => true ), 'objects' ) );
+		
+		$taxonomies = Types_Utils::object_to_array_deep( get_taxonomies( array( 'public' => true, '_builtin' => true ), 'objects' ) );
 
 		if( isset( $taxonomies['post_format'] ) )
 			unset( $taxonomies['post_format'] );

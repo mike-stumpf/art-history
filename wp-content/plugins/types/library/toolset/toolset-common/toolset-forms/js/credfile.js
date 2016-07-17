@@ -1,7 +1,7 @@
 
 var wptCredfile = (function ($) {
     function init(selector) {
-        $(document).on('click', '.js-wpt-credfile-delete, .js-wpt-credfile-undo', function (e) {
+        $('.js-wpt-credfile-delete, .js-wpt-credfile-undo').on('click', function (e) {
             e.preventDefault();
             var thiz = $(this),
                     credfile_action = thiz.data('action'),
@@ -15,6 +15,7 @@ var wptCredfile = (function ($) {
                     thiz_file_input = $('.js-wpt-credfile-upload-file', credfile_container),
                     thiz_preview = $('.js-wpt-credfile-preview', credfile_container),
                     thiz_existing_value = thiz_hidden_input.val();
+            var myid = thiz_hidden_input.attr('name');
             if (credfile_action == 'delete') {
                 thiz_file_input.prop('disabled', false).show().val('');
                 thiz_hidden_input.prop('disabled', true);
@@ -25,6 +26,10 @@ var wptCredfile = (function ($) {
                 } else {
                     thiz_undo_button.hide();
                 }
+                if (myid == '_featured_image')
+                    $("<input type='hidden' id='attachid_" + myid + "' name='attachid_" + myid + "' value=''>").insertAfter('#' + thiz_hidden_input.attr('id'));
+                else
+                    $("<input type='hidden' id='" + myid + "' name='" + myid + "' value=''>").insertAfter('#' + thiz_hidden_input.attr('id'));
                 thiz_file_input.trigger('change');
             } else if (credfile_action == 'undo') {
                 thiz_file_input.prop('disabled', true).hide();
@@ -33,10 +38,14 @@ var wptCredfile = (function ($) {
                 thiz_preview.show();
                 thiz_delete_button.show();
                 thiz_undo_button.hide();
+                if (myid == '_featured_image')
+                    $('#attachid_' + myid).remove();
+                else
+                    $('#' + myid).remove();
             }
         });
 
-        $(document).on('change', '.js-wpt-credfile-upload-file', function (e) {
+        $('.js-wpt-credfile-upload-file').on('change', function (e) {
             e.preventDefault();
             var thiz = $(this),
                     credfile_container = thiz.closest('.wpt-repctl');

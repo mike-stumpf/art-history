@@ -19,7 +19,8 @@ var wptValidation = (function ($) {
          */
         $.validator.addMethod("extension", function (value, element, param) {
             param = typeof param === "string" ? param.replace(/,/g, "|") : param;
-            if ($(element).attr('res') && $(element).attr('res')!="") return true;
+            if ($(element).attr('res') && $(element).attr('res') != "")
+                return true;
             return this.optional(element) || value.match(new RegExp(".(" + param + ")$", "i"));
         });
 
@@ -74,10 +75,10 @@ var wptValidation = (function ($) {
                     //Fixing YT cred-196
                     if (jQuery(element).hasClass("wpt-form-radio")) {
                         var $name = jQuery(element).attr("name");
-                        var val = jQuery('input[name="'+$name+'"]:checked').val();
+                        var val = jQuery('input[name="' + $name + '"]:checked').val();
                         return val && $.trim(val).length > 0;
                     }
-                    
+
                     //Fixing YT cred-104
                     element = jQuery(element).siblings('input[type="hidden"]');
                     if (element[0] &&
@@ -169,18 +170,127 @@ var wptValidation = (function ($) {
 
         // On some pages the form may not be ready yet at this point (e.g. Edit Term page).
         jQuery(document).ready(function () {
-            $(formID).on('submit', function () {
-                if ($form.valid()) {
-                    $('.js-wpt-remove-on-submit', $(this)).remove();
+            //var formclone = $form.clone();
+
+            jQuery(document).off('submit', $form.selector, null);
+            jQuery(document).on('submit', $form.selector, function () {
+
+                var myformid = formID.replace('#', '');
+                myformid = myformid.replace('-', '_');
+                var cred_settings = eval('cred_settings_' + myformid);
+
+                if (typeof grecaptcha !== 'undefined') {
+                    var $error_selector = jQuery(formID).find('div.recaptcha_error');
+                    if (_recaptcha_id == -1) {
+                        if (grecaptcha.getResponse() == '') {
+                            $error_selector.show();
+                            setTimeout(function () {
+                                $error_selector.hide();
+                            }, 5000);
+                            return false;
+                        }
+                    } else {
+                        if (grecaptcha.getResponse(_recaptcha_id) == '') {
+                            $error_selector.show();
+                            setTimeout(function () {
+                                $error_selector.hide();
+                            }, 5000);
+                            return false;
+                        }
+                    }
+                    $error_selector.hide();
                 }
+
+                if ($form.valid()) {
+                    //console.log("form valid 1");
+
+                    $('.js-wpt-remove-on-submit', $(this)).remove();
+
+                    if (cred_settings.use_ajax && cred_settings.use_ajax == 1) {
+                        $('<input value="cred_ajax_form" name="action">').attr('type', 'hidden').appendTo(formID);
+                        $('<input value="true" name="form_submit">').attr('type', 'hidden').appendTo(formID);
+
+                        $body = $("body");
+                        $body.addClass("wpt-loading");
+
+                        $.ajax({
+                            type: 'post',
+                            url: $(formID).attr('action'),
+                            data: $(formID).serialize(),
+                            dataType: 'json',
+                            complete: function (data) {
+                                $body.removeClass("wpt-loading");
+                            },
+                            success: function (data) {
+                                $body.removeClass("wpt-loading");
+                                if (data) {
+                                    //console.log(data);
+                                    $(formID).replaceWith(data.output);
+                                    reload_tinyMCE(formID);
+
+                                    if (data.formtype == 'new') {
+                                        if (data.result == 'ok') {
+//                                            $(':input', formID)
+//                                                    .not(':button, :submit, :reset, :hidden')
+//                                                    .val('')
+//                                                    .removeAttr('checked')
+//                                                    .removeAttr('selected');
+
+                                        }
+
+                                        if (data.result != 'redirect') {
+                                            check_current_cred_post_id();
+                                        }
+                                    }
+
+                                    if (data.result == 'ok') {
+                                        alert(cred_settings.operation_ok);
+                                    } else {
+                                        if (data.result != 'redirect')
+                                            alert(cred_settings.operation_ko);
+                                    }
+                                    try_to_reload_reCAPTCHA(formID);                                    
+                                }
+                            }
+                        });
+                    }
+                }
+                if (cred_settings.use_ajax && cred_settings.use_ajax == 1)
+                    return false;
             });
         });
+    }
 
-        $form.on('submit', function () {
-            if ($form.valid()) {
-                $('.js-wpt-remove-on-submit', $(this)).remove();
+    var _recaptcha_id = -1;
+    function try_to_reload_reCAPTCHA(formID) {
+        if (typeof grecaptcha !== 'undefined') {
+            var _sitekey = jQuery(formID).find('div.g-recaptcha').data('sitekey');
+            _recaptcha_id = grecaptcha.render($('.g-recaptcha')[0], {sitekey: _sitekey});
+        }
+    }
+
+    function reload_tinyMCE(formID) {
+        jQuery('.wpt-wysiwyg').each(function (index) {
+            var $area = jQuery(this),
+                    area_id = $area.prop('id');
+            if (typeof area_id !== 'undefined') {
+                tinyMCE.remove();
+                tinyMCE.init(tinyMCEPreInit.mceInit[area_id]);
+                var quick = quicktags(tinyMCEPreInit.qtInit[area_id]);
+                Toolset.add_qt_editor_buttons(quick, area_id);
             }
         });
+
+        if (typeof tinyMCE !== 'undefined') {
+            var $area = jQuery('textarea[name="post_content"]'),
+                    area_id = $area.prop('id');
+            if (typeof area_id !== 'undefined') {
+                tinyMCE.remove();
+                tinyMCE.init(tinyMCEPreInit.mceInit[area_id]);
+                var quick = quicktags(tinyMCEPreInit.qtInit[area_id]);
+                Toolset.add_qt_editor_buttons(quick, area_id);
+            }
+        }
     }
 
     function isIgnored($el) {

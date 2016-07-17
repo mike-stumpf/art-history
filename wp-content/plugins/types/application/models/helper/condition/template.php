@@ -1,6 +1,10 @@
 <?php
 
-
+/**
+ * Types_Helper_Condition_Template
+ *
+ * @since 2.0
+ */
 abstract class Types_Helper_Condition_Template extends Types_Helper_Condition {
 
 	protected $templates;

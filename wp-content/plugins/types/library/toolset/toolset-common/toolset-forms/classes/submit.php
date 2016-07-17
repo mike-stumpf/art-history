@@ -47,8 +47,8 @@ define('DOING_AJAX', true);
 
 require_once( get_root_path() . 'wp-load.php' );
 require_once( get_root_path() . 'wp-admin/includes/file.php' );
-require_once ( get_root_path() . 'wp-admin/includes/media.php' );
-require_once ( get_root_path() . 'wp-admin/includes/image.php' );
+require_once( get_root_path() . 'wp-admin/includes/media.php' );
+require_once( get_root_path() . 'wp-admin/includes/image.php' );
 
 /** Allow for cross-domain requests (from the frontend). */
 send_origin_headers();
@@ -59,6 +59,7 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
 
     if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['file'])) {
         $file = $_POST['file'];
+		$id = isset( $_POST['id'] ) ? (int) $_POST['id'] : 0;
 
         $data = array('result' => true);
 
@@ -67,7 +68,7 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
 //get all image attachments
         $attachments = get_children(
                 array(
-                    'post_parent' => $post->ID,
+                    'post_parent' => $id,
                     //'post_mime_type' => 'image',
                     'post_type' => 'attachment'
                 )
@@ -176,16 +177,18 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
 
                             if (isset($_rewrited_url) && isset($_rewrited_url_prw)) {
                                 $files[] = (is_array($_rewrited_url) && isset($_rewrited_url[0])) ? $_rewrited_url[0] : $_rewrited_url; //$res['url'];
+                                $attaches[] = $attach_id;
                                 $previews[] = (is_array($_rewrited_url_prw) && isset($_rewrited_url_prw[0])) ? $_rewrited_url_prw[0] : $_rewrited_url_prw; //$res['url'];
                             } else {
                                 $files[] = $res['url'];
+                                $attaches[] = $attach_id;
                             }
                         } else {
                             $error = true;
                         }
                     }
                 }
-                $data = ($error) ? array('result' => false, 'error' => __('There was an error uploading your files', 'wpv-views') . ': ' . $res['error']) : array('files' => $files, 'previews' => $previews, 'delete_nonce' => time());
+                $data = ($error) ? array('result' => false, 'error' => __('There was an error uploading your files', 'wpv-views') . ': ' . $res['error']) : array('files' => $files, 'attaches' => $attaches, 'previews' => $previews, 'delete_nonce' => time());
             } else {
                 $data = array('result' => false, 'error' => __('Error: Files is too big, Max upload size is', 'wpv-views') . ': ' . ini_get('post_max_size'));
             }

@@ -70,23 +70,6 @@
     overflow: hidden;
 }
 
-/*
-.types-table-in-meta-box table tr:first-child th {
-    border-top: 0;
-}
-
-.types-table-in-meta-box table tr:last-child td {
-    border-bottom: 0;
-}
-.types-table-in-meta-box table tr td:first-child,
-.types-table-in-meta-box table tr th:first-child {
-    border-left: 0;
-}
-.types-table-in-meta-box table tr td:last-child,
-.types-table-in-meta-box table tr th:last-child {
-    border-right: 0;
-}
-*/
 a.types-external-link {
     padding-right: 15px;
 }
@@ -185,6 +168,109 @@ a.types-button.types-external-link:after {
     font-size: 80px;
     width: auto;
     margin-top: -15px;
+}
+
+/* Pointer */
+.types-pointer-inner .types-information-paragraph {
+    padding-right: 30px;
+}
+
+.types-information-pointer .wp-pointer-buttons {
+    padding: 0;
+}
+
+.types-information-pointer.wp-pointer-bottom .wp-pointer-arrow {
+    left: auto;
+    right: 50px;
+}
+
+/* Toolset Dashboard */
+div.toolset-dashboard {
+    margin-top: 25px;
+}
+
+div.toolset-dashboard .types-information-paragraph {
+    text-align: center;
+}
+
+div.toolset-dashboard .types-information-important .types-information-paragraph {
+    text-align: left;
+}
+
+div.toolset-dashboard table td p > a,
+div.toolset-dashboard table td li > a {
+    text-decoration: none !important;
+}
+
+div.toolset-dashboard table ul {
+    margin-left: 15px;
+}
+
+div.toolset-dashboard table ul li {
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+div.toolset-dashboard .types-information-important {
+    background: transparent;
+}
+
+/*
+div.toolset-dashboard .types-information-important p:first-child a:before {
+    margin-left: -45px;
+}
+
+div.toolset-dashboard .types-information-important p:first-child:before {
+    content: '';
+}
+
+div.toolset-dashboard .types-information-important p:first-child {
+    padding-left: 0;
+    text-align: center;
+}
+*/
+
+div.toolset-dashboard div.types-information table {
+    border-collapse: collapse;
+}
+div.toolset-dashboard div.types-information table th,
+div.toolset-dashboard div.types-information table td {
+    border: 1px solid #cacaca;
+    vertical-align: middle;
+}
+
+div.toolset-dashboard div.types-information table th:nth-child(3),
+div.toolset-dashboard div.types-information table td:nth-child(3) {
+    border-right-color: #000;
+}
+
+div.toolset-dashboard div.types-information thead tr:first-child th {
+    color: #fff;
+    background-color: #999999;
+    border-color: #000;
+    font-size: 14px;
+    padding: 8px 0;
+}
+
+div.toolset-dashboard div.types-information thead tr:first-child th:last-child {
+    background-color: #000;
+}
+
+div.toolset-dashboard div.types-information thead tr:last-child th {
+    font-size: 14px;
+    padding: 12px 0;
+}
+
+div.toolset-dashboard div.types-information tbody tr {
+    background: #fff;
+}
+div.toolset-dashboard div.types-information tbody tr:nth-child(2n) {
+    background: #f9f9f9;
+}
+
+div.toolset-dashboard .types-information-paragraph.toolset-dashboard-post-type {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left;
 }
 
 /* DELETE START

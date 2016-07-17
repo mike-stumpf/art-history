@@ -19,7 +19,7 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield {
 
         $this->objValues = array();
         if (isset($post)) {
-            $terms = wp_get_post_terms($post->ID, $this->getName(), array("fields" => "all"));
+            $terms = apply_filters('toolset_filter_taxonomyhierarchical_terms', wp_get_post_terms($post->ID, $this->getName(), array("fields" => "all")));
             foreach ($terms as $n => $term) {
                 $this->values[] = $term->slug;
                 $this->valuesId[] = $term->term_id;
@@ -28,8 +28,6 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield {
         }
 
         $all = $this->buildTerms(get_terms($this->getName(), array('hide_empty' => 0, 'fields' => 'all')));
-
-
 
         $childs = array();
         $names = array();

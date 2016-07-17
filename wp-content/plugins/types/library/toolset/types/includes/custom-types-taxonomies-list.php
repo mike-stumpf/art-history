@@ -3,17 +3,18 @@
  * Types and Taxonomies list functions
  */
 
-function wpcf_admin_ctt_list_header()
-{
-    $custom_types = get_option(WPCF_OPTION_NAME_CUSTOM_TYPES, array());
-    $custom_taxonomies = get_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array());
+function wpcf_admin_ctt_list_header() {
+	$custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
+	$custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
 
-    if (empty($custom_types) && empty($custom_taxonomies)) {
-        echo '<p>'
-        . __('Post Types are user-defined content types. Taxonomies are used to categorize your content.', 'wpcf')
-        . ' ' . __('You can read more about Post Types and Taxonomies in this tutorial. <a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a>', 'wpcf')
-        . '</p>';
-    }
+	if ( empty( $custom_types ) && empty( $custom_taxonomies ) ) {
+		printf( '<p>%s %s<a href="%s" target="_blank">%s &raquo;</a></p>',
+			__( 'Post Types are user-defined content types. Taxonomies are used to categorize your content.', 'wpcf' ),
+			__( 'You can read more about Post Types and Taxonomies in this tutorial.', 'wpcf' ),
+			Types_Helper_Url::get_url( 'custom-post-types' ),
+			Types_Helper_Url::get_url( 'custom-post-types' )
+		);
+	}
 }
 
 function wpcf_admin_custom_post_types_list()

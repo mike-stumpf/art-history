@@ -785,6 +785,9 @@ class Types_Cache
 
 /**
  * Types error class.
+ *
+ * @deprecated Do not use anywhere new.
+ * @since the year 2013
  */
 class Types_Error extends WP_Error
 {
@@ -792,9 +795,9 @@ class Types_Error extends WP_Error
     /**
      * Init function.
      * 
-     * @param type $code
-     * @param type $message
-     * @param type $data
+     * @param $code
+     * @param $message
+     * @param $data
      */
     function __construct( $code = 'types_error', $message = '', $data = '' ) {
         parent::__construct( $code, $message, $data );
@@ -804,15 +807,17 @@ class Types_Error extends WP_Error
     /**
      * Adds error and debug data.
      * 
-     * @param type $message
-     * @param type $data
+     * @param $message
+     * @param $data
      */
     public function addError( $message, $data = array() ) {
 
         if ( $message instanceof WP_Error ) {
             $code = $message->get_error_code();
             $message = $message->get_error_message();
-            $data = $message->error_data;
+            if( isset( $message->error_data ) ) {
+	            $data = $message->error_data;
+            }
         } else {
             $db = debug_backtrace();
             $code = "{$db[1]['class']}::{$db[1]['function']}()";

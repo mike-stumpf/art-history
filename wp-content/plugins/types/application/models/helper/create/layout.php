@@ -2,8 +2,18 @@
 
 class Types_Helper_Create_Layout {
 
+	/**
+	 * Creates a layout for a given post type
+	 *
+	 * @param $type
+	 * @param bool|string $name Name for the Layout
+	 *
+	 * @return bool
+	 * @since 2.0
+	 */
 	public function for_post( $type, $name = false ) {
 
+		// set name if no available
 		if( ! $name ) {
 			$type_object = get_post_type_object( $type );
 			$name = sprintf( __( 'Template for %s', 'types' ), $type_object->labels->name );
@@ -14,12 +24,13 @@ class Types_Helper_Create_Layout {
 		if( ! $name )
 			return false;
 
+		// create layout
 		$layout_id = $this->create_layout( $name );
 
 		if( ! $layout_id )
 			return false;
 
-		global $wpddlayout;
+		// get all items of post type
 		$posts = get_posts( 'post_type=' . $type . '&post_status=any&posts_per_page=-1&fields=ids' );
 
 		// store layout assignments before assign new
@@ -35,6 +46,7 @@ class Types_Helper_Create_Layout {
 		}
 
 		// assign the new layout to all post types
+		global $wpddlayout;
 		$wpddlayout->post_types_manager->handle_set_option_and_bulk_at_once( $layout_id, array( $type ), array( $type ) );
 
 		// restore previously assigned layouts
@@ -47,24 +59,40 @@ class Types_Helper_Create_Layout {
 		return $layout_id;
 	}
 
+	/**
+	 * Checks all dependencies
+	 *
+	 * @return bool
+	 * @since 2.0
+	 */
 	private function needed_components_loaded( ) {
 		global $wpddlayout;
 		if(
 			! is_object( $wpddlayout )
 			|| ! class_exists( 'WPDD_Layouts' )
+            || ! class_exists( 'WPDDL_Options' )
 			|| ! class_exists( 'WPDD_Layouts_Users_Profiles' )
 			|| ! method_exists( 'WPDD_Layouts', 'create_layout' )
 			|| ! method_exists( 'WPDD_Layouts', 'save_layout_settings' )
 			|| ! method_exists( 'WPDD_Layouts_Users_Profiles', 'user_can_create' )
 			|| ! method_exists( 'WPDD_Layouts_Users_Profiles', 'user_can_assign' )
+            || ! method_exists( 'WPDD_Layouts_Cache_Singleton', 'get_name_by_id' )
 			|| ! method_exists( $wpddlayout, 'get_css_framework' )
 		) return false;
 
 		return true;
 	}
 
+	/**
+	 * Create a layout with given name
+	 *
+	 * @param $name
+	 *
+	 * @return bool|int|WP_Error
+	 * @since 2.0
+	 */
 	private function create_layout( $name ) {
-		// @todo check with Ric to get a more handy class to create a new layout.
+		// todo check with Ric to get a more handy class to create a new layout.
 		// currently there is only (which I found)
 		// - create_layout_auto(), which has a redirect
 		// - create_layout_callback() for ajax only -> uses die()
@@ -79,11 +107,17 @@ class Types_Helper_Create_Layout {
 
 		$layout = WPDD_Layouts::create_layout( 12, 'fluid' );
 
+        $parent_post_name = '';
+        $parent_ID = apply_filters('ddl-get-default-' . WPDDL_Options::PARENTS_OPTIONS, WPDDL_Options::PARENTS_OPTIONS);
+        if ($parent_ID) {
+            $parent_post_name = WPDD_Layouts_Cache_Singleton::get_name_by_id($parent_ID);
+        }
+        
 		// Define layout parameters
 		$layout['type'] = 'fluid'; // layout_type
 		$layout['cssframework'] = $wpddlayout->get_css_framework();
 		$layout['template'] = '';
-		$layout['parent'] = '';
+		$layout['parent'] = $parent_post_name;
 		$layout['name'] = $name;
 
 		$args = array(
@@ -106,6 +140,16 @@ class Types_Helper_Create_Layout {
 		return $layout_id;
 	}
 
+	/**
+	 * Will proof if given name is already in use.
+	 * If so it adds an running number until name is available
+	 *
+	 * @param $name
+	 * @param int $id | should not manually added
+	 *
+	 * @return string
+	 * @since 2.0
+	 */
 	private function validate_name( $name, $id = 1 ) {
 		$name_exists = get_page_by_title( html_entity_decode( $name ), OBJECT, WPDDL_LAYOUTS_POST_TYPE );
 

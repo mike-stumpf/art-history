@@ -544,7 +544,16 @@ if ( ! function_exists( 'wpv_condition' ) ) {
 
 if ( ! function_exists( 'wpv_eval_check_syntax' ) ) {
 	function wpv_eval_check_syntax( $code ) {
-		return @eval( 'return true;' . $code );
+		try {
+			return @eval( 'return true;' . $code );
+		} catch( ParseError $parse_error ) {
+			// PHP7 compatibility, eval() changed it's behaviour:
+			//
+			// http://php.net/manual/en/function.eval.php
+			// As of PHP 7, if there is a parse error in the evaluated code, eval() throws a ParseError exception.
+			// Before PHP 7, in this case eval() returned FALSE and execution of the following code continued normally.
+			return false;
+		}
 	}
 }
 

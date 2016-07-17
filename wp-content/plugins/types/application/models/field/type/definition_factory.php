@@ -11,7 +11,7 @@
  *
  * @since 1.9
  */
-final class Types_Field_Type_Definition_Factory {
+class Types_Field_Type_Definition_Factory {
 
 	const AUDIO = 'audio';
 	const COLORPICKER = 'colorpicker';
@@ -146,18 +146,20 @@ final class Types_Field_Type_Definition_Factory {
 	 */
 	private function create_definition_instance( $field_type_slug, $field_type_configuration ) {
 		switch( $field_type_slug ) {
+			case self::DATE:
+				return new Types_Field_Type_Definition_Date( $field_type_configuration );
 			case self::CHECKBOX:
 				return new Types_Field_Type_Definition_Checkbox( $field_type_configuration );
-			
+			case self::CHECKBOXES:
+				return new Types_Field_Type_Definition_Checkboxes( $field_type_configuration );
 			case self::NUMERIC:
 				return new Types_Field_Type_Definition_Numeric( $field_type_configuration );
-
-			case self::CHECKBOXES:
 			case self::RADIO:
+				return new Types_Field_Type_Definition_Radio( $field_type_configuration );
 			case self::SELECT:
+				return new Types_Field_Type_Definition_Select( $field_type_configuration );
 			case self::WYSIWYG:
 				return new Types_Field_Type_Definition_Singular( $field_type_slug, $field_type_configuration );
-
 			default:
 				return new Types_Field_Type_Definition( $field_type_slug, $field_type_configuration );
 		}

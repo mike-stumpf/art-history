@@ -67,6 +67,15 @@ function wpcf_embedded_admin_init_hook() {
             )
     );
 
+	register_post_type(
+		TYPES_TERM_META_FIELD_GROUP_CPT_NAME,
+		array(
+			'public' => false,
+			'label' => 'Types Term Groups',
+			'can_export' => false,
+		)
+	);
+
     add_filter( 'icl_custom_fields_to_be_copied',
             'wpcf_custom_fields_to_be_copied', 10, 2 );
 
@@ -191,6 +200,7 @@ function wpcf_admin_fields_userfields_styles(){
  * @param string $id
  * @param array $form
  * @return Enlimbo_Forms_Wpcf
+ * @deprecated Please avoid using Enlimbo forms for new code. Consider using Twig templates instead.
  */
 function wpcf_form( $id, $form = array() ) {
 	static $wpcf_forms = array();
@@ -214,8 +224,9 @@ function wpcf_form( $id, $form = array() ) {
  * Renders form elements.
  * 
  * @staticvar string $form
- * @param type $elements
- * @return type 
+ * @param array $elements
+ * @return array 
+ * @deprecated Please avoid using Enlimbo forms for new code. Consider using Twig templates instead.
  */
 function wpcf_form_simple( $elements ) {
     static $form = NULL;
@@ -232,6 +243,7 @@ function wpcf_form_simple( $elements ) {
  * @staticvar string $form
  * @param type $elements
  * @return type 
+ * @deprecated Please avoid using Enlimbo forms for new code. Consider using Twig templates instead.
  */
 function wpcf_form_simple_validate( &$elements ) {
     static $form = NULL;
@@ -248,7 +260,8 @@ function wpcf_form_simple_validate( &$elements ) {
  * 
  * @staticvar array $validation
  * @param type $element
- * @return array 
+ * @return array
+ * @deprecated Please avoid using Enlimbo forms for new code. Consider using Twig templates instead. 
  */
 function wpcf_form_add_js_validation( $element ) {
     static $validation = array();
@@ -267,6 +280,7 @@ function wpcf_form_add_js_validation( $element ) {
  * @param type $selector Can be CSS class or element ID
  * @param type $echo
  * @return string
+ * @deprecated Please avoid using Enlimbo forms for new code. Consider using Twig templates instead.
  */
 function wpcf_form_render_js_validation( $selector = '.wpcf-form-validate',
         $echo = true ) {

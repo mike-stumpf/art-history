@@ -57,7 +57,7 @@ function wpcf_admin_fields_form()
         $form['help-icon'] = array(
             '#type' => 'markup',
             '#markup' => '<div class="wpcf-admin-fields-help"><img src="' . WPCF_EMBEDDED_TOOLSET_RELPATH
-            . '/toolset-common/res/images/question.png" style="position:relative;top:2px;" />&nbsp;<a href="http://wp-types.com/documentation/user-guides/using-custom-fields/?utm_source=typesplugin&utm_medium=help&utm_term=fields-help&utm_content=fields-editor&utm_campaign=types" target="_blank">'
+            . '/toolset-common/res/images/question.png" style="position:relative;top:2px;" />&nbsp;<a href="' . Types_Helper_Url::get_url( 'using-post-fields', 'fields-editor', 'fields-help', Types_Helper_Url::UTM_MEDIUM_HELP ) . '" target="_blank">'
             . __( 'Custom fields help', 'wpcf' ) . '</a></div>',
             );
         $form['submit2'] = array(

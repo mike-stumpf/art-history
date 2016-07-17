@@ -68,7 +68,7 @@
     width: 100%;
 }
 ul.wpt-form-set, ul.wpt-form-set-children {
-	list-style-type: none;
+    list-style-type: none;
 }
 .wpt-form-description-textarea,
 .wpt-form-description-checkboxes,
@@ -125,7 +125,7 @@ input.wpt-form-error {
 }
 .ui-sortable .wpt-form-textarea
 ,.ui-sortable .wpt-form-textfield {
-	width: 70%;
+    width: 70%;
 }
 .wpt-form-fields-delete,
 .wpt-fields-form-move-field {
@@ -142,17 +142,17 @@ input.wpt-form-error {
     font-style: italic;
 }
 .wpt-form-textfield.wpt-new-taxonomy-title {
-	max-width: 420px;
+    max-width: 420px;
     width: 100%;
 }
 .cred-taxonomy-auxilliary
 ,.wpt-hierarchical-taxonomy-add-new
 ,.wpt-taxonomy-show-popular-list {
-	margin-top: 10px;
+    margin-top: 10px;
 }
 .wpt-taxonomy-show-popular-list {
-	padding: 10px;
-	border: solid 1px #ccc;
+    padding: 10px;
+    border: solid 1px #ccc;
 }
 .wpt-message {
     padding: 0 0.6em;
@@ -194,7 +194,7 @@ img.ui-datepicker-trigger, img.ui-datepicker-readonly
     margin: 0 5px 0 0;
 }
 .wpt-repdelete, .wpt-date-clear {
-	margin: 0 0 0 5px;
+    margin: 0 0 0 5px;
 }
 .wpt-repadd {
     margin-top: 5px !important;
@@ -211,7 +211,7 @@ img.ui-datepicker-trigger, img.ui-datepicker-readonly
     z-index: 3;
 }
 .wp-editor-container {
-	border: 1px solid #e5e5e5;
+    border: 1px solid #e5e5e5;
 }
 
 /* Credfile */
@@ -262,7 +262,7 @@ img.wpt-credfile-preview-upload {
 /* Taxonomy */
 .tagchecklist {
     margin-left:15px;
-	overflow:hidden;
+    overflow:hidden;
 }
 
 .tagchecklist span {
@@ -297,27 +297,47 @@ img.wpt-credfile-preview-upload {
 
 /* Autocomplete */
 .wpt-suggest-taxonomy-term {
-	position: absolute;
-	display: none;
-	min-width: 100px;
-	outline: solid #ccc 1px;
-	padding: 0px;
-	background-color: Window;
-	overflow: hidden;
+    position: absolute;
+    display: none;
+    min-width: 100px;
+    outline: solid #ccc 1px;
+    padding: 0px;
+    background-color: Window;
+    overflow: hidden;
 }
 
 .wpt-suggest-taxonomy-term li {
-	margin: 0px;
-	padding: 2px 5px;
-	cursor: pointer;
-	display: block;
-	width: 100%;
-	font: menu;
-	font-size: 12px;
-	overflow: hidden;
+    margin: 0px;
+    padding: 2px 5px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    font: menu;
+    font-size: 12px;
+    overflow: hidden;
 }
 
 .wpt-suggest-taxonomy-term-select {
-	background-color: Highlight;
-	color: HighlightText;
+    background-color: Highlight;
+    color: HighlightText;
+}
+
+.wpt-modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .3 ) 
+        url('../images/loading.png') 
+        50% 50% 
+        no-repeat;
+}
+body.wpt-loading {
+}
+
+body.wpt-loading .wpt-modal {
+    display: block;
 }

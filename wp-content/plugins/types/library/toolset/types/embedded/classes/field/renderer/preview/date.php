@@ -9,13 +9,17 @@ final class WPCF_Field_Renderer_Preview_Date extends WPCF_Field_Renderer_Preview
 	 */
 	protected function render_single( $value ) {
 
+		if( !is_string( $value ) ) {
+			return '';
+		}
+
 		$timestamp = (int) $value;
-		
+
 		// Skip empty values
 		if( 0 == $timestamp ) {
 			return '';
 		}
-		
+
 		$output = date( get_option( 'date_format' ), $timestamp );
 
 		$add_time = ( $this->field->get_definition()->get_datetime_option() == 'date_and_time' );

@@ -254,10 +254,15 @@ function wpcf_admin_usermeta_form()
         // Set help icon
         $form['help-icon'] = array(
             '#type' => 'markup',
-            '#markup' => '<div class="wpcf-admin-fields-help"><img src="' . WPCF_EMBEDDED_TOOLSET_RELPATH
-            . '/toolset-common/res/images/question.png" style="position:relative;top:2px;" />&nbsp;<a href="http://wp-types.com/documentation/user-guides/using-custom-fields/" target="_blank">'
-            . __('Usermeta help', 'wpcf') . '</a></div>',
-            );
+            '#markup' => sprintf(
+	            '<div class="wpcf-admin-fields-help"><img src="%s" style="position:relative;top:2px;" />&nbsp;
+					<a href="%s" target="_blank">%s</a>
+				</div>',
+	            WPCF_EMBEDDED_TOOLSET_RELPATH . '/toolset-common/res/images/question.png',
+                Types_Helper_Url::get_url( 'using-post-fields' ),
+	            __( 'Usermeta help', 'wpcf' )
+            ),
+        );
         $form['submit2'] = array(
             '#type' => 'submit',
             '#name' => 'save',

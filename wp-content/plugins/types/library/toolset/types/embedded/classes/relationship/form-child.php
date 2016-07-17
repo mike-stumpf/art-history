@@ -120,7 +120,7 @@ class WPCF_Relationship_Child_Form
             return;
         }
         /**
-         * post types
+         * post types managed by Types
          */
         $post_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
         if (
@@ -129,6 +129,14 @@ class WPCF_Relationship_Child_Form
         ) {
             foreach(  $post_types[$child_post_type]['supports'] as $key => $value ) {
                 $this->child_supports[$key] = (boolean)$value;
+            }
+
+        /**
+         * all other post types
+         */
+        } else {
+            foreach( array_keys($this->child_supports) as $key ) {
+                $this->child_supports[$key] = post_type_supports($child_post_type, $key);
             }
         }
         unset($post_types);

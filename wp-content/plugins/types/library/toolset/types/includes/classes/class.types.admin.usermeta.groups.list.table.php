@@ -214,7 +214,7 @@ class Types_Admin_Usermeta_Groups_List_Table extends WP_List_Table
     {
         $columns = array(
             'cb'          => '<input type="checkbox" />', //Render a checkbox instead of text
-            'title'       => __('Group Name', 'wpcf'),
+            'title'       => __('Name', 'wpcf'),
             'description' => __('Description', 'wpcf'),
             'status'      => __('Active', 'wpcf'),
             'show_for'    => __('Available for', 'wpcf'),

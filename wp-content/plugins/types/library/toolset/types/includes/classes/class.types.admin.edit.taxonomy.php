@@ -146,6 +146,14 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin_Page
                 '#value' => $id,
                 '#name' => 'ct[wpcf-tax]',
             );
+	        
+	        $form['slug_conflict_check_nonce'] = array(
+		        '#type' => 'hidden',
+		        '#value' => wp_create_nonce( Types_Ajax::CALLBACK_CHECK_SLUG_CONFLICTS ),
+		        '#name' => 'types_check_slug_conflicts_nonce',
+		        '_builtin' => true,
+	        );
+
         }
 
         /**
@@ -170,14 +178,14 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin_Page
 
         $form['table-1-open'] = array(
             '#type' => 'markup',
-            '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Taxonomy name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
+            '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
         );
         $table_row = '<tr><td><LABEL></td><td><ERROR><BEFORE><ELEMENT><AFTER></td></tr>';
 
         $form['name'] = array(
             '#type' => 'textfield',
             '#name' => 'ct[labels][name]',
-            '#title' => __( 'Taxonomy name plural', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
+            '#title' => __( 'Name plural', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
             '#description' => '<strong>' . __( 'Enter in plural!', 'wpcf' ) . '.',
             '#value' =>  isset( $this->ct['labels']['name'] ) ? $this->ct['labels']['name']:'',
             '#validate' => array(
@@ -195,7 +203,7 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin_Page
         $form['name-singular'] = array(
             '#type' => 'textfield',
             '#name' => 'ct[labels][singular_name]',
-            '#title' => __( 'Taxonomy name singular', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
+            '#title' => __( 'Name singular', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
             '#description' => '<strong>' . __( 'Enter in singular!', 'wpcf' ) . '</strong><br />' . '.',
             '#value' => isset( $this->ct['labels']['singular_name'] ) ? $this->ct['labels']['singular_name']:'',
             '#validate' => array(
@@ -278,10 +286,10 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin_Page
         );
 
         if ( $this->ct['_builtin']) {
-            $form['name']['#attributes']['disabled'] = 'disabled';
-            $form['name-singular']['#attributes']['disabled'] = 'disabled';
-            $form['slug']['#attributes']['disabled'] = 'disabled';
-            $form['description']['#attributes']['disabled'] = 'disabled';
+            $form['name']['#attributes']['readonly'] = 'readonly';
+            $form['name-singular']['#attributes']['readonly'] = 'readonly';
+            $form['slug']['#attributes']['readonly'] = 'readonly';
+            $form['description']['#attributes']['readonly'] = 'readonly';
         }
 
         /**
@@ -393,7 +401,7 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin_Page
             '_builtin' => true,
         );
         $button_text = __( 'Save Taxonomy', 'wpcf' );
-        $form = $this->submitdiv($button_text, $form, 'custom-taxonomy');
+        $form = $this->submitdiv( $button_text, $form, 'custom-taxonomy', $this->ct['_builtin'] );
         $form = wpcf_form(__FUNCTION__, $form);
         echo $form->renderForm();
     }
@@ -431,8 +439,8 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin_Page
         $form['rewrite-slug'] = array(
             '#type' => 'textfield',
             '#name' => 'ct[rewrite][slug]',
-            '#title' => __( 'Prepend posts with this slug', 'wpcf' ),
-            '#description' => __( 'Optional', 'wpcf' ) . '. ' . __( "Prepend posts with this slug - defaults to taxonomy's name.", 'wpcf' ),
+            '#title' => __( 'Replace taxonomy slug with this', 'wpcf' ),
+            '#description' => __( 'Optional', 'wpcf' ) . '. ' . __( 'Replace taxonomy slug with this - defaults to taxonomy slug.', 'wpcf' ),
             '#value' => isset( $this->ct['rewrite']['slug'] ) ? $this->ct['rewrite']['slug'] : '',
             '#inline' => true,
             '#before' => '<div id="wpcf-types-form-rewrite-toggle"' . $hidden . '>',
@@ -698,7 +706,10 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin_Page
             $options[$post_type_slug] = array(
                 '#name' => 'ct[supports][' . $post_type_slug . ']',
                 '#title' => $post_type->labels->name,
-                '#default_value' => in_array( $post_type_slug, $supported ) || array_key_exists( $post_type_slug, $supported ),
+                '#default_value' =>
+                    in_array( $post_type_slug, $supported )
+                    || array_key_exists( $post_type_slug, $supported )
+                    || ( isset( $_GET['assign_type'] ) && $_GET['assign_type'] == $post_type_slug ),
                 '#inline' => true,
                 '#before' => '<li>',
                 '#after' => '</li>',
@@ -785,8 +796,24 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin_Page
         }
         $data = $_POST['ct'];
         $update = false;
-
+        
         // Sanitize data
+        $data['labels']['name'] = isset( $data['labels']['name'] )
+            ? sanitize_text_field( $data['labels']['name'] )
+            : '';
+
+        $data['labels']['singular_name'] = isset( $data['labels']['singular_name'] )
+            ? sanitize_text_field( $data['labels']['singular_name'] )
+            : '';
+
+        if (
+            empty( $data['labels']['name'] )
+            || empty( $data['labels']['singular_name'] )
+        ) {
+            wpcf_admin_message( __( 'Please set taxonomy name', 'wpcf' ), 'error' );
+            return false;
+        }
+
         if ( isset( $data[$this->get_id] ) ) {
             $update = true;
             $data[$this->get_id] = sanitize_title( $data[$this->get_id] );
@@ -971,16 +998,21 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin_Page
         // Flush rewrite rules
         flush_rewrite_rules();
 
+        $args = array(
+            'page' => 'wpcf-edit-tax',
+            $this->get_id => $tax,
+            'wpcf-message' => get_user_option('types-modal'),
+            'flush' => 1
+        );
+        
+        if( isset( $_GET['ref'] ) )
+            $args['ref'] = $_GET['ref'];
+
         // Redirect
         wp_safe_redirect(
             esc_url_raw(
                 add_query_arg(
-                    array(
-                        'page' => 'wpcf-edit-tax',
-                        $this->get_id => $tax,
-                        'wpcf-message' => get_user_option('types-modal'),
-	                    'flush' => 1
-                    ),
+                    $args,
                     admin_url( 'admin.php' )
                 )
             )

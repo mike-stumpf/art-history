@@ -4,8 +4,8 @@
  * Preview renderer for image fields.
  *
  * Tries to be clever about WP attachments and use thumbnails instead of full size images whenever possible.
- * 
- * For displaying the full image on clicking on the preview, you need to enqueue the 'wpcf-js' script and 
+ *
+ * For displaying the full image on clicking on the preview, you need to enqueue the 'wpcf-js' script and
  * the 'wptoolset-forms-admin' style
  *
  * @since 1.9.1
@@ -24,7 +24,7 @@ final class WPCF_Field_Renderer_Preview_Image extends WPCF_Field_Renderer_Previe
 	 */
 	protected function render_single( $value ) {
 
-		if( !is_string( $value ) ) {
+		if( !is_string( $value ) || empty( $value ) ) {
 			return '';
 		}
 
@@ -56,7 +56,7 @@ final class WPCF_Field_Renderer_Preview_Image extends WPCF_Field_Renderer_Previe
 	 * @since 1.9.1
 	 */
 	protected function try_finding_attachment( $url ) {
-		$attachment_id = WPCF_Utils::get_attachment_id_by_url( $url );
+		$attachment_id = Types_Utils::get_attachment_id_by_url( $url );
 		if( 0 == $attachment_id ) {
 			return $url;
 		}

@@ -41,6 +41,16 @@
         position:relative;
 	}
 
+	.ddl-dialog-header{
+		padding-top: 9px;
+		padding-bottom: 9px;
+	}
+
+	.ddl-dialog-footer{
+		padding-top: 8px;
+		padding-bottom: 7px;
+	}
+
 	.ddl-dialog-content {
 		overflow-y: auto;
 		padding-right: 10px;
@@ -124,7 +134,7 @@
 	.ddl-dialog-content::-webkit-scrollbar-thumb:hover {
 		background-color: rgba(0, 0, 0, .2);
 	}
-	.ddl-dialog-content:-webkit-scrollbar-thumb:active {
+	.ddl-dialog-content::-webkit-scrollbar-thumb:active {
 		background-color: rgba(0, 0, 0, .3);
 	}
 
@@ -167,7 +177,6 @@
 				}
 
 		.ddl-popup-tab {
-			border-left: 1px solid #ddd;
 			padding: 0px 0 0 10px;
 		}
 		
@@ -215,17 +224,19 @@
 			top: 10px;
 			right: 10px;
 			cursor: pointer;
+            font-size:14px;
 		}
 
 		.ddl-dialog-header .icon-remove:hover {
-			color: #d54e21;
+			color: #00a0d2;
 		}
 
 		.ddl-dialog-header h2 {
 			margin: 0;
 			padding: 0 20px 0 0;
 			font-weight: normal;
-			font-size: 14px;
+			font-size: 18px;
+            font-weight: 600;
 		}
 
 	.ddl-dialog-footer {
@@ -271,7 +282,7 @@ label.set-parent-layout-select{
     since it completely changes the rules for the editor sidebar
 */
 ul.post-types-list-in-layout-editor{padding: 0px 0px 10px 10px;}
-.close-change-use{float:right;}
+.close-change-use{float:left;}
 .create-layout-form-dialog .change-layout-use-section{margin-left:15px;}
 .assign-checkboxes-elements-wrap{display:block;clear:both;}
 .assign-checkboxes-elements-wrap label{float:left;display:inline-block;clear:right;font-size: 13px;}
@@ -298,3 +309,4 @@ label.post-types-apply-to-all-selection-label input[type="checkbox"]{margin-left
 
 /* GENERAL OVERRIDES FOR TOOLSET ELEMENTS DIALOGS */
 .ddl-dialog-footer button.ddl-toolset-cell-button{margin-left:3px;}
+p.cleared{clear:both!important;padding-top:4px!important;}

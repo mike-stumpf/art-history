@@ -205,6 +205,14 @@ class Types_Admin_Edit_Post_Type extends Types_Admin_Page
                 '#name' => 'ct[wpcf-post-type]',
                 '_builtin' => true,
             );
+
+	        $form['slug_conflict_check_nonce'] = array(
+		        '#type' => 'hidden',
+		        '#value' => wp_create_nonce( Types_Ajax::CALLBACK_CHECK_SLUG_CONFLICTS ),
+		        '#name' => 'types_check_slug_conflicts_nonce',
+		        '_builtin' => true,
+	        );
+	        
             /**
              * update Taxonomy too
              */
@@ -263,14 +271,14 @@ class Types_Admin_Edit_Post_Type extends Types_Admin_Page
 
         $form['table-1-open'] = array(
             '#type' => 'markup',
-            '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Post Type name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
+            '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
             '_builtin' => true,
         );
         $table_row = '<tr><td><LABEL></td><td><ERROR><BEFORE><ELEMENT><AFTER></td></tr>';
         $form['name'] = array(
             '#type' => 'textfield',
             '#name' => 'ct[labels][name]',
-            '#title' => __( 'Post Type name plural', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
+            '#title' => __( 'Name plural', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
             '#description' => '<strong>' . __( 'Enter in plural!', 'wpcf' )
             . '.',
             '#value' => isset( $this->ct['labels']['name'] ) ? $this->ct['labels']['name'] : '',
@@ -291,7 +299,7 @@ class Types_Admin_Edit_Post_Type extends Types_Admin_Page
         $form['name-singular'] = array(
             '#type' => 'textfield',
             '#name' => 'ct[labels][singular_name]',
-            '#title' => __( 'Post Type name singular', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
+            '#title' => __( 'Name singular', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
             '#description' => '<strong>' . __( 'Enter in singular!', 'wpcf' )
             . '</strong><br />'
             . '.',
@@ -305,6 +313,7 @@ class Types_Admin_Edit_Post_Type extends Types_Admin_Page
             '#attributes' => array(
                 'placeholder' => __('Enter Post Type name singular', 'wpcf' ),
                 'class' => 'js-wpcf-slugize-source large-text',
+                'data-anonymous-post-type' => __( 'this Post Type', 'types' ),
             ),
             '_builtin' => true,
         );
@@ -864,7 +873,7 @@ class Types_Admin_Edit_Post_Type extends Types_Admin_Page
             'custom-fields' => array(
                 '#name' => 'ct[supports][custom-fields]',
                 '#default_value' => !empty( $this->ct['supports']['custom-fields'] ),
-                '#title' => __( 'Post Fields', 'wpcf' ),
+                '#title' => __( 'Custom Fields', 'wpcf' ),
                 '#description' => __( "The native WordPress custom post fields list. If you don't select this, Types post fields will still display.", 'wpcf' ),
                 '#inline' => true,
             ),
@@ -1077,6 +1086,22 @@ class Types_Admin_Edit_Post_Type extends Types_Admin_Page
         $update = false;
 
         // Sanitize data
+        $data['labels']['name'] = isset( $data['labels']['name'] )
+            ? sanitize_text_field( $data['labels']['name'] )
+            : '';
+
+        $data['labels']['singular_name'] = isset( $data['labels']['singular_name'] )
+            ? sanitize_text_field( $data['labels']['singular_name'] )
+            : '';
+
+        if (
+            empty( $data['labels']['name'] )
+            || empty( $data['labels']['singular_name'] )
+        ) {
+            wpcf_admin_message( __( 'Please set post type name', 'wpcf' ), 'error' );
+            return false;
+        }
+
         if ( isset( $data[$this->get_id] ) ) {
             $update = true;
             $data[$this->get_id] = sanitize_title( $data[$this->get_id] );

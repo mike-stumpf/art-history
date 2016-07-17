@@ -182,13 +182,13 @@ class Types_Admin_Edit_Meta_Fields_Group extends Types_Admin_Edit_Fields
 
         $form['table-1-open'] = array(
             '#type' => 'markup',
-            '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Field Group name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
+            '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
         );
         $table_row = '<tr><td><LABEL></td><td><ERROR><BEFORE><ELEMENT><AFTER></td></tr>';
         $form['title'] = array(
             '#title' => sprintf(
                 '%s <b>(%s)</b>',
-                __( 'Field Group name', 'wpcf' ),
+                __( 'Name', 'wpcf' ),
                 __( 'required', 'wpcf' )
             ),
             '#type' => 'textfield',

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Libraries
  * - CakePHP library for PHP validation
@@ -18,44 +19,55 @@
  *
  * @author Srdjan
  */
-class WPToolset_Forms_Validation
-{
+class WPToolset_Forms_Validation {
+
     private $__formID;
+    private $__formSET;
     protected $_cake;
     protected $_rules_map = array(
         'rangelength' => 'between',
         'number' => 'numeric'
     );
 
-    function __construct( $formID ){
-        $this->__formID = trim( $formID, '#' );
+    function __construct($formID, $formSET) {
+        $this->__formID = trim($formID, '#');
+        $this->__formSET = $formSET;
+
         // Register
-        wp_register_script( 'wptoolset-form-jquery-validation',
-                WPTOOLSET_FORMS_RELPATH . '/lib/js/jquery-form-validation/jquery.validate.js',
-                array('jquery'), WPTOOLSET_FORMS_VERSION, true );
-        wp_register_script( 'wptoolset-form-jquery-validation-additional',
-                WPTOOLSET_FORMS_RELPATH . '/lib/js/jquery-form-validation/additional-methods.min.js',
-                array('wptoolset-form-jquery-validation'),
-                WPTOOLSET_FORMS_VERSION, true );
-        wp_register_script( 'wptoolset-form-validation',
-                WPTOOLSET_FORMS_RELPATH . '/js/validation.js',
-                array('wptoolset-form-jquery-validation-additional', 'underscore'),
-                WPTOOLSET_FORMS_VERSION, true );
+        wp_register_script('wptoolset-form-jquery-validation', WPTOOLSET_FORMS_RELPATH . '/lib/js/jquery-form-validation/jquery.validate.js', array('jquery'), WPTOOLSET_FORMS_VERSION, true);
+        wp_register_script('wptoolset-form-jquery-validation-additional', WPTOOLSET_FORMS_RELPATH . '/lib/js/jquery-form-validation/additional-methods.min.js', array('wptoolset-form-jquery-validation'), WPTOOLSET_FORMS_VERSION, true);
+        wp_register_script('wptoolset-form-validation', WPTOOLSET_FORMS_RELPATH . '/js/validation.js', array('wptoolset-form-jquery-validation-additional', 'underscore', 'toolset-utils'), WPTOOLSET_FORMS_VERSION, true);
+
+        $my_formID = str_replace("-", "_", $formID);
+        wp_localize_script('wptoolset-form-validation', 'cred_settings_' . $my_formID, array(
+            'form_id' => $formID,
+            'use_ajax' => (!is_admin() && isset($formSET->form['use_ajax']) && $formSET->form['use_ajax'] == 1) ? true : false,
+            'operation_ok' => __('Operation completed successfully', 'wpv-views'),
+            'operation_ko' => __('Operation not completed successfully', 'wpv-views'),
+            'delay_message' => __('You are being redirectd. Please Wait.', 'wpv-views')
+                )
+        );
 
         // Filter JS validation data
-        add_action( 'wptoolset_forms_field_js_validation_data_' . $this->__formID,
-                array($this, 'filterJsValidation') );
+        add_action('wptoolset_forms_field_js_validation_data_' . $this->__formID, array($this, 'filterJsValidation'));
         // Filter form field PHP validation
-        add_filter( 'wptoolset_form_' . $this->__formID . '_validate_field',
-                array($this, 'filterFormField'), 10, 2 );
+        add_filter('wptoolset_form_' . $this->__formID . '_validate_field', array($this, 'filterFormField'), 10, 2);
         // Render classes
-        add_action('wptoolset_field_class', array($this, 'actionFieldClass') );
+        add_action('wptoolset_field_class', array($this, 'actionFieldClass'));
 
         // Render settings
-        add_action( 'admin_print_footer_scripts', array($this, 'renderJsonData'), 30 );
-        add_action( 'wp_footer', array($this, 'renderJsonData'), 30 );
+        add_action('admin_print_footer_scripts', array($this, 'renderJsonData'), 30);
+        add_action('wp_footer', array($this, 'renderJsonData'), 30);
+        add_action('wp_footer', array($this, 'loadCustomAssets'), 30);
 
-        wp_enqueue_script( 'wptoolset-form-validation' );
+        wp_enqueue_script('wptoolset-form-validation');
+    }
+
+    /**
+     * loadCustomAssets
+     */
+    public function loadCustomAssets() {
+        echo '<div class="wpt-modal"></div>';
     }
 
     /**
@@ -64,25 +76,24 @@ class WPToolset_Forms_Validation
      * @param type $rules
      * @return type
      */
-    public function filterJsValidation( $rules ) {
-        foreach ( $rules as $r => $rule ) {
+    public function filterJsValidation($rules) {
+        foreach ($rules as $r => $rule) {
             // Possible change of rule (like DateITA)
-            $_r = apply_filters( 'wptoolset_validation_rule_js', $r );
-            if ( $_r != $r ) {
+            $_r = apply_filters('wptoolset_validation_rule_js', $r);
+            if ($_r != $r) {
                 $rules[$_r] = $rule;
-                unset( $rules[$r] );
+                unset($rules[$r]);
                 continue;
             }
         }
-        foreach ( $rules as $r => &$rule ) {
-            $rule['args'] = apply_filters( 'wptoolset_validation_args_js',
-                        $rule['args'], $r );
+        foreach ($rules as $r => &$rule) {
+            $rule['args'] = apply_filters('wptoolset_validation_args_js', $rule['args'], $r);
             // Remove value in args - search string '$value' or unset first element
-            $replace = array_search( '$value', $rule['args'] );
-            if ( $replace !== false ) {
-                unset( $rule['args'][$replace] );
+            $replace = array_search('$value', $rule['args']);
+            if ($replace !== false) {
+                unset($rule['args'][$replace]);
             } else {
-                array_shift( $rule['args'] );
+                array_shift($rule['args']);
             }
 //            unset( $rule['message'] );
         }
@@ -100,26 +111,24 @@ class WPToolset_Forms_Validation
      * @param type $value
      * @return type
      */
-    public function filterFormField( $element, $value ) {
-        $rules = $this->_parseRules( $element['#validate'], $value );
+    public function filterFormField($element, $value) {
+        $rules = $this->_parseRules($element['#validate'], $value);
         // If not required but empty - skip
-        if ( !isset( $rules['required'] )
-                && ( is_null( $value ) || $value === false || $value === '' ) ) {
+        if (!isset($rules['required']) && ( is_null($value) || $value === false || $value === '' )) {
             return true;
         }
         try {
             $errors = array();
-            foreach ( $rules as $rule => $args ) {
-                if ( !$this->validate( $rule, $args['args'] ) ) {
+            foreach ($rules as $rule => $args) {
+                if (!$this->validate($rule, $args['args'])) {
                     $errors[] = $args['message'];
                 }
             }
-            if ( !empty( $errors ) ) {
+            if (!empty($errors)) {
                 throw new Exception();
             }
-        } catch ( Exception $e ) {
-            $element['error'] =  new WP_Error( __CLASS__ . '::' . __METHOD__,
-                    'Field not validated', $errors );
+        } catch (Exception $e) {
+            $element['error'] = new WP_Error(__CLASS__ . '::' . __METHOD__, 'Field not validated', $errors);
         }
         return $element;
     }
@@ -132,19 +141,18 @@ class WPToolset_Forms_Validation
      * @return \WP_Error|boolean
      * @throws Exception
      */
-    public function validateField( $field ) {
-        $value = apply_filters( 'wptoolset_validation_value_' . $field->getType(), $field->getValue() );
-        $rules = $this->_parseRules( $field->getValidationData(), $value );
+    public function validateField($field) {
+        $value = apply_filters('wptoolset_validation_value_' . $field->getType(), $field->getValue());
+        $rules = $this->_parseRules($field->getValidationData(), $value);
         // If not required but empty - skip
-        if ( !isset( $rules['required'] )
-                && ( is_null( $value ) || $value === false || $value === '' ) ) {
+        if (!isset($rules['required']) && ( is_null($value) || $value === false || $value === '' )) {
             return true;
         }
 
         try {
             $errors = array();
-            foreach ( $rules as $rule => $args ) {
-                if ( !$this->validate( $rule, $args['args'] ) ) {
+            foreach ($rules as $rule => $args) {
+                if (!$this->validate($rule, $args['args'])) {
                     /**
                      * Allow turn off field name.
                      *
@@ -154,32 +162,30 @@ class WPToolset_Forms_Validation
                      *
                      * @param boolean $var show field title in message, * default true.
                      */
-                    if ( apply_filters('toolset_common_validation_add_field_name_to_error', true) ) {
-                        $errors[] = $field->getTitle() .  ' ' . $args['message'];
+                    if (apply_filters('toolset_common_validation_add_field_name_to_error', true)) {
+                        $errors[] = $field->getTitle() . ' ' . $args['message'];
                     } else {
                         $errors[] = $args['message'];
                     }
                 }
             }
-            if ( !empty( $errors ) ) {
+            if (!empty($errors)) {
                 throw new Exception();
             }
-        } catch ( Exception $e ) {
-            return new WP_Error( __CLASS__ . '::' . __METHOD__,
-                    'Field not validated', $errors );
+        } catch (Exception $e) {
+            return new WP_Error(__CLASS__ . '::' . __METHOD__, 'Field not validated', $errors);
         }
         return true;
     }
 
-    protected function _parseRules( $rules, $value ) {
+    protected function _parseRules($rules, $value) {
         $_rules = array();
-        foreach ( $rules as $rule => $args ) {
-            $rule = apply_filters( 'wptoolset_validation_rule_php', $rule );
-            $args['args'] = apply_filters( 'wptoolset_validation_args_php',
-                    $args['args'], $rule );
+        foreach ($rules as $rule => $args) {
+            $rule = apply_filters('wptoolset_validation_rule_php', $rule);
+            $args['args'] = apply_filters('wptoolset_validation_args_php', $args['args'], $rule);
             // Set value in args - search string '$value' or replace first element
-            $replace = array_search( '$value', $args['args'] );
-            if ( $replace !== false ) {
+            $replace = array_search('$value', $args['args']);
+            if ($replace !== false) {
                 $args['args'][$replace] = $value;
             } else {
                 $args['args'][0] = $value;
@@ -198,16 +204,16 @@ class WPToolset_Forms_Validation
      * @param type $args
      * @return boolean
      */
-    public function validate( $rule, $args ) {
+    public function validate($rule, $args) {
         $validator = $this->_cake();
-        $rule = $this->_map_rule_js_to_php( $rule );
+        $rule = $this->_map_rule_js_to_php($rule);
 
-        if ( 'skype' == $rule ) {
+        if ('skype' == $rule) {
             return $validator->custom($args[0]['skypename'], '/^([a-zA-Z0-9\,\.\-\_]+)$/');
         }
 
-        if ( is_callable( array($validator, $rule) ) ) {
-            return call_user_func_array( array($validator, $rule), $args );
+        if (is_callable(array($validator, $rule))) {
+            return call_user_func_array(array($validator, $rule), $args);
         }
         return false;
     }
@@ -218,7 +224,7 @@ class WPToolset_Forms_Validation
      * @return type
      */
     protected function _cake() {
-        if ( is_null( $this->_cake ) ) {
+        if (is_null($this->_cake)) {
             require_once WPTOOLSET_FORMS_ABSPATH . '/lib/CakePHP-Validation.php';
             $this->_cake = new WPToolset_Cake_Validation;
         }
@@ -231,8 +237,8 @@ class WPToolset_Forms_Validation
      * @param type $rule
      * @return type
      */
-    protected function _map_rule_js_to_php( $rule ) {
-        return isset( $this->_rules_map[$rule] ) ? $this->_rules_map[$rule] : $rule;
+    protected function _map_rule_js_to_php($rule) {
+        return isset($this->_rules_map[$rule]) ? $this->_rules_map[$rule] : $rule;
     }
 
     /**
@@ -242,8 +248,8 @@ class WPToolset_Forms_Validation
         printf('<script type="text/javascript">wptValidationForms.push("#%s");</script>', $this->__formID);
     }
 
-    public function actionFieldClass( $config ) {
-        if ( !empty( $config['validation'] ) ) {
+    public function actionFieldClass($config) {
+        if (!empty($config['validation'])) {
             foreach ($config['validation'] as $rule => $data) {
                 echo " wpt-validation-{$rule}";
             }

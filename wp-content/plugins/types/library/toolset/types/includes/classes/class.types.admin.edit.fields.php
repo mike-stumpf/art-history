@@ -250,6 +250,15 @@ abstract class Types_Admin_Edit_Fields extends Types_Admin_Page
             '#title' => __('Field slug', 'wpcf'),
         );
 
+        // existing field
+        if ( isset( $form_data['submitted_key'] ) ) {
+            $form_field['slug-pre-save'] = array(
+                '#type' => 'hidden',
+                '#name' => 'slug-pre-save',
+            );
+        }
+
+
         $options = $this->get_available_types($type);
         if ( empty( $options ) ) {
             $form_field['type'] = array(
@@ -537,6 +546,10 @@ abstract class Types_Admin_Edit_Fields extends Types_Admin_Page
                 if ( !isset($form[$name]['#pattern']) ) {
                     $form[$name]['#pattern'] = $table_row;
                 }
+            }
+
+            if( $k == 'slug-pre-save' ) {
+                $form[$name]['#value'] = $form_data['slug'];
             }
         }
         /**
@@ -1313,7 +1326,7 @@ abstract class Types_Admin_Edit_Fields extends Types_Admin_Page
 		        $message = __( 'There is no User Field Group. Please define one first.', 'wpcf' );
 		        break;
 	        case WPCF_Field_Definition_Factory_Term::FIELD_DEFINITIONS_OPTION:
-		        $groups = wpcf_admin_fields_get_groups( WPCF_Field_Group_Term::POST_TYPE );
+		        $groups = wpcf_admin_fields_get_groups( Types_Field_Group_Term::POST_TYPE );
 		        $message = __( 'There is no Term Field Group. Please define one first.', 'wpcf' );
 		        break;
         }

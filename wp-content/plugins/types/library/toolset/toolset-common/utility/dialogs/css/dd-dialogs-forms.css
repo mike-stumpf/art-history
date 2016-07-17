@@ -74,12 +74,15 @@ ul.ddl-form { /* If .ddl-form class is added directly to <ul> element */
 	display: block;
 	float: left;
 	margin: 0 0px 0 0;
-	padding: 1px 0;
+	padding: 1px 4px 1px 0px;
 	width: 168px;
 	vertical-align: top;
 	font-weight: bold;
 	font-size: 13px;
+	text-align:right;
 }
+.ddl-form .cred-popup-box label, .ddl-form .cred-popup-box legend{text-align: left;}
+
 
 .ddl-form input,
 .ddl-form textarea, .ddl-form select {
@@ -190,6 +193,12 @@ ul.ddl-form { /* If .ddl-form class is added directly to <ul> element */
 .ddl-form .fields-group .desc,
 .ddl-form .fields-group .select2-container {
 	float: none;
+}
+
+.ddl-form .radio, /* radios and checkboxes should be wrapped in .radio or .checkbox element */
+.ddl-form .checkbox,.ddl-form .fields-group .radio,
+.ddl-form .fields-group .checkbox{
+    float:left;
 }
 
 /* Alternative vertical layout. .ddl-form-item-fullwidth should be added to: .ddl-form-item, <li> or <p> tag */
@@ -476,5 +485,33 @@ a.ddl-duplicate-anchor{cursor:pointer;}
 .ddl-setting-for-layouts-container-in-iframe .css-styling-controls{padding-top:0px;margin-top:0px;}
 .ddl-setting-for-layouts-container-in-iframe span.desc{padding-bottom:6px;padding-top:0px;width:555px!important;}
 input.css-id-control{width:555px!important;}
+.toolset-shortcode-gui-dialog-container{min-height:92px!important;max-height:370px!important;}
 /*///////// OVERRIDES /////////////////*/
 .ui-dialog-buttonpane{padding: 8px;}
+
+.ddl-youtube-video-cell span.px_box {
+    display: block;
+    margin-top: 4px;
+    float: right;
+    clear: right;
+    width: auto;
+    text-align: left;
+}
+.ddl-youtube-video-cell .ddl-layout-video-input{
+    display: block;
+    float: left !important;
+    clear: right;
+    width: 515px !important;
+    color: #474747;
+}
+
+.ddl-youtube-video-cell .desc {
+    margin: 5px 0 0 0;
+    color: #999;
+    width: 545px !important;
+    font-size: 10px;
+    text-align: left;
+}
+.ddl-youtube-video-cell label{
+    width: 211px !important;
+}

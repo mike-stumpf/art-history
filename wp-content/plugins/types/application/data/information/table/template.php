@@ -78,7 +78,10 @@ return array(
 			array(
 				'type'   => 'link',
 				'external' => true,
-				'label'  => __( 'Visit example %POST-LABEL-SINGULAR%', 'types' ),
+				'label'  => array(
+					'default' => __( 'Visit example %POST-LABEL-SINGULAR%', 'types' ),
+					'post-edit' => __( 'Visit this %POST-LABEL-SINGULAR%', 'types' ),
+				),
 				'target' => '%POST-PERMALINK%'
 			),
 			array(
@@ -189,7 +192,10 @@ return array(
 			array(
 				'type'   => 'link',
 				'external' => true,
-				'label'  => __( 'Visit example %POST-LABEL-SINGULAR%', 'types' ),
+				'label'  => array(
+					'default' => __( 'Visit example %POST-LABEL-SINGULAR%', 'types' ),
+					'post-edit' => __( 'Visit this %POST-LABEL-SINGULAR%', 'types' ),
+				),
 				'target' => '%POST-PERMALINK%'
 			),
 			array(

@@ -1,25 +1,13 @@
 <?php
 
-
+/**
+ * Types_Helper_Placeholder
+ *
+ * @since 2.0
+ */
 class Types_Helper_Placeholder {
 
 	private static $post_type;
-	private static $post_type_template_file;
-	private static $post_type_archive_file;
-	private static $post_type_create_layout_template;
-	private static $post_type_create_layout_archive;
-
-	private static $archive_link;
-	private static $single_link;
-
-	private static $post_type_edit_layout_template;
-	private static $post_type_edit_layout_archive;
-
-	private static $post_type_edit_views_template;
-	private static $post_type_edit_views_archive;
-	private static $post_type_create_views_archive;
-
-	private static $post_type_create_view;
 
 	public static function set_post_type( $posttype = false ) {
 
@@ -61,8 +49,8 @@ class Types_Helper_Placeholder {
 			'%POST-TEMPLATE-FILE%'              => '<nobr>' . self::get_post_template_file() . '</nobr>',
 			'%POST-ARCHIVE-FILE%'               => '<nobr>' . self::get_post_archive_file() . '</nobr>',
 			'%POST-FORMS-LIST%'                 => self::get_post_type_forms_list(),
-			'%POST-CREATE-FORM%'                => $admin_url . 'admin.php?page=types-helper&action=new-form&type=' . self::$post_type->name,
-			'%POST-TYPE-EDIT-HAS-ARCHIVE%'      => $admin_url . 'admin.php?page=wpcf-edit-type&wpcf-post-type=' . self::$post_type->name . '#types_options',
+			'%POST-CREATE-FORM%'                => self::add_referer( $admin_url . 'admin.php?page=types-helper&action=new-form&type=' . self::$post_type->name.'&toolset_help_video=cred_form' ),
+			'%POST-TYPE-EDIT-HAS-ARCHIVE%'      => self::add_referer( $admin_url . 'admin.php?page=wpcf-edit-type&wpcf-post-type=' . self::$post_type->name . '#types_options' ),
 		);
 
 		// Views specifics
@@ -73,11 +61,11 @@ class Types_Helper_Placeholder {
 				'%POST-VIEWS-ARCHIVE%'             => Types_Helper_Condition_Views_Archive_Exists::get_template_name(),
 				'%POST-EDIT-VIEWS-ARCHIVE%'        => self::get_post_edit_views_archive(),
 				'%POST-EDIT-CONTENT-TEMPLATE%'     => self::get_post_edit_views_template(),
-				'%POST-CREATE-CONTENT-TEMPLATE%'   => $admin_url . 'admin.php?page=types-helper&action=new-content-template&type='.self::$post_type->name,
-				'%POST-CREATE-VIEWS-ARCHIVE%'      => $admin_url . 'admin.php?page=types-helper&action=new-wordpress-archive&type='.self::$post_type->name,
+				'%POST-CREATE-CONTENT-TEMPLATE%'   => self::add_referer( $admin_url . 'admin.php?page=types-helper&action=new-content-template&type='.self::$post_type->name.'&toolset_help_video=views_template' ),
+				'%POST-CREATE-VIEWS-ARCHIVE%'      => self::add_referer( $admin_url . 'admin.php?page=types-helper&action=new-wordpress-archive&type='.self::$post_type->name.'&toolset_help_video=views_archives' ),
 				//'%POST-CREATE-VIEWS-ARCHIVE%'      => self::get_post_create_views_archive(),
 				'%POST-VIEWS-LIST%'                => self::get_post_type_views_list(),
-				'%POST-CREATE-VIEW%'               => $admin_url . 'admin.php?page=types-helper&action=new-view&type='.self::$post_type->name,
+				'%POST-CREATE-VIEW%'               => self::add_referer( $admin_url . 'admin.php?page=types-helper&action=new-view&type='.self::$post_type->name.'&toolset_help_video=views_view' ),
 			) );
 
 		}
@@ -86,8 +74,8 @@ class Types_Helper_Placeholder {
 		if( defined( 'WPDDL_DEVELOPMENT' ) || defined( 'WPDDL_PRODUCTION' ) )  {
 			$placeholders = array_merge( $placeholders, array(
 				//'%POST-CREATE-LAYOUT-TEMPLATE%'     => self::get_post_create_layout_template(),
-				'%POST-CREATE-LAYOUT-TEMPLATE%'     => $admin_url . 'admin.php?page=types-helper&action=new-layout-template&type='.self::$post_type->name,
-				'%POST-CREATE-LAYOUT-ARCHIVE%'      => self::get_post_create_layout_archive(),
+				'%POST-CREATE-LAYOUT-TEMPLATE%'     => self::add_referer( $admin_url . 'admin.php?page=types-helper&action=new-layout-template&type='.self::$post_type->name.'&toolset_help_video=layouts_template' ),
+				'%POST-CREATE-LAYOUT-ARCHIVE%'      => self::add_referer( self::get_post_create_layout_archive() . '&toolset_help_video=layouts_archive' ),
 				'%POST-EDIT-LAYOUT-TEMPLATE%'       => self::get_post_edit_layout_template(),
 				'%POST-EDIT-LAYOUT-ARCHIVE%'        => self::get_post_edit_layout_archive(),
 				'%POST-LAYOUT-TEMPLATE%'            => Types_Helper_Condition_Layouts_Template_Exists::get_layout_name(),
@@ -99,92 +87,73 @@ class Types_Helper_Placeholder {
 	}
 
 	private static function get_post_create_views_archive() {
-		if( self::$post_type_create_views_archive === null ){
-			$tool_admin_bar = Toolset_Admin_Bar_Menu::get_instance();
+		$tool_admin_bar = Toolset_Admin_Bar_Menu::get_instance();
 
-			$post_type = self::$post_type->name == 'post' ? 'home-blog' : self::$post_type->name;
-			self::$post_type_create_views_archive = $tool_admin_bar->get_edit_link( 'views', true, $post_type, 'archive', 0 );
-		}
-
-		return self::$post_type_create_views_archive;
-	}
-
-	private static function get_post_edit_views_archive() {
-		if( self::$post_type_edit_views_archive === null ) {
-			self::$post_type_edit_views_archive =
-				admin_url() . 'admin.php?page=view-archives-editor&view_id='
-				. Types_Helper_Condition_Views_Archive_Exists::get_template_id();
-		}
-		return self::$post_type_edit_views_archive;
-	}
-
-	private static function get_post_create_layout_archive() {
-		if( self::$post_type_create_layout_archive === null ){
-			$tool_admin_bar = Toolset_Admin_Bar_Menu::get_instance();
-			self::$post_type_create_layout_archive = $tool_admin_bar->get_edit_link( 'layouts', true, self::$post_type->name, 'archive', 0 );
-		}
-
-		return self::$post_type_create_layout_archive;
-	}
-
-	private static function get_post_edit_layout_archive() {
-		if( self::$post_type_edit_layout_archive === null ) {
-			self::$post_type_edit_layout_archive =
-				admin_url() . 'admin.php?page=dd_layouts_edit&action=edit&layout_id='
-				. Types_Helper_Condition_Layouts_Archive_Exists::get_layout_id();
-		}
-
-		return self::$post_type_edit_layout_archive;
-	}
-
-	private static function get_post_edit_layout_template() {
-		if( self::$post_type_edit_layout_template === null ) {
-			self::$post_type_edit_layout_template =
-				admin_url() . 'admin.php?page=dd_layouts_edit&action=edit&layout_id='
-				. Types_Helper_Condition_Layouts_Template_Exists::get_layout_id();
-		}
-
-		return self::$post_type_edit_layout_template;
+		$post_type = self::$post_type->name == 'post' ? 'home-blog' : self::$post_type->name;
+		return $tool_admin_bar->get_edit_link( 'views', true, $post_type, 'archive', 0 );
 	}
 
 	private static function get_post_edit_views_template() {
-		if( self::$post_type_edit_views_template === null ) {
-			self::$post_type_edit_views_template =
-				admin_url() . 'admin.php?page=ct-editor&ct_id='
-				. Types_Helper_Condition_Views_Template_Exists::get_template_id();
-		}
+		$url = admin_url() . 'admin.php?page=ct-editor&ct_id='
+		       . Types_Helper_Condition_Views_Template_Exists::get_template_id();
 
-		return self::$post_type_edit_views_template;
+		return self::add_referer( $url );
+	}
+
+	private static function get_post_edit_views_archive() {
+		$url = admin_url() . 'admin.php?page=view-archives-editor&view_id='
+				. Types_Helper_Condition_Views_Archive_Exists::get_template_id();
+
+		return self::add_referer( $url );
+	}
+
+	private static function get_post_create_layout_archive() {
+		$tool_admin_bar = Toolset_Admin_Bar_Menu::get_instance();
+
+		// change name to 'home-blog' for build-in "Posts"
+		$post_type = self::$post_type->name == 'post'
+			? 'home-blog'
+			: self::$post_type->name;
+
+		return $tool_admin_bar->get_edit_link( 'layouts', true, $post_type, 'archive', 0 );
+	}
+
+	private static function get_post_edit_layout_archive() {
+		$url = admin_url() . 'admin.php?page=dd_layouts_edit&action=edit&layout_id='
+				. Types_Helper_Condition_Layouts_Archive_Exists::get_layout_id();
+
+		return self::add_referer( $url );
+	}
+
+	private static function get_post_edit_layout_template() {
+		$url = admin_url() . 'admin.php?page=dd_layouts_edit&action=edit&layout_id='
+		       . Types_Helper_Condition_Layouts_Template_Exists::get_layout_id();
+		return self::add_referer( $url );
+	}
+
+	private static function add_referer( $url ) {
+		if( isset( $_GET['page'] ) && $_GET['page'] == 'toolset-dashboard' )
+			$url = add_query_arg( 'ref', 'dashboard', $url );
+
+		return $url;
 	}
 
 	private static function get_post_template_file() {
-		if( self::$post_type_template_file === null ) {
-			$helper                        = new Types_Helper_Condition_Single_Exists();
-			self::$post_type_template_file = basename( $helper->find_template() );
-		}
-
-		return self::$post_type_template_file;
+		$helper = new Types_Helper_Condition_Single_Exists();
+		return basename( $helper->find_template() );
 	}
 
 	private static function get_post_archive_file() {
-		if( self::$post_type_archive_file === null ) {
-			$helper                       = new Types_Helper_Condition_Archive_Exists();
-			self::$post_type_archive_file = basename( $helper->find_template() );
-		}
-
-		return self::$post_type_archive_file;
+		$helper = new Types_Helper_Condition_Archive_Exists();
+		return basename( $helper->find_template() );
 	}
 
 	public static function get_permalink( $id = 0 ) {
-		if( self::$single_link !== null )
-			return self::$single_link;
-
 		$permalink = get_permalink( $id );
 
 		if( $permalink ) {
 			$query_args['preview'] = 'true';
 			$permalink = add_query_arg( $query_args, $permalink );
-			self::$single_link = $permalink;
 			return $permalink;
 		}
 
@@ -205,24 +174,17 @@ class Types_Helper_Placeholder {
 				return self::get_permalink( $query->posts[0]->ID );
 		}
 
-		self::$single_link = false;
-		return self::$single_link ;
+		return false;
 	}
 
 	public static function get_archive_permalink() {
-		if( self::$archive_link !== null )
-			return self::$archive_link;
-
 		// cpt edit page
 		if( isset( $_GET['wpcf-post-type'] ) ) {
 			$query = new WP_Query( 'post_type=' . $_GET['wpcf-post-type'] . '&post_status=publish&posts_per_page=1' );
-			if( $query->have_posts() ) {
-				self::$archive_link = get_post_type_archive_link( $_GET['wpcf-post-type'] );
-				return self::$archive_link;
-			}
+			if( $query->have_posts() )
+				return get_post_type_archive_link( $_GET['wpcf-post-type'] );
 
-			self::$archive_link = false;
-			return self::$archive_link;
+			return false;
 		}
 
 		if( ! is_object( self::$post_type ) )
@@ -230,12 +192,10 @@ class Types_Helper_Placeholder {
 
 		$query = new WP_Query( 'post_type=' . self::$post_type->name . '&post_status=publish&posts_per_page=1' );
 		if( $query->have_posts() ) {
-			self::$archive_link = get_post_type_archive_link( self::$post_type->name );
-			return self::$archive_link;
+			return get_post_type_archive_link( self::$post_type->name );
 		}
 
-		self::$archive_link = false;
-		return self::$archive_link;
+		return false;
 	}
 
 	private static function get_post_type_views_list() {
@@ -244,7 +204,7 @@ class Types_Helper_Placeholder {
 			$output = '<ul>';
 			foreach( $views as $view ) {
 				$view_edit_link = admin_url() . 'admin.php?page=views-editor&view_id=' . $view['id'];
-				$output .= '<li><a href="'. $view_edit_link . '">'. $view['name'].'</a></li>';
+				$output .= '<li><a href="'. self::add_referer( $view_edit_link )  . '">'. $view['name'].'</a></li>';
 			}
 			$output .= '</ul>';
 
@@ -259,8 +219,8 @@ class Types_Helper_Placeholder {
 		if( $forms = Types_Helper_Condition_Cred_Forms_Exist::get_forms_of_post_type() ) {
 			$output = '<ul>';
 			foreach( $forms as $form ) {
-				$view_edit_link = get_edit_post_link( $form['id'] );
-				$output .= '<li><a href="'. $view_edit_link . '">'. $form['name'].'</a></li>';
+				$form_edit_link = get_edit_post_link( $form['id'] );
+				$output .= '<li><a href="'. self::add_referer( $form_edit_link ) . '">'. $form['name'].'</a></li>';
 			}
 			$output .= '</ul>';
 

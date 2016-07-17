@@ -585,12 +585,23 @@ class Usermeta_Access
         // setup custom capabilities
         self::$user_groups = wpcf_admin_fields_get_groups(TYPES_USER_META_FIELD_GROUP_CPT_NAME);
         //If access plugin installed
-        if ( function_exists( 'wpcf_access_register_caps' ) ) { // integrate with Types Access
+        if ( function_exists( 'wpcf_access_register_caps' ) ) { // integrate with Toolset Access
             if ( !empty( self::$user_groups ) ) {
-                //Add Usermeta Fields area
-                add_filter( 'types-access-area',
-                        array('Usermeta_Access', 'register_access_usermeta_area'),
-                        10, 2 );
+				$access_version = apply_filters( 'toolset_access_version_installed', '1.0' );
+				// Since 2.1 we can define a custom tab on Access >= 2.1
+				if ( version_compare( $access_version, '2.0' ) > 0 ) {
+					// Add Types Fields tab
+					add_filter( 'types-access-tab', array( 'Usermeta_Access', 'register_access_types_fields_tab' ) );
+					//Add Usermeta Fields area
+					add_filter( 'types-access-area-for-types-fields',
+							array('Usermeta_Access', 'register_access_usermeta_area'),
+							20, 2 );
+				} else {
+					//Add Usermeta Fields area
+					add_filter( 'types-access-area',
+							array('Usermeta_Access', 'register_access_usermeta_area'),
+							10, 2 );
+				}
                 //Add Usermeta Fields groups
                 add_filter( 'types-access-group',
                         array('Usermeta_Access', 'register_access_usermeta_groups'),
@@ -661,6 +672,20 @@ class Usermeta_Access
         }
         return $groups;
     }
+	
+	/**
+	* Register a custom tab on the Access Control admin page, for Types fields.
+	*
+	* @param $tabs
+	* @return $tabs
+	*
+	* @since 2.1
+	*/
+	
+	public static function register_access_types_fields_tab( $tabs ) {
+		$tabs['types-fields'] = __( 'Types Fields', 'wp-cred' );
+		return $tabs;
+	}
 
     // register a new Types Access Area for Usermeta Fields Groups Frontend capabilities
     public static function register_access_usermeta_area( $areas,
@@ -696,10 +721,21 @@ class Post_Fields_Access
         //If access plugin installed
         if ( function_exists( 'wpcf_access_register_caps' ) ) { // integrate with Types Access
             if ( !empty( self::$fields_groups ) ) {
-                //Add Fields area
-                add_filter( 'types-access-area',
-                        array('Post_Fields_Access', 'register_access_fields_area'),
-                        10, 2 );
+				$access_version = apply_filters( 'toolset_access_version_installed', '1.0' );
+				// Since 2.1 we can define a custom tab on Access >= 2.1
+				if ( version_compare( $access_version, '2.0' ) > 0 ) {
+					// Add Types Fields tab
+					add_filter( 'types-access-tab', array( 'Post_Fields_Access', 'register_access_types_fields_tab' ) );
+					//Add Usermeta Fields area
+					add_filter( 'types-access-area-for-types-fields',
+							array('Post_Fields_Access', 'register_access_fields_area'),
+							10, 2 );
+				} else {
+					//Add Usermeta Fields area
+					add_filter( 'types-access-area',
+							array('Post_Fields_Access', 'register_access_fields_area'),
+							10, 2 );
+				}
                 //Add Fields groups
                 add_filter( 'types-access-group',
                         array('Post_Fields_Access', 'register_access_fields_groups'),
@@ -767,6 +803,20 @@ class Post_Fields_Access
         }
         return $groups;
     }
+	
+	/**
+	* Register a custom tab on the Access Control admin page, for Types fields.
+	*
+	* @param $tabs
+	* @return $tabs
+	*
+	* @since 2.1
+	*/
+	
+	public static function register_access_types_fields_tab( $tabs ) {
+		$tabs['types-fields'] = __( 'Types Fields', 'wp-cred' );
+		return $tabs;
+	}
 
     // register a new Types Access Area for Post Fields Groups Frontend capabilities
     public static function register_access_fields_area( $areas,

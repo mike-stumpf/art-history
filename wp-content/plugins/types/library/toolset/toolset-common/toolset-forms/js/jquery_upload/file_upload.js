@@ -56,12 +56,15 @@ jQuery(function () {
 
         var myid = jQuery("input[name='_cred_cred_prefix_post_id']").val();
         var myformid = jQuery("input[name='_cred_cred_prefix_form_id']").val();
+		var post_id = myid;
 
         jQuery(file).fileupload({
             url: url + '?id=' + myid + '&formid=' + myformid + '&nonce=' + nonce,
             dataType: 'json',
             cache: false,
             maxChunkSize: 0,
+            drop: function (e, data) {return false}, 
+            dragover: function (e) {return false}, 
             formData: {id: myid, formid: myformid},
             //acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
             done: function (e, data) {
@@ -117,28 +120,20 @@ jQuery(function () {
                         //add image/file uploaded and button to delete
                         if (isImage(file) && data.result.previews) {
                             var preview = data.result.previews[index];
+                            var attachid = data.result.attaches[index];
                             jQuery("<img id='loaded_" + myid + "' src='" + preview + "'><input id='butt_" + myid + "' style='width:100%;margin-top:2px;margin-bottom:2px;' type='button' value='" + settings.delete_text + "' rel='" + preview + "' class='delete_ajax_file'>").insertAfter('#' + jQuery(curr_file).attr('id'));
+                            jQuery("<input type='hidden' id='attachid_" + myid + "' name='attachid_" + myid + "' value='" + attachid + "'>").insertAfter('#' + jQuery(curr_file).attr('id'));
                         } else {
                             jQuery("<a id='loaded_" + myid + "' href='" + file + "' target='_blank'>" + file + "</a></label><input id='butt_" + myid + "' style='width:100%;margin-top:2px;margin-bottom:2px;' type='button' value='" + settings.delete_text + "' rel='" + file + "' class='delete_ajax_file'>").insertAfter('#' + jQuery(curr_file).attr('id'));
                         }
 
-//                        jQuery("#loaded_" + myid).each(function (i) {
-//                            var max_size = settings.media_settings.width;
-//                            if (jQuery(this).height() > jQuery(this).width()) {
-//                                var h = max_size;
-//                                var w = Math.ceil(jQuery(this).width() / jQuery(this).height() * max_size);
-//                            } else {
-//                                var w = max_size;
-//                                var h = Math.ceil(jQuery(this).height() / jQuery(this).width() * max_size);
-//                            }
-//                            jQuery(this).css({height: h, width: w});
-//                        });
-
                         //add function to delete button
-                        jQuery("#butt_" + myid).on('click', function () {
+                        jQuery(document).off('click', "#butt_" + myid, null);
+                        jQuery(document).on('click', "#butt_" + myid, function () {
                             if (confirm(settings.delete_confirm_text)) {
                                 jQuery("#loaded_" + myid).remove();
                                 jQuery("#butt_" + myid).remove();
+                                jQuery("#attachid_" + myid).remove();
 
                                 jQuery('#' + id).show();
                                 jQuery('#' + id).prop('disabled', false);
@@ -150,7 +145,7 @@ jQuery(function () {
                                     url: url,
                                     timeout: 10000,
                                     type: 'POST',
-                                    data: {action: 'delete', file: file, nonce: nonce},
+                                    data: {action: 'delete', file: file, nonce: nonce, id: post_id},
                                     dataType: 'json',
                                     success: function (data)
                                     {
@@ -221,18 +216,24 @@ jQuery(function () {
         }).prop('disabled', !jQuery.support.fileInput)
                 .parent().addClass(jQuery.support.fileInput ? undefined : 'disabled');
 
+        jQuery(document).bind('dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
     }
 
     function credfile_fu_init() {
-        jQuery('input[type="file"]:visible:not(#_featured_image_file)').each(o);
+        jQuery('input[type="file"]:visible').each(o);
 
+        jQuery(document).off('click', '.js-wpt-credfile-delete, .js-wpt-credfile-undo', null);
         jQuery(document).on('click', '.js-wpt-credfile-delete, .js-wpt-credfile-undo', function (e) {
-            jQuery('input[type="file"]:visible:not(#_featured_image_file)').each(o);
+            jQuery('input[type="file"]:visible').each(o);
         });
 
         //AddRepetitive add event
         wptCallbacks.addRepetitive.add(function () {
-            jQuery('input[type="file"]:visible:not(#_featured_image_file)').each(o);
+            jQuery('input[type="file"]:visible').each(o);
         });
 
         //AddRepetitive remove event
@@ -258,6 +259,12 @@ jQuery(function () {
 //        }
 //        jQuery(this).css({height: h, width: w});
 //    });
+
+    //Fix the not visible field under false conditional
+    jQuery(document).off('click', 'input[type="file"]', null);
+    jQuery(document).on('click', 'input[type="file"]', function () {
+        credfile_fu_init();
+    });
 
     credfile_fu_init();
 });

@@ -37,11 +37,11 @@ final class WPCF_Field_Definition_Factory_Term extends WPCF_Field_Definition_Fac
 
 	/**
 	 * @inheritdoc
-	 * @return WPCF_Field_Group_Post_Factory
+	 * @return Types_Field_Group_Post_Factory
 	 * @since 2.0
 	 */
 	public function get_group_factory() {
-		return WPCF_Field_Group_Term_Factory::get_instance();
+		return Types_Field_Group_Term_Factory::get_instance();
 	}
 
 

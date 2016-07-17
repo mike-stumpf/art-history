@@ -1,18 +1,43 @@
 <?php
 
-
+/**
+ * Types_Information_Controller
+ *
+ * @since 2.0
+ */
 class Types_Information_Controller {
 
 	protected $information;
 	protected $twig;
 
+	private function requirements_met() {
+		if(
+			! current_user_can( 'manage_options' )
+			|| ! apply_filters( 'types_information_table', true )
+			|| $this->embedded_plugin_running()
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function filter_columns( $columns, $post_type ) {
+		if( isset( $columns['archive'] ) && ( $post_type == 'post' || $post_type == 'page' || $post_type == 'attachment' ) )
+			unset( $columns['archive'] );
+
+		if( isset( $columns['template'] ) && ( $post_type == 'post' || $post_type == 'page' ) )
+			unset( $columns['template'] );
+
+		return $columns;
+	}
+
 	public function prepare() {
-		if( ! apply_filters( 'types_information_table', true ) )
+		if( ! $this->requirements_met() )
 			return false;
 
-		// no infos if any embedded plugin runs
-		if( $this->embedded_plugin_running() )
-			return false;
+		// filter columns for specific post types
+		add_filter( 'types_information_table_columns', array( $this, 'filter_columns' ), 10, 2 );
 
 		// twig
 		$this->twig = new Types_Helper_Twig();
@@ -152,8 +177,13 @@ class Types_Information_Controller {
 		$views = array();
 
 		$post_type = Types_Helper_Condition::get_post_type();
-		if( $post_type->name == 'post' ||  $post_type->name == 'page' )
-			unset( $thead_data['archive'] );
+
+		$allowed_columns = apply_filters( 'types_information_table_columns', array_fill_keys( array( 'template', 'archive', 'views', 'forms' ), '' ), $post_type->name );
+
+		foreach( $thead_data as $key => $column ) {
+			if( ! array_key_exists( $key, $allowed_columns ) )
+				unset( $thead_data[$key] );
+		}
 
 		foreach( $thead_data as $data ) {
 			$views[] = $this->twig->render(
@@ -204,8 +234,7 @@ class Types_Information_Controller {
 			if( is_object( $WP_Views ) && method_exists( $WP_Views, 'is_embedded' ))
 				return $WP_Views->is_embedded();
 		}
-
-
+		
 		return false;
 	}
 }

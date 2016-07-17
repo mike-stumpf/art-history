@@ -33,39 +33,9 @@ abstract class WPCF_Field_Definition extends WPCF_Field_Definition_Abstract {
 
 
 	/**
-	 * @var array The underlying array with complete information about this field.
-	 * @todo We need a specification of everything that can be in it.
+	 * @var array The underlying array with complete information about this field. Must be kept sanitized at all times.
+	 * @link https://git.onthegosystems.com/toolset/types/wikis/database-layer/field-definition-arrays
 	 */
-	/*
-
-	Example of an field definition:
-
-	array (
-		'id' => 'field-1',
-		'slug' => 'field-1',
-		'type' => 'textfield',
-		'name' => 'Field 1',
-		'description' => '',
-		'data' => array
-		(
-			'placeholder' => '',
-			'user_default_value' => '',
-			'repetitive' => '0',
-			'is_new' => '1',
-			'conditional_display' => array
-			(
-				'custom_use' => '0',
-				'relation' => 'AND',
-				'custom' => '',
-			),
-			'submit-key' => 'textfield-1955088717',
-			'disabled_by_type' => 0,
-			'set_value' => ... (optional, presence is relevant)
-		),
-		'meta_key' => 'wpcf-field-1',
-		'meta_type' => 'postmeta',
-		),
-	); */
 	private $definition_array;
 
 
@@ -98,21 +68,22 @@ abstract class WPCF_Field_Definition extends WPCF_Field_Definition_Abstract {
 		
 		$this->type = $type;
 		
-		$this->definition_array = wpcf_ensarr( $definition_array );
-
-		$this->slug = wpcf_getarr( $definition_array, 'slug' );
-		
-		if( sanitize_title( $this->slug ) != $this->slug ) {
-			throw new InvalidArgumentException( 'Invalid slug.' );
-		}
-
-		$this->name = sanitize_text_field( wpcf_getarr( $definition_array, 'name', $this->get_slug() ) );
-		
 		if( ! $factory instanceof WPCF_Field_Definition_Factory ) {
 			throw new InvalidArgumentException( 'Invalid field definition factory object.' );
 		}
 		
 		$this->factory = $factory;
+
+		$this->definition_array = $this->get_type()->sanitize_field_definition_array( wpcf_ensarr( $definition_array ) );
+
+		$this->slug = wpcf_getarr( $this->definition_array, 'slug' );
+
+		if( sanitize_title( $this->slug ) != $this->slug ) {
+			throw new InvalidArgumentException( 'Invalid slug.' );
+		}
+
+		$this->name = sanitize_text_field( wpcf_getarr( $this->definition_array, 'name', $this->get_slug() ) );
+
 	}
 
 
@@ -326,7 +297,7 @@ abstract class WPCF_Field_Definition extends WPCF_Field_Definition_Abstract {
 
 
 	/**
-	 * @return WPCF_Field_Group[]
+	 * @return Types_Field_Group[]
 	 */
 	public function get_associated_groups() {
 		$field_groups = $this->get_factory()->get_group_factory()->query_groups();
@@ -338,6 +309,25 @@ abstract class WPCF_Field_Definition extends WPCF_Field_Definition_Abstract {
 		}
 
 		return $associated_groups;
+	}
+
+
+	/**
+	 * Determine whether this field belongs to a specific group.
+	 * 
+	 * @param Types_Field_Group $field_group
+	 * @return bool
+	 * @since 2.1
+	 */
+	public function belongs_to_group( $field_group ) {
+		$associated_groups = $this->get_associated_groups();
+		foreach( $associated_groups as $associated_group ) {
+			if( $associated_group === $field_group ) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 
@@ -413,6 +403,87 @@ abstract class WPCF_Field_Definition extends WPCF_Field_Definition_Abstract {
 		);
 
 		return array_merge( $object_data, $additions );
+	}
+
+	
+	const XML_KEY_ID = 'id';
+	const XML_KEY_MENU_ICON = 'menu_icon';
+	const XML_KEY_WPML_ACTION = 'wpml_action';
+	const XML_KEY_DATA = 'data';
+	const XML_KEY_DATA_CONDITIONAL_DISPLAY = 'conditional_display';
+	const XML_KEY_DATA_IS_REPEATING = 'repetitive';
+	const XML_KEY_DATA_SUBMIT_KEY = 'submit-key';
+
+
+	/**
+	 * Add checksum to an export object, with some custom adjustments for compatibility with
+	 * older Module Manager versions.
+	 *
+	 * @param array $data
+	 * @return array Updated $data with checksum information.
+	 * @since 2.1
+	 */
+	private function add_checksum_to_export_object( $data ) {
+
+		$checksum_source = $data;
+
+		$ie_controller = Types_Import_Export::get_instance();
+
+		// Consider if this should go into the generic sanitization:
+
+		// Remove *empty* conditional_display for consistent checksum computation with Module manager 1.1 during import.
+		$conditional_display = wpcf_getnest( $checksum_source, array( self::XML_KEY_DATA, self::XML_KEY_DATA_CONDITIONAL_DISPLAY ), null );
+		if( null !== $conditional_display && empty( $conditional_display ) ) {
+			unset( $checksum_source[ self::XML_KEY_DATA ][ self::XML_KEY_DATA_CONDITIONAL_DISPLAY ] );
+		}
+
+		// Convert to integer value to provide correct checksum computation of this field during Module manager 1.1. import.
+		$checksum_source[ self::XML_KEY_DATA ][ self::XML_KEY_DATA_IS_REPEATING ] =
+			(int) wpcf_getnest( $checksum_source, array( self::XML_KEY_DATA, self::XML_KEY_DATA_IS_REPEATING ), 0 );
+
+		$checksum_source = $ie_controller->add_checksum_to_object(
+			$checksum_source,
+			null,
+			array(
+				self::XML_KEY_ID, self::XML_KEY_MENU_ICON, self::XML_KEY_WPML_ACTION,
+				self::XML_KEY_DATA => array( self::XML_KEY_DATA_SUBMIT_KEY )
+			)
+		);
+
+		$data[ Types_Import_Export::XML_KEY_CHECKSUM ] = $checksum_source[ Types_Import_Export::XML_KEY_CHECKSUM ];
+		$data[ Types_Import_Export::XML_KEY_HASH ] = $checksum_source[ Types_Import_Export::XML_KEY_HASH ];
+
+		return $data;
+	}
+	
+	
+	/**
+	 * Create an export object for this field definition, including checksums and annotations.
+	 * 
+	 * @return array
+	 * @since 2.1
+	 */
+	public function get_export_object() {
+		
+		$data = $this->get_definition_array();
+
+		// legacy filter
+		$data = apply_filters( 'wpcf_export_field', $data );
+
+		$ie_controller = Types_Import_Export::get_instance();
+
+		$data = $this->add_checksum_to_export_object( $data );
+
+		$data = $ie_controller->annotate_object( $data, $this->get_name(), $this->get_slug() );
+		
+		// Export WPML TM setting for this field's translation, if available.
+		$wpml_tm_settings = apply_filters( 'wpml_setting', null, 'translation-management' );
+		$custom_field_translation_setting = wpcf_getnest( $wpml_tm_settings, array( 'custom_fields_translation', $this->get_meta_key() ), null );
+		if( null !== $custom_field_translation_setting ) {
+			$data[ self::XML_KEY_WPML_ACTION ] = $custom_field_translation_setting;
+		}
+
+		return $data;
 	}
 
 
