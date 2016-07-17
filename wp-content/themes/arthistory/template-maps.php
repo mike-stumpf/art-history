@@ -11,12 +11,18 @@ include_once('php/bootstrapper.php');
 $artHistoryMaps = new artHistory\artHistory();
 $mapGroups = $artHistoryMaps->getMapData();
 ?>
+    <!--sidebar-->
     <aside id="maps-sidebar-container"></aside>
+    <!--main content-->
     <main id="maps-main-content">
         <section id="maps-header-image-container">
-            <?php foreach($mapGroups as $mapGroup){?>
-                <img class="map-header-image faded-out l--show-for-<?php echo $mapGroup['slug'];?>" src="<?php echo $mapGroup['timeline']['image'];?>" alt="<?php echo $mapGroup['title'];?>"/>
-            <?php } ?>
+            <!-- map images-->
+            <?php foreach($mapGroups as $mapGroup){
+                if (!empty($mapGroup['timeline']['image'])){ ?>
+                    <img class="map-header-image faded-out l--show-for-<?php echo $mapGroup['slug'];?>" src="<?php echo $mapGroup['timeline']['image'];?>" alt="<?php echo $mapGroup['title'];?>"/>
+                <?php }
+            } ?>
+            <!-- map title-->
             <div id="maps-header-title-container" class="maps-header-title-element-container">
                 <div id="maps-header-title-left" class="maps-header-title-element-container maps-header-title-bullet">
                     <div class="maps-header-title-element">
@@ -34,11 +40,13 @@ $mapGroups = $artHistoryMaps->getMapData();
             </div>
         </section>
         <section id="maps-timeline-container">
+            <!--timelines-->
             <?php foreach($mapGroups as $mapGroup){?>
                 <div id="timeline-<?php echo $mapGroup['slug'];?>" class="map-timeline l--show-for-<?php echo $mapGroup['slug'];?> faded-out" data-items-list="<?php echo $mapGroup['niceSlug'];?>"></div>
             <?php } ?>
         </section>
         <section id="maps-selector-container">
+            <!--navigation-->
             <?php $i = 1;
             foreach($mapGroups as $mapGroup) {
                 $className = $i===1?'active':'';
@@ -55,6 +63,7 @@ $mapGroups = $artHistoryMaps->getMapData();
             } ?>
         </section>
     </main>
+    <!--transition overlay-->
     <div id="maps-transition-overlay"></div>
     <script type="text/javascript">
         var mapData = {},
