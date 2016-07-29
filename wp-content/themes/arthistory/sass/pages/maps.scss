@@ -31,6 +31,9 @@ core
   &.map-timeline-3 {
     @include timeline-active-color($color-map-3);
   }
+  &.map-timeline-4 {
+    @include timeline-active-color($color-map-4);
+  }
 }
 
 /*
@@ -50,7 +53,6 @@ $bullet-spacing: -20px;
 
 #maps-header-title-container {
   min-width: 225px;
-  max-width: 450px;
   width: 50%;
   bottom: -20px;
   margin: auto;
