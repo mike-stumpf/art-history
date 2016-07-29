@@ -167,12 +167,6 @@ body
   border-right: 1px dotted $timeline-green;
 }
 
-.maps-timeline-selector {
-  &.active {
-    font-weight: bold;
-  }
-}
-
 #maps-transition-overlay {
   position: fixed;
   top: 0;
@@ -184,4 +178,68 @@ body
   width: 100%;
   height: 100%;
   z-index: 9999;
+}
+
+
+/*
+navigation
+-----------------------------
+*/
+
+#maps-selector-container {
+  background-color: rgba(0,0,0,0.4);
+}
+
+.maps-timeline-selector {
+  display: block;
+  padding: 40px 0 20px 0;
+  color: white;
+  text-decoration: none;
+  position: relative;
+  @include tablet-up {
+    padding: 60px 0 40px 0;
+  }
+  &.active, &:hover {
+    .maps-timeline-selector-indicator {
+      background-color: white;
+    }
+  }
+}
+
+.maps-timeline-selector-indicator {
+  border: 2px solid $color-map-navigation;
+  background-color: #999999; //this value is calculated from #maps-selector-container background color w/ opacity
+  border-radius: 50%;
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: block;
+  width: 15px;
+  height: 15px;
+  @include transition-with-defaults(background-color);
+  @include tablet-up {
+    top: 35px;
+  }
+}
+
+.maps-timeline-selector-block {
+  float: left;
+  text-align: center;
+  width: 50%;
+  @include tablet-up {
+    width: 25%;
+  }
+}
+
+.maps-timeline-selector-line {
+  border-top: 2px solid $color-map-navigation;
+  top: 22px;
+  display: block;
+  position: absolute;
+  width: 100%;
+  @include tablet-up {
+    top: 42px;
+  }
 }

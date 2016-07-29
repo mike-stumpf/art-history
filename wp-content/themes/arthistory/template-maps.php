@@ -45,18 +45,20 @@ $mapGroups = $artHistoryMaps->getMapData();
                 <div id="timeline-<?php echo $mapGroup['slug'];?>" class="map-timeline l--show-for-<?php echo $mapGroup['slug'];?> faded-out" data-items-list="<?php echo $mapGroup['niceSlug'];?>"></div>
             <?php } ?>
         </section>
-        <section id="maps-selector-container">
+        <section id="maps-selector-container" class="grid-container">
             <!--navigation-->
             <?php $i = 1;
             foreach($mapGroups as $mapGroup) {
                 $className = $i===1?'active':'';
-                $gridSize = 'small-'.sizeof($mapGroups);
+                $gridEnd = '';
                 if(sizeof($mapGroups) === $i){
-                    $gridSize .= ' grid-end';
+                    $gridEnd = ' grid-end';
                 } ?>
-                <div class="<?php echo $gridSize;?>">
+                <div class="maps-timeline-selector-block <?php echo $gridEnd;?>">
                     <a href="#" data-timeline-selector="<?php echo $i;?>" class="maps-timeline-selector <?php echo $className;?>">
                         <?php echo $mapGroup['title']?>
+                        <span class="maps-timeline-selector-line"></span>
+                        <span class="maps-timeline-selector-indicator"></span>
                     </a>
                 </div>
                 <?php $i++;
