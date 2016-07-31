@@ -123,7 +123,8 @@ module.exports = function(grunt){
                         'bower_components/velocity/velocity.ui.min.js',
                         'bower_components/moment/min/moment.min.js',
                         'bower_components/handlebars/handlebars.runtime.min.js',
-                        'bower_components/css-modal/modal.js'
+                        'bower_components/css-modal/modal.js',
+                        'bower_components/lodash/dist/lodash.core.min.js'
                     ]
                 },
                 options: {
