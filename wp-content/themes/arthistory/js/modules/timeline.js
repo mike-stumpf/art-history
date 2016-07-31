@@ -201,6 +201,7 @@
     this.init = function(){
 
         if(window.location.href .indexOf('#maps-timeline-mobile-modal') !== -1){
+            //don't show empty modal on page load
             window.location.href = window.location.href.split('#')[0];
         }
 
