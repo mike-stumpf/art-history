@@ -200,6 +200,10 @@
 
     this.init = function(){
 
+        if(window.location.href .indexOf('#maps-timeline-mobile-modal') !== -1){
+            window.location.href = window.location.href.split('#')[0];
+        }
+
         artHistory.handlebars.applyHelpers();
 
         $(timelineClass).each(function(element){
