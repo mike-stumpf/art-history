@@ -99,7 +99,8 @@ module.exports = function(grunt){
                     style: 'compressed',
                     trace: true,
                     loadPath: [
-                        'bower_components/css-modal'
+                        'bower_components/css-modal',
+                        'bower_components/components-font-awesome/scss'
                     ]
                 }
             },
