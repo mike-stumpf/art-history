@@ -1,28 +1,49 @@
 {{#if powerpoints}}
-    <h4>Powerpoint</h4>
-    {{#each powerpoints}}
-        <p>{{title}}</p>
-        <a href="{{url}}" target="_blank">{{url}}</a>
-    {{/each}}
+    <section class="event-section">
+        <span class="fa fa-file-powerpoint-o" aria-hidden="true"></span>
+        <h4 class="event-header">Powerpoints</h4>
+        {{#each powerpoints}}
+            <div class="event-entry">
+                <p>{{title}}</p>
+                <a href="{{url}}" target="_blank">{{url}}</a>
+            </div>
+        {{/each}}
+    </section>
 {{/if}}
 {{#if books}}
-    <h4>Books</h4>
-    {{#each books}}
-        <p>{{author}}{{#if author}},{{/if}} {{title}}</p>
-        <p>{{callNumber}}</p>
-    {{/each}}
+    <section class="event-section">
+        <span class="fa fa-book" aria-hidden="true"></span>
+        <h4 class="event-header">Books</h4>
+        {{#each books}}
+            <div class="event-entry">
+                <p>{{author}}{{#if author}},{{/if}} {{title}}{{#if year}}.{{/if}} {{year}}</p>
+                {{# if callNumber}}
+                    <p class="entry-subtext">{{callNumber}}</p>
+                {{/if}}
+            </div>
+        {{/each}}
+    </section>
 {{/if}}
 {{#if videos}}
-    <h4>Videos</h4>
-    {{#each videos}}
-        <p>{{title}}</p>
-        <a href="{{url}}" target="_blank">{{url}}</a>
-    {{/each}}
+    <section class="event-section">
+        <span class="fa fa-play-circle-o" aria-hidden="true"></span>
+        <h4 class="event-header">Videos</h4>
+        {{#each videos}}
+            <div class="event-entry">
+                <p>{{title}}</p>
+                <a href="{{url}}" target="_blank">{{url}}</a>
+            </div>
+        {{/each}}
+    </section>
 {{/if}}
 {{#if articles}}
-    <h4>Articles</h4>
-    {{#each articles}}
-        <p>{{author}}{{#if author}},{{/if}} {{title}}</p>
-        <p>{{callNumber}}</p>
-    {{/each}}
+    <section class="event-section">
+        <span class="fa fa-file-text-o" aria-hidden="true"></span>
+        <h4 class="event-header">Articles</h4>
+        {{#each articles}}
+            <div class="event-entry">
+                <p>{{author}}{{#if author}},{{/if}} {{title}}{{#if year}}.{{/if}} {{year}}</p>
+            </div>
+        {{/each}}
+    </section>
 {{/if}}

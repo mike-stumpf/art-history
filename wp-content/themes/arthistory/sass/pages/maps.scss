@@ -243,3 +243,61 @@ navigation
     top: 42px;
   }
 }
+
+/*
+events
+-----------------------------
+*/
+
+.event-header {
+  text-transform: uppercase;
+  font-size: 1.15rem;
+  margin-bottom: 15px;
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.event-entry {
+  font-size: 0.75rem;
+  margin: 15px 0;
+  p {
+    margin: 5px 0;
+  }
+  a {
+    text-decoration: none;
+    @include transition-with-defaults(color);
+  }
+}
+
+.entry-subtext {
+  font-size: 0.6rem;
+}
+
+.modal-content {
+  .event-entry {
+    color: black;
+    a {
+      color: black;
+      &:hover {
+        color: grey;
+      }
+    }
+  }
+}
+
+.event-section {
+  position: relative;
+  padding-left: 40px;
+  .fa {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 1.75rem;
+  }
+}
+
+/*
+sidebar
+-----------------------------
+*/
