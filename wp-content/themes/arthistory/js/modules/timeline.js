@@ -12,9 +12,12 @@
         timelineSelectors = $('.maps-timeline-selector'),
         transitionOverlay = $('#maps-transition-overlay'),
         headerMapTitle = $('#maps-header-title'),
+        mobileModalTrigger = $('#maps-timeline-mobile-modal-trigger'),
+        mobileModalContent = $('#maps-timeline-mobile-modal-content'),
         bodyElement = $('body'),
         timelineClass = '.map-timeline',
-        timeFormat = 'YYYY-MM-DD';
+        timeFormat = 'YYYY-MM-DD',
+        currentTimeline;
 
     this.mapTimelines = [];
 
@@ -105,15 +108,20 @@
     }
 
     this.openEvent = function(eventId){
-        console.log('open event',eventId);
+        if(false){
+            //if desktop
+            highlightSidebarEvent(eventId);
+        } else {
+            populateModal(eventId);
+        }
     };
 
 
 //sidebar
 //----------------------------- 
 
-    function populateSidebar(selectedTimelineIndex){
-        var data = mapData[getDataItemsList('#timeline-map-'+selectedTimelineIndex)],
+    function populateSidebar(){
+        var data = mapData[getDataItemsList('#timeline-map-'+that.currentTimelineIndex)],
             template = Handlebars.templates.sidebar,
             html = template(data);
         animations.fadeOut(sidebarContainer)
@@ -121,6 +129,22 @@
                 sidebarContainer.html(html);
                 animations.fadeIn(sidebarContainer);
             });
+    }
+
+    function populateModal(eventId){
+        var currentTimelineData = mapData[getDataItemsList('#timeline-map-'+that.currentTimelineIndex)],
+            data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
+            template = Handlebars.templates.sidebar_modal,
+            html = template(data);
+        if (_.size(data.books) > 0 || _.size(data.powerpoints) > 0 || _.size(data.articles) > 0 || _.size(data.videos)){
+            //don't show modal if event has no data
+            mobileModalContent.html(html);
+            mobileModalTrigger.trigger('click');
+        }
+    }
+
+    function highlightSidebarEvent(eventId){
+        //todo
     }
 
 //navigation
@@ -135,16 +159,17 @@
         }
     }
 
-    function updateMapTitle(selectedTimelineIndex){
-        var data = mapData[getDataItemsList('#timeline-map-'+selectedTimelineIndex)];
+    function updateMapTitle(){
+        var data = mapData[getDataItemsList('#timeline-map-'+that.currentTimelineIndex)];
         headerMapTitle.html(data.title.replace('-',' \u2013 '));
     }
 
-   function selectTimeline(selectedTimelineIndex){
+    function selectTimeline(selectedTimelineIndex){
+        that.currentTimelineIndex = selectedTimelineIndex;
         var bodyClasses = bodyElement.attr('class').split(' '),
             timelineLogicClass = '.l--show-for-map-',
             selectedTimePrefix = 'map-timeline-',
-            selectedTimeline = selectedTimePrefix+selectedTimelineIndex,
+            selectedTimeline = selectedTimePrefix+that.currentTimelineIndex,
             previousTimelineSelector,
             previousTimelineIndex;
         animations.fadeIn(transitionOverlay)
@@ -160,10 +185,10 @@
                     bodyElement.removeClass(previousTimelineSelector);
                     animations.fadeOut($(timelineLogicClass+previousTimelineIndex));
                 }
-                updateMapTitle(selectedTimelineIndex);
-                populateSidebar(selectedTimelineIndex);
+                updateMapTitle();
+                populateSidebar();
                 bodyElement.addClass(selectedTimeline);
-                animations.fadeIn($(timelineLogicClass+selectedTimelineIndex))
+                animations.fadeIn($(timelineLogicClass+that.currentTimelineIndex))
                     .then(function(){
                         animations.fadeOut(transitionOverlay);
                     });

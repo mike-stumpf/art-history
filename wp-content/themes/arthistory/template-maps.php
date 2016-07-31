@@ -65,9 +65,10 @@ $mapGroups = $artHistoryMaps->getMapData();
             } ?>
         </section>
     </main>
+    <a href="#maps-timeline-mobile-modal" id="maps-timeline-mobile-modal-trigger" class="faded-out"></a>
     <section class="modal--fade" id="maps-timeline-mobile-modal" data-stackable="false" tabindex="-1" role="dialog" aria-labelledby="label-fade" aria-hidden="true">
         <div id="maps-timeline-mobile-modal-content" class="modal-inner">
-            <!-- todo-->
+            <!-- dynamically populated -->
         </div>
         <a href="#!" class="modal-close" title="Close this modal" data-dismiss="modal" data-close="Close">&times;</a>
     </section>
