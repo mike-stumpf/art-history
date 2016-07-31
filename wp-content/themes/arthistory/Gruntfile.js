@@ -97,7 +97,10 @@ module.exports = function(grunt){
                 },
                 options: {
                     style: 'compressed',
-                    trace: true
+                    trace: true,
+                    loadPath: [
+                        'bower_components/css-modal'
+                    ]
                 }
             },
             main: {
@@ -119,7 +122,8 @@ module.exports = function(grunt){
                         'bower_components/velocity/velocity.min.js',
                         'bower_components/velocity/velocity.ui.min.js',
                         'bower_components/moment/min/moment.min.js',
-                        'bower_components/handlebars/handlebars.runtime.min.js'
+                        'bower_components/handlebars/handlebars.runtime.min.js',
+                        'bower_components/css-modal/modal.js'
                     ]
                 },
                 options: {
