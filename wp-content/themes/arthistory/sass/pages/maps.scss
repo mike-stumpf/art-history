@@ -7,11 +7,8 @@ core
   .vis-item, .timeline-artwork, #maps-main-content, .maps-header-title-element-container {
     border-color: $value;
   }
-  .maps-header-title-element {
+  .maps-header-title-element, #maps-sidebar-container {
     background-color: lighten($value, 25%);
-  }
-  #maps-sidebar-container {
-    background-color: $value;
   }
 }
 
@@ -38,7 +35,6 @@ core
   }
   @include desktop {
     border-width: 25px;
-    border-left: none;
   }
 }
 
@@ -320,7 +316,6 @@ sidebar
   max-height: 100%;
   height: 100%;
   width: 25.5%;
-  padding: 10px;
 }
 
 .sidebar-header {
@@ -331,4 +326,20 @@ sidebar
 .sidebar-header-title {
   font-size: 1.25rem;
   text-align: center;
+}
+
+.sidebar-entry {
+  background-color: transparent;
+  cursor: pointer;
+  @include transition-with-defaults(background-color);
+  &:hover {
+    background-color: rgba(255,255,255,0.8);
+  }
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin: 5px;
+  }
 }

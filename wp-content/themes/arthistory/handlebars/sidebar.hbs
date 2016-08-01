@@ -1,7 +1,12 @@
 <h2 class="sidebar-header">Movements &amp; Artists</h2>
 <h3 class="sidebar-header-title">{{title}}</h3>
 {{#each events}}
-    <div>
+    <div class="sidebar-entry" data-event-id="{{id}}">
+        {{#if image}}
+            <img src="{{image}}" alt="{{title}}"/>
+        {{else}}
+            <img src="{{image}}" alt="{{title}}"/>
+        {{/if}}
         {{title}}
     </div>
 {{/each}}

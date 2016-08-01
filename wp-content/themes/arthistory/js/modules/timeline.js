@@ -219,6 +219,11 @@
                 that.openEvent($(this).attr('data-event-id'));
             });
 
+        bodyElement
+            .on('click', '.sidebar-entry', function(){
+                that.openEvent($(this).attr('data-event-id'));
+            });
+
         timelineSelectors
             .on('click', function(event){
                 event.preventDefault();
