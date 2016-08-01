@@ -10,18 +10,12 @@ core
   .maps-header-title-element {
     background-color: lighten($value, 25%);
   }
+  #maps-sidebar-container {
+    background-color: $value;
+  }
 }
 
 .page-template-template-maps {
-  #maps-main-content {
-    border: 10px solid transparent;
-    @include tablet {
-      border-width: 15px;
-    }
-    @include desktop {
-      border-width: 25px;
-    }
-  }
   &.map-timeline-1 {
     @include timeline-active-color($color-map-1);
   }
@@ -35,6 +29,19 @@ core
     @include timeline-active-color($color-map-4);
   }
 }
+
+#maps-main-content {
+  border: 10px solid transparent;
+  padding: 0;
+  @include tablet {
+    border-width: 15px;
+  }
+  @include desktop {
+    border-width: 25px;
+    border-left: none;
+  }
+}
+
 
 /*
 header
@@ -119,6 +126,7 @@ $bullet-spacing: -20px;
     border-bottom-right-radius: 50%;
   }
 }
+
 
 /*
 body
@@ -244,6 +252,7 @@ navigation
   }
 }
 
+
 /*
 events
 -----------------------------
@@ -297,7 +306,29 @@ events
   }
 }
 
+
 /*
 sidebar
 -----------------------------
 */
+
+#maps-sidebar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  max-height: 100%;
+  height: 100%;
+  width: 25.5%;
+  padding: 10px;
+}
+
+.sidebar-header {
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.sidebar-header-title {
+  font-size: 1.25rem;
+  text-align: center;
+}

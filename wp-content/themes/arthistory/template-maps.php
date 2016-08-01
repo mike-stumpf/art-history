@@ -12,9 +12,11 @@ $artHistoryMaps = new artHistory\artHistory();
 $mapGroups = $artHistoryMaps->getMapData();
 ?>
     <!--sidebar-->
-    <aside id="maps-sidebar-container"></aside>
+    <aside id="maps-sidebar-container" class="show-for-large">
+        <!-- dynamically populated -->
+    </aside>
     <!--main content-->
-    <main id="maps-main-content">
+    <main id="maps-main-content" class="small-12 large-9 large-grid-end">
         <section id="maps-header-image-container">
             <!-- map images-->
             <?php foreach($mapGroups as $mapGroup){

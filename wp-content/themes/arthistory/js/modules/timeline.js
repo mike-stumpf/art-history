@@ -124,11 +124,7 @@
         var data = mapData[getDataItemsList('#timeline-map-'+that.currentTimelineIndex)],
             template = Handlebars.templates.sidebar,
             html = template(data);
-        animations.fadeOut(sidebarContainer)
-            .then(function(){
-                sidebarContainer.html(html);
-                animations.fadeIn(sidebarContainer);
-            });
+        sidebarContainer.html(html);
     }
 
     function populateModal(eventId){
@@ -206,7 +202,7 @@
         }
 
         artHistory.handlebars.applyHelpers();
-
+        
         $(timelineClass).each(function(element){
             initializeTimeline(element);
         });

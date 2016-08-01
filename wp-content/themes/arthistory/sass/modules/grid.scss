@@ -225,3 +225,21 @@ $grid-padding: 5px;
 .grid-end {
   @include grid-end;
 }
+
+.small-grid-end {
+  @include mobile {
+    @include grid-end;
+  }
+}
+
+.medium-grid-end {
+  @include tablet {
+    @include grid-end;
+  }
+}
+
+.large-grid-end {
+  @include desktop {
+    @include grid-end;
+  }
+}
