@@ -14,6 +14,7 @@
         headerMapTitle = $('#maps-header-title'),
         mobileModalTrigger = $('#maps-timeline-mobile-modal-trigger'),
         mobileModalContent = $('#maps-timeline-mobile-modal-content'),
+        timelineTitleContainer = $('#maps-header-title-container'),
         bodyElement = $('body'),
         timelineClass = '.map-timeline',
         timeFormat = 'YYYY-MM-DD',
@@ -158,6 +159,11 @@
     function updateMapTitle(){
         var data = mapData[getDataItemsList('#timeline-map-'+that.currentTimelineIndex)];
         headerMapTitle.html(data.title.replace('-',' \u2013 '));
+        if($('.map-header-image.l--show-for-map-'+that.currentTimelineIndex).length < 1){
+            timelineTitleContainer.css({bottom: '-30px'});
+        } else {
+            timelineTitleContainer.css({bottom: '-20px'});
+        }
     }
 
     function selectTimeline(selectedTimelineIndex){
