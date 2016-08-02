@@ -8,6 +8,7 @@
     var that = artHistory.timeline,
         animations = artHistory.animations,
         helpers = artHistory.helpers,
+        mediaQueries = artHistory.mediaQueries,
         sidebarContainer = $('#maps-sidebar-container'),
         timelineSelectors = $('.maps-timeline-selector'),
         transitionOverlay = $('#maps-transition-overlay'),
@@ -109,7 +110,7 @@
     }
 
     this.openEvent = function(eventId){
-        if(false){
+        if(mediaQueries.isDesktop()){
             //if desktop
             highlightSidebarEvent(eventId);
         } else {
@@ -141,6 +142,7 @@
     }
 
     function highlightSidebarEvent(eventId){
+        console.log('sidebar highlight');
         //todo
     }
 

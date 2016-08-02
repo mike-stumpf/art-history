@@ -4,6 +4,7 @@ var artHistory = {
     animations: {},
     handlebars: {},
     helpers: {},
+    mediaQueries: {},
 
     //modules
     timeline: {},
