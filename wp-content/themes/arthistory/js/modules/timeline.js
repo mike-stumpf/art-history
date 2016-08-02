@@ -146,7 +146,8 @@
     function highlightSidebarEvent(eventId){
         if(eventId !== that.currentEvent) {
             that.currentEvent = eventId;
-            //todo, listen for click outside of overlay
+            //todo, listen for click outside of overlay and close
+            //todo, scroll timeline to center event
             var currentTimelineData = mapData[getDataItemsList('#timeline-map-' + that.currentTimelineIndex)],
                 data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
                 template = Handlebars.partials.event,
