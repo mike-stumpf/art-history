@@ -3,9 +3,9 @@
 {{#each events}}
     <div class="sidebar-entry" data-event-id="{{id}}">
         {{#if image}}
-            <img src="{{image}}" alt="{{title}}"/>
+            <img class="entry-image" src="{{image}}" alt="{{title}}"/>
         {{else}}
-            <img src="{{image}}" alt="{{title}}"/>
+            <span class="entry-image"></span>
         {{/if}}
         {{title}}
     </div>

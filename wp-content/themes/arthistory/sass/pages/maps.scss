@@ -10,6 +10,9 @@ core
   .maps-header-title-element, #maps-sidebar-container {
     background-color: lighten($value, 25%);
   }
+  .sidebar-entry .entry-image {
+    background-color: $value;
+  }
 }
 
 .page-template-template-maps {
@@ -335,11 +338,12 @@ sidebar
   &:hover {
     background-color: rgba(255,255,255,0.8);
   }
-  img {
+  .entry-image {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     vertical-align: middle;
     margin: 5px;
+    display: inline-block;
   }
 }
