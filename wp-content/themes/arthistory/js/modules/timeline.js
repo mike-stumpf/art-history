@@ -16,10 +16,12 @@
         mobileModalTrigger = $('#maps-timeline-mobile-modal-trigger'),
         mobileModalContent = $('#maps-timeline-mobile-modal-content'),
         timelineTitleContainer = $('#maps-header-title-container'),
+        sidebarEventContainer = $('#maps-sidebar-event-container'),
         bodyElement = $('body'),
         timelineClass = '.map-timeline',
         timeFormat = 'YYYY-MM-DD',
-        currentTimeline;
+        currentTimeline,
+        currentEvent;
 
     this.mapTimelines = [];
 
@@ -142,8 +144,30 @@
     }
 
     function highlightSidebarEvent(eventId){
-        console.log('sidebar highlight');
-        //todo
+        if(eventId !== that.currentEvent) {
+            that.currentEvent = eventId;
+            //todo, listen for click outside of overlay
+            var currentTimelineData = mapData[getDataItemsList('#timeline-map-' + that.currentTimelineIndex)],
+                data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
+                template = Handlebars.partials.event,
+                html = template(data);
+            if (_.size(data.books) > 0 || _.size(data.powerpoints) > 0 || _.size(data.articles) > 0 || _.size(data.videos)) {
+                //don't show modal if event has no data
+                animations.animateElement(sidebarEventContainer, {
+                    properties: {
+                        left: '-300px'
+                    }
+                })
+                    .then(function () {
+                        sidebarEventContainer.html(html);
+                        animations.animateElement(sidebarEventContainer, {
+                            properties: {
+                                left: '25.5%'
+                            }
+                        });
+                    });
+            }
+        }
     }
 
 //navigation
@@ -210,7 +234,7 @@
         }
 
         artHistory.handlebars.applyHelpers();
-        
+
         $(timelineClass).each(function(element){
             initializeTimeline(element);
         });

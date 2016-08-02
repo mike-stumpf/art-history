@@ -319,6 +319,7 @@ sidebar
   max-height: 100%;
   height: 100%;
   width: 25.5%;
+  z-index: 999;
 }
 
 .sidebar-header {
@@ -345,5 +346,27 @@ sidebar
     vertical-align: middle;
     margin: 5px;
     display: inline-block;
+  }
+}
+
+#maps-sidebar-event-container {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
+  height: 100%;
+  z-index: 998;
+  background-color: rgba(0,0,0,0.75);
+  color: white;
+  word-break: break-word;
+  width: 300px;
+  padding: 0 20px;
+  a {
+    color: white;
+    &:hover {
+      color: lightgrey;
+    }
   }
 }
