@@ -12,6 +12,17 @@ function arthistory_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'arthistory_scripts' );
 
+
+/**
+ * WordPress generate html titles 
+ * https://make.wordpress.org/core/2014/10/29/title-tags-in-4-1/
+ */
+function theme_slug_setup() {
+    add_theme_support( 'title-tag' );
+}
+add_action( 'after_setup_theme', 'theme_slug_setup' );
+
+
 /**
  * custom admin css
  */
