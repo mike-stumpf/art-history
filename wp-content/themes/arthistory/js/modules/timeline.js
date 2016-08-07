@@ -161,12 +161,16 @@
     function highlightSidebarEvent(eventId){
         if(eventId !== that.currentEvent) {
             that.currentEvent = eventId;
-            //todo, scroll timeline to center event
             var currentTimelineData = mapData[getDataItemsList('#timeline-map-' + that.currentTimelineIndex)],
                 data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
                 template = Handlebars.templates.sidebar_event,
                 html = template(data);
+            //if event has data
             if (_.size(data.books) > 0 || _.size(data.powerpoints) > 0 || _.size(data.articles) > 0 || _.size(data.videos)) {
+                //scroll timeline to center selected event
+                that.mapTimelines[that.currentTimelineIndex-1].moveTo(data.start,{
+                    animation: true
+                });
                 //don't show modal if event has no data
                 closeSidebar()
                     .then(function () {
