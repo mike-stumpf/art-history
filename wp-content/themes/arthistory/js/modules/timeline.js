@@ -160,7 +160,6 @@
 
     function highlightSidebarEvent(eventId){
         if(eventId !== that.currentEvent) {
-            that.currentEvent = eventId;
             var currentTimelineData = mapData[getDataItemsList('#timeline-map-' + that.currentTimelineIndex)],
                 data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
                 template = Handlebars.templates.sidebar_event,
@@ -174,6 +173,7 @@
                 //don't show modal if event has no data
                 closeSidebar()
                     .then(function () {
+                        that.currentEvent = eventId;
                         sidebarEventContainer.html(html);
                         openSidebar();
                     });
