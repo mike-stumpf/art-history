@@ -4,17 +4,57 @@
  * Enqueue scripts and styles.
  */
 function arthistory_scripts() {
-    wp_enqueue_style( 'arthistory-style-base', get_template_directory_uri().'/build/app.base.min.css' );
-    wp_enqueue_style( 'arthistory-style-main', get_template_directory_uri().'/build/app.main.min.css' );
-    wp_enqueue_script( 'arthistory-logic-base', get_template_directory_uri().'/build/app.base.min.js');
-    wp_enqueue_script( 'arthistory-logic-handlebars', get_template_directory_uri().'/build/app.handlebars.min.js');
-    wp_enqueue_script( 'arthistory-logic-main', get_template_directory_uri().'/build/app.main.min.js', array(), '20160509', true );
+    $scriptDate = '20160806';
+    //css
+    wp_enqueue_style(
+        'arthistory-style-base',
+        get_template_directory_uri().'/build/app.base.min.css',
+        array(),
+        $scriptDate,
+        false
+    );
+    wp_enqueue_style(
+        'arthistory-style-main',
+        get_template_directory_uri().'/build/app.main.min.css',
+        array(
+            'arthistory-style-base'
+        ),
+        $scriptDate,
+        false
+    );
+    //js
+    wp_enqueue_script(
+        'arthistory-logic-base',
+        get_template_directory_uri().'/build/app.base.min.js',
+        array(),
+        $scriptDate,
+        true
+    );
+    wp_enqueue_script(
+        'arthistory-logic-handlebars',
+        get_template_directory_uri().'/build/app.handlebars.min.js',
+        array(
+            'arthistory-logic-base'
+        ),
+        $scriptDate,
+        true
+    );
+    wp_enqueue_script(
+        'arthistory-logic-main',
+        get_template_directory_uri().'/build/app.main.min.js',
+        array(
+            'arthistory-logic-base',
+            'arthistory-logic-handlebars'
+        ),
+        $scriptDate,
+        true
+    );
 }
 add_action( 'wp_enqueue_scripts', 'arthistory_scripts' );
 
 
 /**
- * WordPress generate html titles 
+ * WordPress generate html titles
  * https://make.wordpress.org/core/2014/10/29/title-tags-in-4-1/
  */
 function theme_slug_setup() {
