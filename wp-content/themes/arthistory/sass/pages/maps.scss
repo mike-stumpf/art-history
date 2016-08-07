@@ -64,6 +64,9 @@ $bullet-spacing: -20px;
   margin: auto;
   left: 0;
   right: 0;
+  @include desktop {
+    bottom: -30px;
+  }
 }
 
 #maps-header-title {

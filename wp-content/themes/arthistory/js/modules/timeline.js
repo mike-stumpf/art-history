@@ -198,11 +198,6 @@
     function updateMapTitle(){
         var data = mapData[getDataItemsList('#timeline-map-'+that.currentTimelineIndex)];
         headerMapTitle.html(data.title.replace('-',' \u2013 '));
-        if($('.map-header-image.l--show-for-map-'+that.currentTimelineIndex).length < 1){
-            timelineTitleContainer.css({bottom: '-30px'});
-        } else {
-            timelineTitleContainer.css({bottom: '-20px'});
-        }
     }
 
     function selectTimeline(selectedTimelineIndex){
