@@ -143,31 +143,41 @@
         }
     }
 
+    function openSidebar(){
+        return animations.animateElement(sidebarEventContainer, {
+            properties: {
+                left: '25.5%'
+            }
+        });
+    }
+
+    function closeSidebar(){
+        that.currentEvent = null;
+        return animations.animateElement(sidebarEventContainer, {
+            properties: {
+                left: '-300px'
+            }
+        });
+    }
+
     function highlightSidebarEvent(eventId){
         if(eventId !== that.currentEvent) {
             that.currentEvent = eventId;
-            //todo, listen for click outside of overlay and close
             //todo, scroll timeline to center event
             var currentTimelineData = mapData[getDataItemsList('#timeline-map-' + that.currentTimelineIndex)],
                 data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
-                template = Handlebars.partials.event,
+                template = Handlebars.templates.sidebar_event,
                 html = template(data);
             if (_.size(data.books) > 0 || _.size(data.powerpoints) > 0 || _.size(data.articles) > 0 || _.size(data.videos)) {
                 //don't show modal if event has no data
-                animations.animateElement(sidebarEventContainer, {
-                    properties: {
-                        left: '-300px'
-                    }
-                })
+                closeSidebar()
                     .then(function () {
                         sidebarEventContainer.html(html);
-                        animations.animateElement(sidebarEventContainer, {
-                            properties: {
-                                left: '25.5%'
-                            }
-                        });
+                        openSidebar();
                     });
             }
+        } else {
+            closeSidebar();
         }
     }
 
@@ -261,6 +271,11 @@
             .on('click', function(event){
                 event.preventDefault();
                 handleSelectorClick($(this));
+            });
+
+        bodyElement
+            .on('click', '.f--close-sidebar', function(){
+                closeSidebar();
             });
     };
 

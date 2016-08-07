@@ -370,3 +370,17 @@ sidebar
     }
   }
 }
+
+#sidebar-close-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  color: white;
+  font-size: 1.75rem;
+  cursor: pointer;
+  z-index: 100;
+  @include transition-with-defaults(color);
+  &:hover {
+    color: lightgrey;
+  }
+}
