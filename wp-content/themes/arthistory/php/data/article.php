@@ -2,8 +2,6 @@
 
 use artHistory\Lib\Helpers;
 
-//todo, documentation
-
 class Article {
 
     private $id;

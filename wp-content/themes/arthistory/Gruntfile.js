@@ -30,14 +30,14 @@ module.exports = function(grunt){
             }
         },
         copy :{
-            images: {
-                expand: true,
-                cwd: 'assets/images/',
-                src: '**/*.*',
-                dest: 'build/assets/',
-                flatten: true,
-                filter: 'isFile'
-            },
+            // images: {
+            //     expand: true,
+            //     cwd: 'assets/images/',
+            //     src: '**/*.*',
+            //     dest: 'build/assets/',
+            //     flatten: true,
+            //     filter: 'isFile'
+            // },
             fonts: {
                 expand: true,
                 cwd: 'assets/fonts',

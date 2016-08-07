@@ -2,8 +2,6 @@
 
 use artHistory\Lib\Helpers;
 
-//todo, documentation
-
 class Video {
 
     private $id;

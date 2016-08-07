@@ -1,9 +1,6 @@
 <?php
 /*
 Template Name: Maps
-
-//todo, documentation
-
 */
 get_header();
 

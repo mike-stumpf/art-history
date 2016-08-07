@@ -1,7 +1,5 @@
 <?php namespace artHistory\Lib;
 
-//todo, documentation
-
 class Dictionary {
     /**
      * variables

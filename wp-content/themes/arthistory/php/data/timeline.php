@@ -3,8 +3,6 @@
 use artHistory\Lib\Helpers;
 use artHistory\Lib\Dictionary;
 
-//todo, documentation
-
 class Timeline {
 
     public $id;

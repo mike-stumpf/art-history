@@ -3,8 +3,6 @@
 use WP_Query;
 use artHistory\Data;
 
-//todo, documentation
-
 /**
  * helper functions
  */

@@ -1,7 +1,5 @@
 <?php namespace artHistory;
 
-//todo, documentation
-
 //reference external functions outside of current namespace
 use artHistory\Lib\Helpers;
 use artHistory\Lib\Dictionary;

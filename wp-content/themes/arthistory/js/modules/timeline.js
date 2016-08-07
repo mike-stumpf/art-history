@@ -1,7 +1,5 @@
 (function() {
 
-    //todo, documentation
-
 //variables
 //-----------------------------
 

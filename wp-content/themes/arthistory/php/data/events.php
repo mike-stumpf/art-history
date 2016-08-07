@@ -4,8 +4,6 @@ use DateTime;
 use artHistory\Lib\Helpers;
 use artHistory\Lib\Dictionary;
 
-//todo, documentation
-
 class Event {
 
     private $id;

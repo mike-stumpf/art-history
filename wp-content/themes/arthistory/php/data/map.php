@@ -1,7 +1,5 @@
 <?php namespace artHistory\Data;
 
-//todo, documentation
-
 //reference external functions outside of current namespace
 use WP_Query;
 use artHistory\Lib\Dictionary;
