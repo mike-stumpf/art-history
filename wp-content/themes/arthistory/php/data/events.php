@@ -26,7 +26,7 @@ class Event {
         $timelineTitle = Helpers::getMetaValue($eventId,'event-timeline-title');
         $this->timelineTitle = !empty($timelineTitle)?$timelineTitle:$this->title;
         $this->image = Helpers::resizeImage(Helpers::getMetaValue($eventId,'event-image'),100,100);
-        $this->largeImage = Helpers::resizeImage(Helpers::getMetaValue($eventId,'event-image'),750,750);
+        $this->largeImage = Helpers::getMetaValue($eventId,'event-image');
         $this->eventStart = Helpers::getMetaValue($eventId,'event-start');
         if(strlen($this->eventStart) > 1) {
             //only convert to date if not null
