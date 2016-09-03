@@ -137,20 +137,6 @@ class Types_Information_Message {
 					? $element['label']['post-edit']
 					: $element['label']['default'];
 			}
-
-			// todo Remove once placeholder replace comes before Twig rendering
-			if( isset( $element['target'] ) ) {
-				switch( $element['target'] ) {
-					case '%POST-PERMALINK%':
-						$element['target'] = Types_Helper_Placeholder::get_permalink();
-						break;
-					case '%POST-ARCHIVE-PERMALINK%':
-						$element['target'] = Types_Helper_Placeholder::get_archive_permalink();
-						break;
-				}
-			}
-			// end remove
-
 		}
 
 		$this->description = $description;

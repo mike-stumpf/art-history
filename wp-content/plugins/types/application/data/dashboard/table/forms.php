@@ -18,7 +18,7 @@ return array(
 					'description' => array(
 						array(
 							'type' => 'paragraph',
-							'content' => __( 'To create a form for front-end content submission and editing, you need have CRED plugin installed.
+							'content' => __( 'To create a form for front-end content submission and editing, you need to have CRED plugin installed.
                     CRED is part of the complete Toolset package for adding and displaying custom content.', 'types' )
 						),
 						array(

@@ -385,7 +385,8 @@
                 if (typeof message != 'undefined') {
 
                     $('.wpt-form-error').each(function () {
-                        if ($(this).css('display') == 'block' && $(this).attr('id') !== 'wpt-form-message' && $(this).attr('id') !== 'lbl_generic') {
+                        formId = $(this).closest("form").find('input[name=_cred_cred_prefix_form_id]').val();
+                        if ($(this).css('display') == 'block' && $(this).attr('id') !== 'wpt-form-message-' + formId && $(this).attr('id') !== 'lbl_generic') {
                             if (typeof $('#' + $(this).attr('for')).data('wpt-field-title') != 'undefined') {
                                 error_list += '<li>' + $('#' + $(this).attr('for')).data('wpt-field-title') + ': ' + $(this).html() + '</li>';
                             } else {
@@ -393,23 +394,22 @@
                             }
                             total_errors += 1;
                         }
-                    });
-                    if (total_errors > 0) {
-                        message = $('.wpt-form-error').data('message-single');
-                        if (total_errors > 1) {
-                            message = $('.wpt-form-error').data('message-plural');
+                        if (total_errors > 0) {
+                            message = $(this).closest("form").find('.wpt-form-error').data('message-single');
+                            if (total_errors > 1) {
+                                message = $(this).closest("form").find('.wpt-form-error').data('message-plural');
+                            }
+                            message += "<br />%PROBLEMS_UL_LIST";
+                            message = message.replace('%NN', total_errors).replace('%PROBLEMS_UL_LIST', '<ul>' + error_list + '</ul>');
+                            $('#wpt-form-message-' + formId).html(message);
+                            if (_form_submitted)
+                                $('#wpt-form-message-' + formId).show();
+                        } else {
+                            $('#wpt-form-message-' + formId).html('');
+                            if (_form_submitted)
+                                $('#wpt-form-message-' + formId).hide();
                         }
-                        message += "<br />%PROBLEMS_UL_LIST";
-
-                        message = message.replace('%NN', total_errors).replace('%PROBLEMS_UL_LIST', '<ul>' + error_list + '</ul>');
-                        $('#wpt-form-message').html(message);
-                        if (_form_submitted)
-                            $('#wpt-form-message').show();
-                    } else {
-                        $('#wpt-form-message').html('');
-                        if (_form_submitted)
-                            $('#wpt-form-message').hide();
-                    }
+                    });
                 }
                 total_errors = 0;
                 error_list = '';

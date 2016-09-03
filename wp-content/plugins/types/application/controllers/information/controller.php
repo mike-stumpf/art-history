@@ -15,6 +15,7 @@ class Types_Information_Controller {
 			! current_user_can( 'manage_options' )
 			|| ! apply_filters( 'types_information_table', true )
 			|| $this->embedded_plugin_running()
+			|| ! Types_Helper_Condition::get_post_type()
 		) {
 			return false;
 		}

@@ -1469,7 +1469,7 @@ class Types_Admin_Edit_Post_Type extends Types_Admin_Page
         $post_type_parent = get_post_type_object( $parent );
         $post_type_child = get_post_type_object( $child );
 
-        if ( empty( $post_type_parent ) || empty( $post_type_child ) ) {
+        if ( null == $post_type_parent || null == $post_type_child ) {
             die( __( 'Wrong post types', 'wpcf' ) );
         }
         $relationships = get_option( 'wpcf_post_relationship', array() );
@@ -1851,7 +1851,11 @@ class Types_Admin_Edit_Post_Type extends Types_Admin_Page
             'email-alt' => __('email alt', 'wcpf'),
             'email' => __('email', 'wcpf'),
             'excerpt-view' => __('excerpt view', 'wcpf'),
-            'exerpt-view' => __('exerpt view', 'wcpf'),
+
+	        // because https://core.trac.wordpress.org/ticket/30832
+	        // but we don't have to offer it at all, actually it looks deprecated
+            // 'exerpt-view' => __('excerpt view', 'wcpf'),
+
             'external' => __('external', 'wcpf'),
             'facebook-alt' => __('facebook alt', 'wcpf'),
             'facebook' => __('facebook', 'wcpf'),

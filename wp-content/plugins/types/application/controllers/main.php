@@ -9,23 +9,23 @@
  * @since 2.0
  */
 final class Types_Main {
-	
+
 	private static $instance;
-	
+
 	public static function get_instance() {
 		if( null == self::$instance ) {
 			self::$instance = new self();
 		}
 		return self::$instance;
 	}
-	
+
 	public static function initialize() {
 		self::get_instance();
 	}
 
 	private function __clone() { }
 
-	
+
 	private function __construct() {
 
 		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ), 10 );
@@ -84,10 +84,26 @@ final class Types_Main {
 
 
 	/**
+	 * Set current plugin mode.
+	 *
+	 * @param string $new_mode the new plugin mode
+	 * @return bool TRUE if set is succesfully done, FALSE otherwise
+	 * @since 2.2
+	 */
+	public function set_plugin_mode( $new_mode = self::MODE_UNDEFINED ) {
+		if ( !in_array( $new_mode, array( self::MODE_UNDEFINED, self::MODE_AJAX, self::MODE_ADMIN, self::MODE_FRONTEND ) ) ){
+			return false;
+		}
+		$this->mode = $new_mode;
+		return true;
+	}
+
+
+	/**
 	 * Determine whether a WP admin page is being loaded.
 	 *
 	 * Note that the behaviour differs from the native is_admin() which will return true also for AJAX requests.
-	 * 
+	 *
 	 * @return bool
 	 * @since 2.1
 	 */
@@ -98,11 +114,11 @@ final class Types_Main {
 
 	/**
 	 * Early loading actions.
-	 * 
-	 * Initialize the Toolset Common library with the new loader. 
+	 *
+	 * Initialize the Toolset Common library with the new loader.
 	 * Initialize asset manager if we're not doing an AJAX call.
 	 * Initialize the Types hook API.
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function after_setup_theme() {
@@ -112,16 +128,16 @@ final class Types_Main {
 		if( !defined( 'DOING_AJAX' ) ) {
 			Types_Assets::get_instance()->initialize_scripts_and_styles();
 		}
-		
+
 		Types_Api::initialize();
 	}
 
 
 	/**
-	 * In some cases, it may not be clear what legacy files are includes and what aren't. 
-	 * 
+	 * In some cases, it may not be clear what legacy files are includes and what aren't.
+	 *
 	 * This method should make sure all is covered (add files when needed). Use only when necessary.
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function require_legacy_functions() {

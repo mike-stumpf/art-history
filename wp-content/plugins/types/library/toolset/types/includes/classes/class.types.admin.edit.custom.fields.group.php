@@ -1105,6 +1105,13 @@ var wpcfDefaultCss = ' . json_encode( base64_encode( $admin_styles_value ) ) . '
 		$this->save_condition_templates( $group_id );
 		$this->save_condition_taxonomies( $group_id );
 
+		do_action( 'types_fields_group_saved', $group_id );
+		do_action( 'types_fields_group_post_saved', $group_id );
+
+		// do not use these hooks anymore
+		do_action( 'wpcf_fields_group_saved', $group_id );
+		do_action( 'wpcf_postmeta_fields_group_saved', $group_id );
+
 		// redirect
 		$args = array(
 			'page'        => 'wpcf-edit',

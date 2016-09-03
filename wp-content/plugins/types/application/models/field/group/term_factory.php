@@ -5,7 +5,7 @@
  *
  * @since 1.9
  */
-final class Types_Field_Group_Term_Factory extends Types_Field_Group_Factory {
+class Types_Field_Group_Term_Factory extends Types_Field_Group_Factory {
 
 
 	/**
@@ -72,6 +72,18 @@ final class Types_Field_Group_Term_Factory extends Types_Field_Group_Factory {
 
 
 	/**
+	 * Clears the cache for taxonomy assignemnts.
+	 * It is only used for testing purposes.
+	 *
+	 * @since 2.2
+	 * @deprecated deprecated since version 2.2
+	 */
+	public function clear_taxonomy_assignment_cache() {
+		$this->taxonomy_assignment_cache = null;
+	}
+
+
+	/**
 	 * Produce a list of all taxonomies with groups that belong to them.
 	 *
 	 * @return Types_Field_Group_Term[][] Associative array where keys are taxonomy slugs and values are arrays of field
@@ -108,7 +120,7 @@ final class Types_Field_Group_Term_Factory extends Types_Field_Group_Factory {
 	 * Get array of groups that are associated with given taxonomy.
 	 *
 	 * @param string $taxonomy_slug Slug of the taxonomy
-	 * 
+	 *
 	 * @return Types_Field_Group_Term[] Associated term field groups.
 	 */
 	public function get_groups_by_taxonomy( $taxonomy_slug ) {

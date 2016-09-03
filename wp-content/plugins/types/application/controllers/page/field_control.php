@@ -395,7 +395,7 @@ final class Types_Page_Field_Control extends Types_Page_Abstract {
 				'changeAssignmentToGroups' => __( 'Change assignment to field groups for the field', 'wpcf' ),
 				'deleteField' => __( 'Delete field', 'wpcf' ),
 				'deleteFields' => __( 'Delete multiple fields', 'wpcf' ),
-				'cannotDeleteUnmanagedFields' => __( 'Some fields will cannot be deleted because they are not managed by Types.', 'wpcf' ),
+				'cannotDeleteUnmanagedFields' => __( 'Some fields cannot be deleted because they are not managed by Types.', 'wpcf' ),
 				'changeFieldType' => __( 'Change field type for the field', 'wpcf' ),
 				'startManagingFieldsWithTypes' => __( 'Start managing fields with Types', 'wpcf' ),
 				'stopManagingFieldsWithTypes' => __( 'Stop managing fields with Types', 'wpcf' )

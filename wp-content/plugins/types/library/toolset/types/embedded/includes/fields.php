@@ -771,15 +771,15 @@ function wpcf_get_usermeta_form_addon_submit() {
     $add = '';
     if ( !empty( $_POST['is_usermeta'] ) ) {
         if ( $_POST['display_username_for'] == 'post_autor' ) {
-            $add .= ' user_is_author="true"';
+            $add .= ' user_is_author=\'true\'';
         } elseif ( $_POST['display_username_for'] == 'current_user' ) {
-            $add .= ' user_current="true"';
+            $add .= ' user_current=\'true\'';
         }
          else {
             if ( $_POST['display_username_for_suser_selector'] == 'specific_user_by_id' ) {
-                $add .= ' user_id="' . sanitize_text_field($_POST['display_username_for_suser_id_value']) . '"';
+                $add .= ' user_id=\'' . sanitize_text_field($_POST['display_username_for_suser_id_value']) . '\'';
             } else {
-                $add .= ' user_name="' . sanitize_text_field($_POST['display_username_for_suser_username_value']) . '"';
+                $add .= ' user_name=\'' . sanitize_text_field($_POST['display_username_for_suser_username_value']) . '\'';
             }
         }
     }

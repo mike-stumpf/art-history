@@ -16,6 +16,7 @@
         </div> <!-- .toolset-box-content -->
 
         <div class="toolset-box-footer">
+            <span><a href="https://www.surveymonkey.com/r/layouts-videos"><?php _e('Give us feedback about this video', 'ddl-layouts');?></a></span>
             <button class="button js-edit-video-close js-remove-video remove-video"><?php _e('Minimize','ddl-layouts') ?></button>
             <button class="button js-edit-video-detach js-detach-video remove-video"><?php _e('Open in a new window','ddl-layouts') ?></button>
         </div>

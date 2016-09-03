@@ -299,3 +299,17 @@ div.toolset-dashboard .types-information-paragraph.toolset-dashboard-post-type {
     display: block;
     text-align: right;
 }
+
+#types-feedback {
+    min-height: 0 !important;
+}
+.types-feedback .ui-dialog-titlebar {
+    border: 0;
+    background: inherit;
+    height: 8px;
+}
+
+/* todo remove once placeholders are rendered before twig rendering */
+.types-information-td-inner a[href=""] {
+    display: none;
+}

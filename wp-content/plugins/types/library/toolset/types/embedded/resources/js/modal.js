@@ -32,7 +32,7 @@
 
             $('.types_modal_box .message', pop_up).css({
                 color: "#f05a28",
-                fontFamily: "'Open Sans', Helvetica, Arial, sans-serif",
+                fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', 'Open Sans', sans-serif",
                 fontSize: "25px",
                 padding: "0 10px",
                 textAlign: "center"
@@ -118,7 +118,7 @@
              * header p
              */
             $('.header p', pop_up).css({
-                fontFamily: "'Open Sans', Helvetica, Arial, sans-serif",
+                fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', 'Open Sans', sans-serif",
                 fontSize: "18px",
                 lineHeight: "1.2em",
                 margin: 0
@@ -151,7 +151,7 @@ WPCF_Script.Modal_Script = function( $ ) {
 
         $('.types_modal_box .message', pop_up).css({
             color: "#f05a28",
-            fontFamily: "'Open Sans', Helvetica, Arial, sans-serif",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', 'Open Sans', sans-serif",
             fontSize: "25px",
             padding: "0 10px",
             textAlign: "center"
@@ -235,7 +235,7 @@ WPCF_Script.Modal_Script = function( $ ) {
          * header p
          */
         $('.header p', pop_up).css({
-            fontFamily: "'Open Sans', Helvetica, Arial, sans-serif",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', 'Open Sans', sans-serif",
             fontSize: "18px",
             lineHeight: "1.2em",
             margin: 0

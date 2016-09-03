@@ -1,35 +1,25 @@
 <?php
 
-@ini_set('upload_max_size', '64M');
-@ini_set('post_max_size', '64M');
-@ini_set('max_execution_time', '300');
-
-function _pre($v) {
-    echo "<pre>";
-    print_r($v);
-    echo "</pre>";
-}
-
-function find_wp_config_path() {
+function cred_find_wp_config_path() {
     $dir = dirname(__FILE__);
     do {
-        if (file_exists($dir . "/wp-config.php")) {
+        if (file_exists($dir . "/wp-load.php")) {
             return $dir . '/';
         }
     } while ($dir = realpath("$dir/.."));
     return null;
 }
 
-function get_root_path() {
-    return find_wp_config_path();
+function cred_get_root_path() {
+    return cred_find_wp_config_path();
 }
 
-function get_local($url) {
+function cred_get_local($url) {
     $urlParts = parse_url($url);
-    return get_root_path() . $urlParts['path'];
+    return cred_get_root_path() . $urlParts['path'];
 }
 
-function clean($string) {
+function cred_clean($string) {
     $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
     return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
 }
@@ -45,10 +35,10 @@ define('DOING_AJAX', true);
 //    define('WP_ADMIN', true);
 //}
 
-require_once( get_root_path() . 'wp-load.php' );
-require_once( get_root_path() . 'wp-admin/includes/file.php' );
-require_once( get_root_path() . 'wp-admin/includes/media.php' );
-require_once( get_root_path() . 'wp-admin/includes/image.php' );
+require_once( cred_get_root_path() . 'wp-load.php' );
+require_once( cred_get_root_path() . 'wp-admin/includes/file.php' );
+require_once( cred_get_root_path() . 'wp-admin/includes/media.php' );
+require_once( cred_get_root_path() . 'wp-admin/includes/image.php' );
 
 /** Allow for cross-domain requests (from the frontend). */
 send_origin_headers();
@@ -59,11 +49,11 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
 
     if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['file'])) {
         $file = $_POST['file'];
-		$id = isset( $_POST['id'] ) ? (int) $_POST['id'] : 0;
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
 
         $data = array('result' => true);
 
-        $local_file = get_local($file);
+        $local_file = cred_get_local($file);
 
 //get all image attachments
         $attachments = get_children(
@@ -125,9 +115,9 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
 
                 $errors = array();
 
-                list($fields, $errors) = apply_filters('cred_form_validate_form_' . $form_slug, array($fields, $errors), $thisform);
-                list($fields, $errors) = apply_filters('cred_form_validate_' . $form_id, array($fields, $errors), $thisform);
-                list($fields, $errors) = apply_filters('cred_form_validate', array($fields, $errors), $thisform);
+                list($fields, $errors) = apply_filters('cred_form_ajax_upload_validate_' . $form_slug, array($fields, $errors), $thisform);
+                list($fields, $errors) = apply_filters('cred_form_ajax_upload_validate_' . $form_id, array($fields, $errors), $thisform);
+                list($fields, $errors) = apply_filters('cred_form_ajax_upload_validate', array($fields, $errors), $thisform);
 
                 if (!empty($errors)) {
                     foreach ($errors as $fname => $err) {
@@ -170,15 +160,16 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
                             if (wp_attachment_is_image($attach_id)) {
                                 $_rewrited_url = wp_get_attachment_image_src($attach_id, 'full');
                                 $_rewrited_url_prw = wp_get_attachment_image_src($attach_id);
+                                $attach_data = wp_generate_attachment_metadata($attach_id, $_rewrited_url);
                             } else {
                                 $_rewrited_url = wp_get_attachment_url($attach_id);
                             }
-                            $attach_data = wp_generate_attachment_metadata($attach_id, $_rewrited_url);
 
-                            if (isset($_rewrited_url) && isset($_rewrited_url_prw)) {
+                            if (isset($_rewrited_url)) {
                                 $files[] = (is_array($_rewrited_url) && isset($_rewrited_url[0])) ? $_rewrited_url[0] : $_rewrited_url; //$res['url'];
                                 $attaches[] = $attach_id;
-                                $previews[] = (is_array($_rewrited_url_prw) && isset($_rewrited_url_prw[0])) ? $_rewrited_url_prw[0] : $_rewrited_url_prw; //$res['url'];
+                                if (isset($_rewrited_url_prw))
+                                    $previews[] = (is_array($_rewrited_url_prw) && isset($_rewrited_url_prw[0])) ? $_rewrited_url_prw[0] : $_rewrited_url_prw; //$res['url'];
                             } else {
                                 $files[] = $res['url'];
                                 $attaches[] = $attach_id;

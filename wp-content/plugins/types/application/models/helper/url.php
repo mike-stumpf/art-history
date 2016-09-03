@@ -18,7 +18,6 @@ final class Types_Helper_Url {
 
 	private static $urls = array();
 
-	const ARG_SITE_URL = 'otgs-client-from-types';
 	const WP_TYPES_DOMAIN = 'wp-types.com';
 
 
@@ -84,26 +83,6 @@ final class Types_Helper_Url {
 
 	}
 
-
-	/**
-	 * Add site's URL as an URL argument.
-	 *
-	 * @param string $url Source URL
-	 * @param null|string $arg_name Name of the argument. Optional, defaults to ARG_SITE_URL.
-	 * @return string
-	 * @since 2.1
-	 */
-	private static function add_site_url_as_arg( $url, $arg_name = null ) {
-		if( is_string( $url ) ) {
-			if( !is_string( $arg_name ) || empty( $arg_name ) ) {
-				$arg_name = self::ARG_SITE_URL;
-			}
-			$url = add_query_arg( $arg_name, get_site_url(), $url );
-		}
-		return $url;
-	}
-
-
 	/**
 	 * Determines whether an URL points to the wp-types.com domain.
 	 *
@@ -139,11 +118,7 @@ final class Types_Helper_Url {
 		}
 
 		$url = self::$urls[ $key ];
-
-		if( self::is_link_to_wptypes( $url ) && $add_site_url ) {
-			$url = self::add_site_url_as_arg( $url );
-		}
-
+        
 		// return url if no arguments
 		if( ! $utm_content ) {
 			return $url;

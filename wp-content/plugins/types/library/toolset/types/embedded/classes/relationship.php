@@ -298,7 +298,14 @@ class WPCF_Relationship
                 }
             }
         }
+
+        // Workaround for types-876, see wpcf_admin_post_save_post_hook().
+	    add_filter( 'types_updating_child_post', '__return_true' );
+
         $updated_id = wp_update_post( $post_data );
+
+	    remove_filter( 'types_updating_child_post', '__return_true' );
+
         if ( isset($temp_post_data) ) {
             $_POST = $temp_post_data;
             unset($temp_post_data);

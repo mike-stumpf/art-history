@@ -1015,7 +1015,14 @@ function wpcfRelationshipInit(selector, context) {
  * select2
  */
 function wpcfBindSelect2($) {
-    $('.wpcf-pr-belongs').select2({
+    $( '.wpcf-pr-belongs:not([data-belongs-title])' ).each( function() {
+         wpcfBindSelect2For( $( this ) );
+    } );
+}
+
+function wpcfBindSelect2For( element ) {
+    var $ = jQuery;
+    element.select2({
         id: function(item){
             return item.ID;
         },
@@ -1129,7 +1136,24 @@ function wpcfBindSelect2($) {
 }
 jQuery(document).ready(function($) {
     wpcfBindSelect2($);
+
+    $( '.wpcf-pr-belongs[data-belongs-title]' ).each( function() {
+        var inputRelationId = $( this ),
+            inputShowRelationTitle = $( '<input type="textfield" readonly="readonly" style="cursor:pointer; width: 100%; max-width:300px;">' );
+
+        inputShowRelationTitle.val( inputRelationId.data( 'belongs-title' ) );
+        inputRelationId.hide();
+
+        inputRelationId.after( inputShowRelationTitle );
+
+        inputShowRelationTitle.on( 'click', function() {
+            inputShowRelationTitle.remove();
+            inputRelationId.show();
+            wpcfBindSelect2For( inputRelationId );
+        } );
+    } );
 });
+
 
 /**
  * Fix for Select2

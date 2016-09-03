@@ -5,7 +5,7 @@
  *
  * @since 1.9
  */
-final class Types_Field_Group_Term extends Types_Field_Group {
+class Types_Field_Group_Term extends Types_Field_Group {
 
 
 	const POST_TYPE = 'wp-types-term-group';
@@ -47,6 +47,7 @@ final class Types_Field_Group_Term extends Types_Field_Group {
 	 */
 	public function get_associated_taxonomies() {
 		$postmeta = get_post_meta( $this->get_id(), self::POSTMETA_ASSOCIATED_TAXONOMY, false );
+		$postmeta = array_filter( $postmeta, function( $value ) { $value = trim( $value ); return ( ! empty( $value ) ); } );
 		return wpcf_ensarr( $postmeta );
 	}
 
@@ -126,7 +127,7 @@ final class Types_Field_Group_Term extends Types_Field_Group {
 	 * @since 2.1
 	 */
 	protected function get_export_fields() {
-		
+
 		$data = parent::get_export_fields();
 
 		// Array of slugs of associated taxonomies.

@@ -359,18 +359,16 @@ function wpcf_embedded_init() {
         'view-template',
         'wp-types-group',
         'wp-types-user-group',
+	    'wp-types-term-group',
 	    'acf-field-group',
+	    'acf'
     );
 
     /**
-     * Do use this CPT in Toolset "actions"
+     * Filter that allows to add own post types which will be not used in Toolset plugins.
      *
-     * Filter allow to add own post types which will be not used in 
-     * Toolset plugins
-     *
-     * @since 1.9.0
-     *
-     * @param array $post_types array of post types slugs
+     * @param string[] $post_types array of post type slugs.
+     * @since 1.9
      */
     $wpcf->excluded_post_types = apply_filters( 'toolset_filter_exclude_own_post_types', $wpcf->excluded_post_types );
 

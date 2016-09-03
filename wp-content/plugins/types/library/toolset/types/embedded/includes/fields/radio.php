@@ -126,8 +126,8 @@ function wpcf_fields_radio_editor_submit( $data, $field, $context ) {
     if ( isset( $data['display'] ) && $data['display'] == 'value' && !empty( $data['options'] ) ) {
         $shortcode = '';
         foreach ( $data['options'] as $option_id => $value ) {
-            $shortcode .= '[types ' . $types_attr . '="' . $field['slug']
-                    . '" ' . $add . ' option="' . $option_id . '"]' . $value
+            $shortcode .= '[types ' . $types_attr . '=\'' . $field['slug']
+                    . '\' ' . $add . ' option=\'' . $option_id . '\']' . $value
                     . '[/types] ';
         }
     } else {

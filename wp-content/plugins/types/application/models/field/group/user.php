@@ -5,7 +5,7 @@
  *
  * @since 2.0
  */
-final class Types_Field_Group_User extends Types_Field_Group {
+class Types_Field_Group_User extends Types_Field_Group {
 
 
 	const POST_TYPE = 'wp-types-user-group';

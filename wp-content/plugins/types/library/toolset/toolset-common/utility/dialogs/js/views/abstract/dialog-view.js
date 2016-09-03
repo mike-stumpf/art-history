@@ -3,7 +3,13 @@ var DDLayout = DDLayout || {};
 DDLayout.DialogView = Backbone.View.extend({
 
     initialize: function ( options ) {
-        var self = this;
+        var self = this,
+            settings = {
+                escape: /\{\{([^\}]+?)\}\}(?!\})/g,
+                evaluate: /<#([\s\S]+?)#>/g,
+                interpolate: /\{\{\{([\s\S]+?)\}\}\}/g
+            },
+            template_settings = _.defaults({}, settings, _.templateSettings);
 
         _.defaults(options, {
                     title: "",
@@ -33,8 +39,7 @@ DDLayout.DialogView = Backbone.View.extend({
         self.set_template_object( options.template_object );
 
         self.set_title( options.title );
-
-        self.template = _.template( jQuery( options.selector ).html() );
+        self.template = _.template( jQuery( options.selector ).html(), template_settings );
 
         self.listenTo(self.eventDispatcher, 'ddldialogopen'+'-'+self.dialog_name, self.open);
         self.listenTo(self.eventDispatcher,'ddldialogcreate'+'-'+self.dialog_name, self.create);

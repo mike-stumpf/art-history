@@ -18,7 +18,7 @@ return array(
 					'description' => array(
 						array(
 							'type' => 'paragraph',
-							'content' => __( 'To create a View for this content type, you need have Views plugin installed. Views is part of the
+							'content' => __( 'To create a View for this content type, you need to have Views plugin installed. Views is part of the
                     complete Toolset package for adding and displaying custom content.', 'types' )
 						),
 						array(

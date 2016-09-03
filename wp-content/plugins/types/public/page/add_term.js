@@ -65,8 +65,10 @@ Types.page.addTerm = (function($) {
 
         originalSubmitButton.css('display', 'none');
 
+        customSubmitButton.off();
         customSubmitButton.attr('id', 'types-custom-submit');
-        customSubmitButton.submit(function(e) {
+
+        var handleSubmitAction = function(e) {
 
             if(form.valid()) {
                 WPV_Toolset.Utils.Spinner.show(WPV_Toolset.Utils.Spinner.find(form));
@@ -77,7 +79,10 @@ Types.page.addTerm = (function($) {
 
             e.preventDefault();
             e.stopPropagation();
-        });
+        };
+
+        customSubmitButton.click(handleSubmitAction);
+        customSubmitButton.submit(handleSubmitAction);
 
         submitSection.append(customSubmitButton).append(WPV_Toolset.Utils.Spinner.create());
 

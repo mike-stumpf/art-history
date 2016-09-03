@@ -35,7 +35,12 @@ class WPToolset_Field_Wysiwyg extends WPToolset_Field_Textarea {
                     '<label class="wpt-form-label wpt-form-textfield-label">%1$s%2$s</label>', stripcslashes($this->getTitle()), $extra_markup
             );
         }
-        $markup .= stripcslashes($this->getDescription());
+        
+        if(is_admin()){
+            $markup .= '<div class="description wpt-form-description wpt-form-description-textfield description-textfield">'.stripcslashes($this->getDescription()).'</div>';
+        } else {
+            $markup .= stripcslashes($this->getDescription());
+        }
         $markup .= $this->_editor($attributes);
         if (is_admin()) {
             $markup .= '</div>';

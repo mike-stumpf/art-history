@@ -42,7 +42,7 @@ if ( !defined( 'EDITOR_ADDON_RELPATH' ) ) {
 }
 
 // installer
-$installer = TYPES_ABSPATH . '/library/toolset/installer/loader.php';
+$installer = TYPES_ABSPATH . '/library/otgs/installer/loader.php';
 if ( file_exists( $installer ) ) {
 	/** @noinspection PhpIncludeInspection */
 	include_once $installer;

@@ -5,6 +5,36 @@
 **  a collection of rules to be used any where
 **/
 /* SET A NUMBER OF CLASSES TO FORCE THE SIZE OF THE ICON */
+.ont-icon-2 {
+  font-size: 2px !important; }
+
+.ont-icon-3 {
+  font-size: 3px !important; }
+
+.ont-icon-4 {
+  font-size: 4px !important; }
+
+.ont-icon-5 {
+  font-size: 5px !important; }
+
+.ont-icon-6 {
+  font-size: 6px !important; }
+
+.ont-icon-7 {
+  font-size: 7px !important; }
+
+.ont-icon-8 {
+  font-size: 8px !important; }
+
+.ont-icon-9 {
+  font-size: 9px !important; }
+
+.ont-icon-10 {
+  font-size: 10px !important; }
+
+.ont-icon-11 {
+  font-size: 11px !important; }
+
 .ont-icon-12 {
   font-size: 12px !important; }
 
@@ -841,6 +871,297 @@
 
 .padding-96 {
   padding: 96px !important; }
+
+.indent-0 {
+  padding-left: 0px !important; }
+
+.indent-1 {
+  padding-left: 1px !important; }
+
+.indent-2 {
+  padding-left: 2px !important; }
+
+.indent-3 {
+  padding-left: 3px !important; }
+
+.indent-4 {
+  padding-left: 4px !important; }
+
+.indent-5 {
+  padding-left: 5px !important; }
+
+.indent-6 {
+  padding-left: 6px !important; }
+
+.indent-7 {
+  padding-left: 7px !important; }
+
+.indent-8 {
+  padding-left: 8px !important; }
+
+.indent-9 {
+  padding-left: 9px !important; }
+
+.indent-10 {
+  padding-left: 10px !important; }
+
+.indent-11 {
+  padding-left: 11px !important; }
+
+.indent-12 {
+  padding-left: 12px !important; }
+
+.indent-13 {
+  padding-left: 13px !important; }
+
+.indent-14 {
+  padding-left: 14px !important; }
+
+.indent-15 {
+  padding-left: 15px !important; }
+
+.indent-16 {
+  padding-left: 16px !important; }
+
+.indent-17 {
+  padding-left: 17px !important; }
+
+.indent-18 {
+  padding-left: 18px !important; }
+
+.indent-19 {
+  padding-left: 19px !important; }
+
+.indent-20 {
+  padding-left: 20px !important; }
+
+.indent-21 {
+  padding-left: 21px !important; }
+
+.indent-22 {
+  padding-left: 22px !important; }
+
+.indent-23 {
+  padding-left: 23px !important; }
+
+.indent-24 {
+  padding-left: 24px !important; }
+
+.indent-25 {
+  padding-left: 25px !important; }
+
+.indent-26 {
+  padding-left: 26px !important; }
+
+.indent-27 {
+  padding-left: 27px !important; }
+
+.indent-28 {
+  padding-left: 28px !important; }
+
+.indent-29 {
+  padding-left: 29px !important; }
+
+.indent-30 {
+  padding-left: 30px !important; }
+
+.indent-31 {
+  padding-left: 31px !important; }
+
+.indent-32 {
+  padding-left: 32px !important; }
+
+.indent-33 {
+  padding-left: 33px !important; }
+
+.indent-34 {
+  padding-left: 34px !important; }
+
+.indent-35 {
+  padding-left: 35px !important; }
+
+.indent-36 {
+  padding-left: 36px !important; }
+
+.indent-37 {
+  padding-left: 37px !important; }
+
+.indent-38 {
+  padding-left: 38px !important; }
+
+.indent-39 {
+  padding-left: 39px !important; }
+
+.indent-40 {
+  padding-left: 40px !important; }
+
+.indent-41 {
+  padding-left: 41px !important; }
+
+.indent-42 {
+  padding-left: 42px !important; }
+
+.indent-43 {
+  padding-left: 43px !important; }
+
+.indent-44 {
+  padding-left: 44px !important; }
+
+.indent-45 {
+  padding-left: 45px !important; }
+
+.indent-46 {
+  padding-left: 46px !important; }
+
+.indent-47 {
+  padding-left: 47px !important; }
+
+.indent-48 {
+  padding-left: 48px !important; }
+
+.indent-49 {
+  padding-left: 49px !important; }
+
+.indent-50 {
+  padding-left: 50px !important; }
+
+.indent-51 {
+  padding-left: 51px !important; }
+
+.indent-52 {
+  padding-left: 52px !important; }
+
+.indent-53 {
+  padding-left: 53px !important; }
+
+.indent-54 {
+  padding-left: 54px !important; }
+
+.indent-55 {
+  padding-left: 55px !important; }
+
+.indent-56 {
+  padding-left: 56px !important; }
+
+.indent-57 {
+  padding-left: 57px !important; }
+
+.indent-58 {
+  padding-left: 58px !important; }
+
+.indent-59 {
+  padding-left: 59px !important; }
+
+.indent-60 {
+  padding-left: 60px !important; }
+
+.indent-61 {
+  padding-left: 61px !important; }
+
+.indent-62 {
+  padding-left: 62px !important; }
+
+.indent-63 {
+  padding-left: 63px !important; }
+
+.indent-64 {
+  padding-left: 64px !important; }
+
+.indent-65 {
+  padding-left: 65px !important; }
+
+.indent-66 {
+  padding-left: 66px !important; }
+
+.indent-67 {
+  padding-left: 67px !important; }
+
+.indent-68 {
+  padding-left: 68px !important; }
+
+.indent-69 {
+  padding-left: 69px !important; }
+
+.indent-70 {
+  padding-left: 70px !important; }
+
+.indent-71 {
+  padding-left: 71px !important; }
+
+.indent-72 {
+  padding-left: 72px !important; }
+
+.indent-73 {
+  padding-left: 73px !important; }
+
+.indent-74 {
+  padding-left: 74px !important; }
+
+.indent-75 {
+  padding-left: 75px !important; }
+
+.indent-76 {
+  padding-left: 76px !important; }
+
+.indent-77 {
+  padding-left: 77px !important; }
+
+.indent-78 {
+  padding-left: 78px !important; }
+
+.indent-79 {
+  padding-left: 79px !important; }
+
+.indent-80 {
+  padding-left: 80px !important; }
+
+.indent-81 {
+  padding-left: 81px !important; }
+
+.indent-82 {
+  padding-left: 82px !important; }
+
+.indent-83 {
+  padding-left: 83px !important; }
+
+.indent-84 {
+  padding-left: 84px !important; }
+
+.indent-85 {
+  padding-left: 85px !important; }
+
+.indent-86 {
+  padding-left: 86px !important; }
+
+.indent-87 {
+  padding-left: 87px !important; }
+
+.indent-88 {
+  padding-left: 88px !important; }
+
+.indent-89 {
+  padding-left: 89px !important; }
+
+.indent-90 {
+  padding-left: 90px !important; }
+
+.indent-91 {
+  padding-left: 91px !important; }
+
+.indent-92 {
+  padding-left: 92px !important; }
+
+.indent-93 {
+  padding-left: 93px !important; }
+
+.indent-94 {
+  padding-left: 94px !important; }
+
+.indent-95 {
+  padding-left: 95px !important; }
+
+.indent-96 {
+  padding-left: 96px !important; }
 
 .from-top-0 {
   margin-top: 0px !important; }
@@ -4834,3 +5155,20 @@
 [class^="icon-conditional"] {
   margin: 0;
   padding: 0; }
+
+.float-none {
+  float: none !important; }
+
+.float-left {
+  float: left !important; }
+
+.float-right {
+  float: right !important; }
+
+.align-left {
+  text-align: left !important; }
+
+.align-right {
+  text-align: right !important; }
+
+/*# sourceMappingURL=onthego-styles-helper.css.map */

@@ -91,14 +91,7 @@ if (!class_exists("FieldConfig")) {
 
                 case 'select':
                     if (isset($field_arr['attr']['multiple'])) {
-                        //Multiselect
-                        if (isset($field_arr['value']))
-                            foreach ($field_arr['value'] as $value) {
-                                if (isset($value[0])) {
-                                    $this->default_value = $value;
-                                    break;
-                                }
-                            }
+                        $this->default_value = $field_arr['value'];
                     } else {
                         if (isset($field_arr['attr']['actual_value'])) {
                             //This value is not array if from parent
@@ -117,7 +110,7 @@ if (!class_exists("FieldConfig")) {
                     break;
 
                 case 'checkbox':
-                    $this->default_value = $field_arr['value']; //isset($field_arr['data']['checked']) ? $field_arr['data']['checked'] : false;
+                    $this->default_value = isset($field_arr['data']['checked']) ? true : false;
                     break;
 
                 default:

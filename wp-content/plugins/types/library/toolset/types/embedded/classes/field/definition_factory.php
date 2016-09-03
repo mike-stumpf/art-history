@@ -487,10 +487,10 @@ abstract class WPCF_Field_Definition_Factory {
 	 *     - orderby: 'name'|'slug'|'is_under_types_control'|'field_type'
 	 *     - order: 'asc'|'desc'
 	 *     - search: String for fulltext search.
-	 *     - field_type: string Field type slug.
-	 *     - group_id: int Field group ID where this field belongs to.
+	 *     - field_type: string|array Field type slug(s). Allowed only for Types fields.
+	 *     - group_id: int Field group ID where this field belongs to. Allowed only for Types fields.
 	 *     - group_slug: string Slug of an existing firld group where this field belongs to. If defined, overrides
-	 *           the group_id argument.
+	 *           the group_id argument. Allowed only for Types fields.
 	 *
 	 * @return WPCF_Field_Definition_Abstract[] Field definitions that match query arguments.
 	 *
@@ -501,19 +501,20 @@ abstract class WPCF_Field_Definition_Factory {
 		$args = wp_parse_args( $args,  array( 'filter' => 'all' ) );
 
 		// Get only certain type of field definitions (generic, Types or both)
-		switch( $args['filter'] ) {
-			case 'types':
-				$results = $this->load_types_field_definitions();
-				break;
-			case 'generic':
-				$results = $this->load_generic_field_definitions();
-				break;
-			case 'all':
-				$results = $this->load_all_definitions();
-				break;
-			default:
-				$results = array();
-				break;
+		$filter = wpcf_getarr( $args, 'filter' );
+		if( 'types' == $filter ) {
+			$results = $this->load_types_field_definitions();
+		} else if( 'generic' == $filter ) {
+			$results = $this->load_generic_field_definitions();
+		} else if( 'all' == $filter ) {
+			$results = $this->load_all_definitions();
+		} else {
+			$results = array();
+		}
+
+		// Save us some work if there will be no results at all
+		if( empty( $results ) ) {
+			return array();
 		}
 
 		// Perform fulltext search if needed
@@ -529,12 +530,17 @@ abstract class WPCF_Field_Definition_Factory {
 		}
 
 		// Select only fields of desired type
-		$field_type = wpcf_getarr( $args, 'field_type' );
+		$field_type = wpcf_getarr( $args, 'field_type', array() );
+		$field_type = empty( $field_type ) ? array() : $field_type;
+		$field_type = is_array( $field_type ) ? $field_type : array( $field_type );
 		if( !empty( $field_type ) ) {
 			$type_matches = array();
 			foreach( $results as $definition ) {
-				if( $definition->get_type()->get_slug() == $field_type ) {
-					$type_matches[] = $definition;
+				if( $definition instanceof WPCF_Field_Definition ) {
+					$type = $definition->get_type();
+					if( in_array( $type->get_slug(), $field_type ) ) {
+						$type_matches[] = $definition;
+					}
 				}
 			}
 			$results = $type_matches;
@@ -548,7 +554,9 @@ abstract class WPCF_Field_Definition_Factory {
 			$group_matches = array();
 			if( null != $group ) {
 				foreach( $results as $field_definition ) {
-					if( $field_definition->belongs_to_group( $group ) ) {
+					if( $field_definition instanceof WPCF_Field_Definition
+						&& $field_definition->belongs_to_group( $group ) )
+					{
 						$group_matches[] = $field_definition;
 					}
 				}

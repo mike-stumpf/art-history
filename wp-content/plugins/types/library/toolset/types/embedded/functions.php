@@ -544,6 +544,10 @@ function wpcf_enqueue_scripts()
         array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs', 'select2'),
         WPCF_VERSION
     );
+    wp_localize_script( 'wpcf-js-embedded', 'WPCF_basic', array(
+        'field_already_in_use' => sprintf( __( '%s This field is locked because the same field is added multiple times to this post. %s%s%s you can set the value%s', 'wpcf' ),'<small style="display: block;">', '<a href="#" class="focus_correct_field" data-field-slug="##DATA-FIELD-ID##" >','Here', '</a>','</small>'),
+    ));
+    
     /*
      *
      * Basic CSS

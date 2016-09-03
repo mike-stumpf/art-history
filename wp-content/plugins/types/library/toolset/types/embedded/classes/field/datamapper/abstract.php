@@ -19,7 +19,7 @@ abstract class WPCF_Field_DataMapper_Abstract {
 
 	public function __construct( $field_definition ) {
 		if( ! $field_definition instanceof WPCF_Field_Definition_Abstract ) {
-			throw new InvalidArgumentException( 'Field instance expected.' );
+			throw new InvalidArgumentException( 'Field definition instance expected.' );
 		}
 
 		$this->field_definition = $field_definition;

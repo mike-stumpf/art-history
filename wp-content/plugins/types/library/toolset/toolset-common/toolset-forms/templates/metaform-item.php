@@ -28,7 +28,7 @@ if (is_admin()) {
         if (array_key_exists('use_bootstrap', $cfg) && $cfg['use_bootstrap']) {
             $button_extra_classnames = ' btn btn-default btn-sm';
         }
-        $str = sprintf('%s repetition', $cfg['title']);
+        $str = sprintf(__('%s repetition', 'wpv-views'), $cfg['title']);
         echo '<input type="button" href="#" class="js-wpt-repdelete wpt-repdelete' . $button_extra_classnames . '" value="';
         echo apply_filters('toolset_button_delete_repetition_text', esc_attr(__('Delete', 'wpv-views')) . " " . esc_attr($str), $cfg);
         echo '" />';

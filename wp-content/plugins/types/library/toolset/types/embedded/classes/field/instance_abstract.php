@@ -26,7 +26,10 @@ abstract class WPCF_Field_Instance_Abstract {
 	public function get_definition() { return $this->definition; }
 
 
-	public function get_field_type() { return $this->get_definition()->get_type(); }
+	public function get_field_type() {
+		$definition = $this->get_definition();
+		return $definition->get_type(); 
+	}
 
 
 	/**
@@ -46,7 +49,8 @@ abstract class WPCF_Field_Instance_Abstract {
 	 * @return mixed Raw value of the field.
 	 */
 	public function get_raw_value() {
-		return $this->get_accessor()->get_raw_value();
+		$accessor = $this->get_accessor();
+		return $accessor->get_raw_value();
 	}
 
 

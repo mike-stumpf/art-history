@@ -129,6 +129,7 @@ function wpcf_add_meta_boxes( $post_type, $post )
         'view',
         'view-template',
         'acf-field-group',
+        'acf'
     );
 
     /**
@@ -590,6 +591,16 @@ function wpcf_admin_post_save_post_hook( $post_ID, $post )
 
     if ( defined( 'WPTOOLSET_FORMS_VERSION' ) ) {
 
+	    // Apparently, some things are *slightly* different when saving a child post in the Post relationships metabox.
+	    // Ugly hack that will go away with m2m.
+	    //
+	    // Note: The types_updating_child_post filter is needed for a situation when user clicks on the Update button
+	    // for the parent post. In that case we don't get enough information to determine if a child post is being updated.
+	    $is_child_post_update = (
+	    	( 'wpcf_ajax' == wpcf_getget( 'action' ) && 'pr_save_child_post' == wpcf_getget( 'wpcf_action' ) )
+	        || apply_filters( 'types_updating_child_post', false )
+	    );
+
         global $wpcf;
         $errors = false;
 
@@ -654,7 +665,13 @@ function wpcf_admin_post_save_post_hook( $post_ID, $post )
                     continue;
                 }
 
+	            // This is (apparently) expected for repetitive fields...
+	            if( $is_child_post_update && types_is_repetitive( $field ) ) {
+		            $field_value = array( $field_value );
+	            }
+
                 $_field_value = !types_is_repetitive( $field ) ? array($field_value) : $field_value;
+
                 // Set config
                 $config = wptoolset_form_filter_types_field( $field, $post_ID, $_post_wpcf);
 

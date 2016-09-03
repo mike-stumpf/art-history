@@ -720,6 +720,27 @@ function wpcf_admin_get_edited_post() {
 }
 
 /**
+* wpcf_admin_get_current_edited_post
+*
+* Wrapper for wpcf_admin_get_edited_post returning nul instead of an empty array when the current post can not be guessed.
+*
+* Used on the Views integration at /library/tolset/types/embedded/classes/wpviews.php
+* when calculating the current post so we can display the right fields in the Fields and Views dialog.
+*
+* @since 2.2
+*/
+
+add_filter( 'wpcf_filter_wpcf_admin_get_current_edited_post', 'wpcf_admin_get_current_edited_post' );
+
+function wpcf_admin_get_current_edited_post( $current_post = null ) {
+	$current_post = wpcf_admin_get_edited_post();
+	if ( empty( $current_post ) ) {
+		return null;
+	}
+	return $current_post;
+}
+
+/**
  * Gets post type.
  * 
  * @param type $post

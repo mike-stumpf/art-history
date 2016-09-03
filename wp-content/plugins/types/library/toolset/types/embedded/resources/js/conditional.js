@@ -95,43 +95,44 @@ function wpcfCdCreateSummary(id)
 
 function wpcfConditionalLogic(el)
 {
-    parent = el.closest('.wpcf-cd-fieldset');
-    button = jQuery('input.wpcf-cd-display-logic-button', parent);
-    button.val(button.data('wpcf-custom-logic-simple'));
+    var parentFieldSet = el.closest('.wpcf-cd-fieldset'),
+        buttonDisplay = jQuery('input.wpcf-cd-display-logic-button', parentFieldSet);
+
+    buttonDisplay.val(buttonDisplay.data('wpcf-custom-logic-simple'));
 
     if ( parseInt(el.val()) ) {
-        jQuery('.simple-logic', parent).hide();
-        jQuery('.area-toggle-cd', parent).show();
-        if ( parseInt( button.data('wpcf-custom-logic-change') ) ) {
-            wpcfCdCreateSummary(button.data('wpcf-custom-summary'));
+        jQuery('.simple-logic', parentFieldSet).hide();
+        jQuery('.area-toggle-cd', parentFieldSet).show();
+        if ( parseInt( buttonDisplay.data('wpcf-custom-logic-change') ) ) {
+            wpcfCdCreateSummary(buttonDisplay.data('wpcf-custom-summary'));
         }
     } else {
-        button.val(button.data('wpcf-custom-logic-customize'));
+        buttonDisplay.val(buttonDisplay.data('wpcf-custom-logic-customize'));
         /**
          * turn on future change
          */
-        button.data('wpcf-custom-logic-change', 1);
-        jQuery('.area-toggle-cd',parent).hide();
-        jQuery('.simple-logic',parent).show();
-        if (jQuery('.wpcf-cd-entry', parent).length) {
-            if (jQuery('.wpcf-cd-entries', parent).length > 1) {
-                jQuery('.wpcf-cd-relation', parent).show();
+        buttonDisplay.data('wpcf-custom-logic-change', 1);
+        jQuery('.area-toggle-cd',parentFieldSet).hide();
+        jQuery('.simple-logic',parentFieldSet).show();
+        if (jQuery('.wpcf-cd-entry', parentFieldSet).length) {
+            if (jQuery('.wpcf-cd-entries', parentFieldSet).length > 1) {
+                jQuery('.wpcf-cd-relation', parentFieldSet).show();
             } else {
-                jQuery('.wpcf-cd-relation', parent).hide();
+                jQuery('.wpcf-cd-relation', parentFieldSet).hide();
             }
         } else {
-            jQuery('.area-toggle-cd', parent).hide();
-            jQuery('.wpcf-cd-relation', parent).hide();
+            jQuery('.area-toggle-cd', parentFieldSet).hide();
+            jQuery('.wpcf-cd-relation', parentFieldSet).hide();
         }
     }
     /**
      * handle "Data-dependent display filters" for groups
      */
-    if ( 'wpcf-cd-group' == parent.attr('id') ) {
-        jQuery('span.count', parent.closest('td')).html( '('+ jQuery('span.count', parent.closest('td')).data('wpcf-custom-logic') +')');
+    if ( 'wpcf-cd-group' == parentFieldSet.attr('id') ) {
+        jQuery('span.count', parentFieldSet.closest('td')).html( '('+ jQuery('span.count', parentFieldSet.closest('td')).data('wpcf-custom-logic') +')');
     if ( parseInt(el.val()) ) {
     } else {
-        jQuery('span.count', parent.closest('td')).html('('+jQuery('.wpcf-cd-entry', parent).length+')');
+        jQuery('span.count', parentFieldSet.closest('td')).html('('+jQuery('.wpcf-cd-entry', parentFieldSet).length+')');
     }
     }
 }

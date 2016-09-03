@@ -161,8 +161,10 @@ function wpcf_fields_checkbox_view($params)
 {
     $output = '';
     $option_name = 'wpcf-fields';
-    if ( isset( $params['usermeta'] ) && !empty( $params['usermeta'] ) ) {
+    if ( isset( $params['usermeta'] ) && ! empty( $params['usermeta'] ) ) {
         $option_name = 'wpcf-usermeta';
+    } else if ( isset( $params['termmeta'] ) && ! empty( $params['termmeta'] ) ) {
+        $option_name = 'wpcf-termmeta';
     }
     if ( isset( $params['option_name'] ) ) {
         $option_name = $params['option_name'];
@@ -210,7 +212,10 @@ function wpcf_fields_checkbox_view($params)
         $output = $params['field_value'];
         // Show the translated value if we have one.
         $field = wpcf_fields_get_field_by_slug( $params['field']['slug'], $option_name );
-        $output = wpcf_translate( 'field ' . $field['id'] . ' checkbox value', $output );
+
+        if( is_array( $field ) && isset( $field['id'] ) ) {
+            $output = wpcf_translate( 'field ' . $field['id'] . ' checkbox value', $output );
+        }
     } elseif ( $params['field']['data']['display'] == 'value'
             && $params['field_value'] != '' ) {
         if ( !empty( $params['field']['data']['display_value_selected'] ) ) {

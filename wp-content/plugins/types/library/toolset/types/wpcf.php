@@ -507,3 +507,157 @@ function types_plugin_plugin_row_meta( $plugin_meta, $plugin_file, $plugin_data,
     }
     return $plugin_meta;
 }
+
+
+/**
+ * Getting started notice
+ */
+add_action( 'load-plugins.php', 'types_getting_started_init' );
+add_action( 'load-toplevel_page_toolset-dashboard', 'types_getting_started_init' );
+
+function types_getting_started_init() {
+    $version = get_option( 'WPCF_VERSION' );
+
+    // just show for new activate types (so not for old users just updating types)
+    if( version_compare( $version, '2.2', '<' ) )
+        return;
+
+    // abort if user dismissed message
+    $user_dismissed_notices = get_user_meta( get_current_user_id(), '_types_notice_dismiss_permanent', true );
+    if( is_array( $user_dismissed_notices ) && in_array( 'getting-started', $user_dismissed_notices ) )
+        return;
+
+    add_action( 'admin_notices', 'types_getting_started' );
+    add_action( 'admin_enqueue_scripts', 'types_getting_started_scripts' );
+
+    // documentation urls
+    $documentation_urls = include( TYPES_DATA . '/documentation-urls.php' );
+
+    // add links to use analytics
+    Types_Helper_Url::add_urls( $documentation_urls );
+
+    function types_getting_started() { ?>
+        <div class="notice is-dismissible" data-types-notice-dismiss-permanent="getting-started" style="border-left-color: #f05a29; position: relative; padding-right: 38px;">
+            <div class="types-message-icon" style="float: left; margin: 2px 0 0 0; padding: 0 15px 0 0;">
+                <?php //<span class="icon-toolset-logo"></span> ?>
+                <span class="icon-types-logo ont-icon-64" style="color: #f05a29;""></span>
+            </div>
+
+            <div style="margin-top: 8px;">
+                <p>
+                    <?php _e( 'Toolset Types lets you add custom post types, custom fields and taxonomy.', 'wpcf' ); ?>
+                </p>
+
+                <a class="button-primary types-button types-external-link" style="margin-right: 10px;" target="_blank"
+                   href="<?php echo Types_Helper_Url::get_url( 'getting-started-types', 'notice-dismissible' ) ?>">
+                    <?php _e( 'Getting started guide', 'wpcf' ); ?>
+                </a>
+
+                <span class="notice-dismiss"><span class="screen-reader-text">Dismiss</span></span>
+            </div>
+
+            <br style="clear:both;" />
+        </div>
+        <?php
+    }
+
+    function types_getting_started_scripts() {
+        wp_enqueue_script(
+            'types-notice-dismiss',
+            TYPES_RELPATH . '/public/js/notice-dismiss.js',
+            array( 'jquery' ),
+            TYPES_VERSION,
+            true
+        );
+
+        wp_enqueue_style(
+            'types-information',
+            TYPES_RELPATH . '/public/css/information.css',
+            array( 'wp-jquery-ui-dialog' ),
+            TYPES_VERSION
+        );
+    }
+}
+
+
+add_action( 'wp_ajax_types_notice_dismiss_permanent', 'types_ajax_notice_dismiss_permanent' );
+
+function types_ajax_notice_dismiss_permanent() {
+    if ( ! isset( $_POST['types_notice_dismiss_permanent'] ) || ! preg_match( '/^[A-Za-z0-9_-]+$/', $_POST['types_notice_dismiss_permanent'] ) )
+        return;
+
+    $user_dismissed_notices = get_user_meta( get_current_user_id(), '_types_notice_dismiss_permanent', true )
+        ? get_user_meta( get_current_user_id(), '_types_notice_dismiss_permanent', true )
+        : array();
+
+    $user_dismissed_notices[] = $_POST['types_notice_dismiss_permanent'];
+    update_user_meta( get_current_user_id(), '_types_notice_dismiss_permanent', $user_dismissed_notices );
+}
+
+function types_plugin_action_links ( $links ) {
+    $feedback = array(
+        '<a id="types-leave-feedback-trigger" href="https://www.surveymonkey.com/r/types-uninstall" target="_blank">' . __( 'Leave feedback', 'wpcf' ) . '</a>',
+    );
+    return array_merge( $links, $feedback );
+}
+
+add_action( 'load-plugins.php', 'types_ask_for_feedback_on_deactivation' );
+
+function types_ask_for_feedback_on_deactivation() {
+    // abort if message was shown in the last 90 days
+    $user_dismissed_notices = get_user_meta( get_current_user_id(), '_types_feedback_dont_show_until', true );
+    if( $user_dismissed_notices && current_time( 'timestamp' ) < $user_dismissed_notices )
+        return;
+
+    add_action( 'admin_footer', 'types_feedback_on_deactivation_dialog' );
+    add_action( 'admin_enqueue_scripts', 'types_feedback_on_deactivation_scripts' );
+
+    function types_feedback_on_deactivation_dialog() { ?>
+        <div id="types-feedback" style="display:none;width:500px;">
+        <div class="types-message-icon" style="float: left; margin: 2px 0 0 0; padding: 0 15px 0 0;">
+            <?php //<span class="icon-toolset-logo"></span> ?>
+            <span class="icon-types-logo ont-icon-64" style="color: #f05a29;""></span>
+        </div>
+
+        <div style="margin-top: 8px;">
+            <p>
+                <?php _e( "Do you have a minute to tell us why you're removing Types?", 'wpcf' ); ?>
+            </p>
+
+            <a id="types-leave-feedback-dialog-survey-link" class="button-primary types-button types-external-link" style="margin-right: 8px;" target="_blank"
+               href="https://www.surveymonkey.com/r/types-uninstall">
+                <?php _e( 'Leave feedback', 'wpcf' ); ?>
+            </a>
+            <a id="types-leave-feedback-dialog-survey-link-cancel" class="button-secondary" target="_blank"
+               href="javascript:void(0);">
+                <?php _e( 'Skip feedback', 'wpcf' ); ?>
+            </a>
+        </div>
+
+        <br style="clear:both;" />
+        </div>
+    <?php }
+    function types_feedback_on_deactivation_scripts() {
+        wp_enqueue_script(
+            'types-feedback-on-deactivation',
+            TYPES_RELPATH . '/public/js/feedback-on-deactivation.js',
+            array( 'jquery-ui-dialog' ),
+            TYPES_VERSION,
+            true
+        );
+
+        wp_enqueue_style(
+            'types-information',
+            TYPES_RELPATH . '/public/css/information.css',
+            array( 'wp-jquery-ui-dialog' ),
+            TYPES_VERSION
+        );
+    }
+}
+
+add_action( 'wp_ajax_types_feedback_dont_show_for_90_days', 'types_feedback_dont_show_for_90_days' );
+
+function types_feedback_dont_show_for_90_days() {
+    $in_90_days = strtotime( '+90 days', current_time( 'timestamp' ) );
+    update_user_meta( get_current_user_id(), '_types_feedback_dont_show_until', $in_90_days );
+}

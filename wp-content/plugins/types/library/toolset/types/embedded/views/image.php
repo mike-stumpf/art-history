@@ -519,7 +519,7 @@ class Types_Image_Utils
      * WP upload dir.
      * 
      * @staticvar null $upload_info
-     * @return boolean
+     * @return array|false
      */
     public static function uploadInfo() {
         static $upload_info = null;
@@ -527,20 +527,20 @@ class Types_Image_Utils
         if ( $upload_info === null ) {
             $upload_info = @wp_upload_dir();
 
-            if ( empty( $upload_info['error'] ) ) {
-                $parse_url = @parse_url( $upload_info['baseurl'] );
+            if( ! empty( $upload_info['error'] ) )
+                return false;
 
-                if ( $parse_url ) {
-                    $baseurlpath = (!empty( $parse_url['path'] ) ? trim( $parse_url['path'],
-                                            '/' ) : '');
-                } else {
-                    $baseurlpath = 'wp-content/uploads';
-                }
+            $parse_url = @parse_url( $upload_info['baseurl'] );
 
-                $upload_info['baseurlpath'] = '/' . $baseurlpath . '/';
+            if ( $parse_url ) {
+                $baseurlpath = (!empty( $parse_url['path'] ) ? trim( $parse_url['path'],
+                                        '/' ) : '');
             } else {
-                $upload_info = false;
+                $baseurlpath = 'wp-content/uploads';
             }
+
+            $upload_info['baseurlpath'] = '/' . $baseurlpath . '/';
+
             $upload_info['path'] = self::realpath( $upload_info['path'] );
             $upload_info['basedir'] = self::realpath( $upload_info['basedir'] );
             $upload_info['subdir'] = self::realpath( $upload_info['subdir'] );

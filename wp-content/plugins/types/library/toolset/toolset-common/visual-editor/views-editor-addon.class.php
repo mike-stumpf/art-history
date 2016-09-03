@@ -27,7 +27,9 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
 			}
 			
 			add_action( 'admin_footer', array( $this, 'print_footer_dialogs' ) );
-			
+
+			if( apply_filters( 'wpv_render_dialogs_on_frontend', false ) )
+				add_action( 'wp_footer', array( $this, 'print_footer_dialogs' ) );
 		}
 	
 		function print_footer_dialogs() {

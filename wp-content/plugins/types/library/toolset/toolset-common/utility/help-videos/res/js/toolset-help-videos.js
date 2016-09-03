@@ -179,7 +179,7 @@ WP_Toolset.HelpVideoView = Backbone.View.extend({
                 }, false);
 
                 mediaElement.addEventListener('ended', function(e) {
-                    self.setPlay( mediaElement );
+                    self.setPlay( mediaElement, true );
                 }, false);
                 mediaElement.addEventListener('play', function(e) {
                     jQuery('.mejs-mediaelement').loaderOverlay('hide');
@@ -191,11 +191,9 @@ WP_Toolset.HelpVideoView = Backbone.View.extend({
             }
         } );
     },
-    setPlay:function( mediaElement ){
+    setPlay:function( mediaElement, after_ended ){
         var play = jQuery('<i class="fa fa-play-circle js-toolset-play-video"></i>'),
-            $title = jQuery('.js-video-box-title-open').detach().clone();
-
-        jQuery('.js-video-box-title-open').remove();
+            $title = jQuery('.js-video-box-title-open').eq(0).detach().clone();
 
         jQuery('.mejs-mediaelement').loaderOverlay('show', {
             class:'loader-overlay-high-z',
@@ -205,6 +203,8 @@ WP_Toolset.HelpVideoView = Backbone.View.extend({
             }
         });
 
+
+        jQuery('.js-video-box-title-open').remove();
         jQuery('.toolset-box-container .loader-overlay').append($title);
 
         jQuery('.toolset-box-container .preloader').css({

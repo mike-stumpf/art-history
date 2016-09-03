@@ -849,7 +849,7 @@ class WPCF_Relationship_Child_Form
                     continue;
                 }
                 $temp_parent_type = get_post_type_object( $_parent );
-                if ( empty( $temp_parent_type ) ) {
+                if ( null == $temp_parent_type ) {
                     continue;
                 }
                 $parent_dir = $sort_field == '_wpcf_pr_parent' ? $dir : $dir_default;

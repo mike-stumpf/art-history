@@ -483,13 +483,16 @@ jQuery(document).ready(function($){
             wpcf_setup_conditions();
         }
 
+        // This can be wpcf-postmeta, wpcf-usermeta or wpcf-termmeta.
+        var fieldKind = $thiz.data('wpcf-type');
+
         dialog.load(
             ajaxurl,
             {
                 action: 'wpcf_edit_field_choose',
                 _wpnonce: $thiz.data('wpcf-nonce'),
                 id: $thiz.data('wpcf-id'),
-                type: $thiz.data('wpcf-type'),
+                type: fieldKind,
                 current: $current
             },
             function (responseText, textStatus, XMLHttpRequest) {
@@ -505,7 +508,8 @@ jQuery(document).ready(function($){
                         data: {
                             action: 'wpcf_edit_field_insert',
                             _wpnonce: $('#wpcf-fields-add-nonce').val(),
-                            type: $(this).data('wpcf-field-type')
+                            type: $(this).data('wpcf-field-type'),
+                            field_kind: fieldKind
                         }
                     })
                     .done(function(html){

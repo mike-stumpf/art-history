@@ -474,6 +474,9 @@ final class WPCF_Page_Edit_Termmeta_Form extends Types_Admin_Edit_Fields {
 
 		$this->save_filter_fields($group_id, wpcf_getarr( $wpcf_data, 'fields', array() ));
 
+		do_action( 'types_fields_group_saved', $group_id );
+		do_action( 'types_fields_group_term_saved', $group_id );
+
 		// Redirect to edit page so we stay on it even if user reloads it
 		// and to present admin notices
 		wp_safe_redirect(

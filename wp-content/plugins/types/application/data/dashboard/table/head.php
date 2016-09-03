@@ -1,5 +1,5 @@
 <?php
-return array(
+$question_marks = array(
 
 	'type' => array(
 		'id'            => 'type',
@@ -124,3 +124,18 @@ return array(
 		)
 	)
 );
+
+// Visual Composer
+if( defined( 'WPB_VC_VERSION' ) ) {
+	$question_marks['template']['description'][1]['label'] = __( 'Creating templates with Visual Composer', 'types' );
+}
+// Beaver Builder
+else if( class_exists( 'FLBuilderLoader' ) ) {
+	$question_marks['template']['description'][1]['label'] = __( 'Creating templates with Beaver Builder', 'types' );
+}
+// Layouts
+else if( defined( 'WPDDL_DEVELOPMENT' ) || defined( 'WPDDL_PRODUCTION' ) ) {
+	$question_marks['template']['description'][1]['label'] = __( 'Creating templates with Layouts', 'types' );
+}
+
+return $question_marks;

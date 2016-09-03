@@ -133,14 +133,25 @@ class Toolset_Assets_Manager
 	protected static $instance;
 	protected $styles		= array();
 	protected $scripts		= array();
+	
+	/**
+	* assets_url
+	*
+	* Base URL for the Toolset Common instance.
+	*
+	* @note Does not have a trailing slash due to untrailingslashit, add it when registering each asset.
+	* @since 2.0
+	*/
 	protected $assets_url	= '';
 
 	protected function __construct() {
+		
 		if ( is_admin() ) {
 			$this->assets_url = TOOLSET_COMMON_URL;
 		} else {
 			$this->assets_url = TOOLSET_COMMON_FRONTEND_URL;
 		}
+		$this->assets_url = untrailingslashit( $this->assets_url );
 		
 		add_action( 'init', 					array( $this, 'init' ), 99 );
 		//be
@@ -176,6 +187,10 @@ class Toolset_Assets_Manager
 	public function init() {
 		$this->__initialize_styles();
 		$this->__initialize_scripts();
+	}
+	
+	public function get_assets_url() {
+		return $this->assets_url;
 	}
 
 	/*

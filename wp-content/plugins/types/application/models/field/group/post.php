@@ -5,7 +5,7 @@
  *
  * @since 2.0
  */
-final class Types_Field_Group_Post extends Types_Field_Group {
+class Types_Field_Group_Post extends Types_Field_Group {
 
 
 	const POST_TYPE = 'wp-types-group';
@@ -21,7 +21,7 @@ final class Types_Field_Group_Post extends Types_Field_Group {
 	 */
 	const POSTMETA_POST_TYPE_LIST = '_wp_types_group_post_types';
 
-	
+
 	/**
 	 * @param WP_Post $field_group_post Post object representing a post field group.
 	 * @throws InvalidArgumentException
@@ -97,7 +97,7 @@ final class Types_Field_Group_Post extends Types_Field_Group {
 
 		// we have selected post types
 		return explode( ',', $db_assigned_to );
-		
+
 	}
 
 

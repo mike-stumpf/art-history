@@ -619,6 +619,11 @@ var wpcfDefaultCss = ' .  json_encode( base64_encode($admin_styles_value) ) . ';
                 wpcf_admin_fields_save_group_admin_styles($group_id, $admin_style);
             }
             $_POST['wpcf']['group']['fields'] = isset($_POST['wpcf']['fields']) ? $_POST['wpcf']['fields'] : array();
+
+            do_action( 'types_fields_group_saved', $group_id );
+            do_action( 'types_fields_group_user_saved', $group_id );
+
+            // do not use this hook any longer
             do_action('wpcf_save_group', $_POST['wpcf']['group']);
 
             wp_safe_redirect(

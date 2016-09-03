@@ -5,7 +5,7 @@
  *
  * @since 2.0
  */
-final class Types_Field_Group_User_Factory extends Types_Field_Group_Factory {
+class Types_Field_Group_User_Factory extends Types_Field_Group_Factory {
 
 
 	/**

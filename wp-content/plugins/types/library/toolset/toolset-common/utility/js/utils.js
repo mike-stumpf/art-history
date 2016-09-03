@@ -499,11 +499,11 @@ if (typeof jQuery.fn.wpvToolsetHelp === 'undefined') {
             if ($overlayContainer.data('has-overlay')) {
                 $overlayContainer.data('overlay-el')
                     .fadeOut(prms.fadeOutSpeed, function () {
+                        $overlayEl.detach().remove();
+                        $overlayContainer.data('has-overlay', false);
                         if( options && typeof options.onRemove === 'function' ){
                             options.onRemove.call(this, arguments);
                         }
-                        $overlayEl.remove();
-                        $overlayContainer.data('has-overlay', false);
                     });
             }
         };

@@ -28,6 +28,15 @@ jQuery(document).ready(function () {
             jQuery('input.wpt-taxonomy-add-new', parent).click();
         }, 50);
     });
+    
+    setTimeout(function(){
+        
+        if(jQuery(".wpt-hierarchical-taxonomy-add-new-show-hide").is(":hidden")){
+            jQuery(".wpt-hierarchical-taxonomy-add-new:hidden").remove();
+            jQuery(".wpt-hierarchical-taxonomy-add-new-show-hide:hidden").remove();
+        }
+        
+    }, 1000);
 });
 
 

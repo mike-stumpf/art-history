@@ -46,6 +46,17 @@ class Toolset_Settings implements ArrayAccess {
 	* @since 2.0
 	*/
 	const ADMIN_BAR_SHORTCODES_GENERATOR = 'shortcodes_generator';
+	
+	/**
+	* List of Types postmeta fields that we want to index in Relevanssi.
+	*
+	* Array.
+	*
+	* Defaults to an empty array.
+	*
+	* @since 2.2
+	*/
+	const RELEVANSSI_FIELDS_TO_INDEX = 'relevanssi_fields_to_index';
 
 
 
@@ -89,6 +100,7 @@ class Toolset_Settings implements ArrayAccess {
 	protected static $defaults = array(
 		Toolset_Settings::ADMIN_BAR_CREATE_EDIT				=> 'on',
 		Toolset_Settings::ADMIN_BAR_SHORTCODES_GENERATOR	=> 'unset',
+		Toolset_Settings::RELEVANSSI_FIELDS_TO_INDEX		=> array(),
 	);
 
 
@@ -417,6 +429,39 @@ class Toolset_Settings implements ArrayAccess {
 	*/
 	protected function _is_valid_shortcodes_generator( $value ) {
 		return in_array( $value, array( 'unset', 'disable', 'editor', 'always' ) );
+	}
+	
+	/**
+	* Safe shortcodes_generator getter, allways returns a valid value.
+	*
+	* @since 2.0
+	*/
+	protected function _get_relevanssi_fields_to_index() {
+		$value = $this->get_raw_value( Toolset_Settings::RELEVANSSI_FIELDS_TO_INDEX );
+		if ( ! $this->_is_valid_relevanssi_fields_to_index( $value ) ) {
+			return Toolset_Settings::$defaults[ Toolset_Settings::RELEVANSSI_FIELDS_TO_INDEX ];
+		}
+		return $value;
+	}
+
+	/**
+	* Safe shortcodes_generator setter.
+	*
+	* @since 2.0
+	*/
+	protected function _set_relevanssi_fields_to_index( $value ) {
+		if ( $this->_is_valid_relevanssi_fields_to_index( $value ) ) {
+			$this->settings[ Toolset_Settings::RELEVANSSI_FIELDS_TO_INDEX ] = $value;
+		}
+	}
+	
+	/**
+	* Helper validation for shortcodes_generator.
+	*
+	* @since 2.0
+	*/
+	protected function _is_valid_relevanssi_fields_to_index( $value ) {
+		return is_array( $value );
 	}
 
 

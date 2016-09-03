@@ -3,6 +3,8 @@
 /**
  * Types_Helper_Condition
  *
+ * FIXME please document this!
+ *
  * @since 2.0
  */
 abstract class Types_Helper_Condition {

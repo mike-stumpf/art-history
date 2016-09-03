@@ -81,7 +81,7 @@ class WPCF_WPViews
         wp_enqueue_script( 'toolset-colorbox' );
         wp_enqueue_style( 'toolset-colorbox' );
 		
-		$current_post = wpcf_admin_get_edited_post();
+		$current_post = apply_filters( 'wpcf_filter_wpcf_admin_get_current_edited_post', null );
 		if ( empty( $current_post ) ) {
 			$current_post = (object) array('ID' => -1);
 		}
@@ -127,8 +127,8 @@ class WPCF_WPViews
      * @return type 
      */
     public static function editorDropdownFilter( $menu ) {
-        $post = wpcf_admin_get_edited_post();
-        if ( empty( $post ) ) {
+		$post = apply_filters( 'wpcf_filter_wpcf_admin_get_current_edited_post', null );
+        if ( ! $post ) {
             $post = (object) array('ID' => -1);
         }
         $groups = wpcf_admin_fields_get_groups( TYPES_CUSTOM_FIELD_GROUP_CPT_NAME, 'group_active' );

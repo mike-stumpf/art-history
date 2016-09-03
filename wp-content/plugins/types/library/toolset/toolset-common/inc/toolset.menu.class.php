@@ -81,7 +81,7 @@ if ( ! class_exists( 'Toolset_Menu' ) ) {
                     $top_level_page = array_shift( $registered_pages );
                     $top_level_page['capability'] = isset( $top_level_page['capability'] ) ? $top_level_page['capability'] : 'manage_options';
                     if ( current_user_can( $top_level_page['capability'] ) ) {
-                        $hook = add_menu_page( $top_level_page['page_title'], __( 'Toolset', 'wpv-views' ), $top_level_page['capability'], $top_level_page['slug'], $top_level_page['callback'] );
+                        $hook = add_menu_page( $top_level_page['page_title'], 'Toolset', $top_level_page['capability'], $top_level_page['slug'], $top_level_page['callback'] );
                         $this->add_menu_page_hooks( $top_level_page, $hook );
                         $top_level_page_registered = true;
                     }

@@ -6,7 +6,7 @@
 **/
 
 /* SET A NUMBER OF CLASSES TO FORCE THE SIZE OF THE ICON */
-@for $i from 12 through 96 {
+@for $i from 2 through 96 {
   .ont-icon-#{$i} { font-size:$i + px!important;  }
 }
 
@@ -16,6 +16,10 @@
 
 @for $i from 0 through 96 {
   .padding-#{$i} { padding:$i + px!important;  }
+}
+
+@for $i from 0 through 96 {
+  .indent-#{$i} { padding-left:$i + px!important;  }
 }
 
 @for $i from 0 through 96 {
@@ -42,3 +46,8 @@
     padding:0;
   }
 }
+.float-none{float:none!important;}
+.float-left{float:left!important;}
+.float-right{float:right!important;}
+.align-left{text-align:left!important;}
+.align-right{text-align:right!important;}

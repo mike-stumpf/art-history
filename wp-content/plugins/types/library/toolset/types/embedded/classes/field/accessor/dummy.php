@@ -27,6 +27,7 @@ final class WPCF_Field_Accessor_Dummy extends WPCF_Field_Accessor_Abstract {
 	 */
 	public function update_raw_value( $value, $prev_value = '' ) {
 		// Nothing to do here, although this being called might indicate an error.
+		return true;
 	}
 
 	/**
@@ -38,6 +39,7 @@ final class WPCF_Field_Accessor_Dummy extends WPCF_Field_Accessor_Abstract {
 	 */
 	public function delete_raw_value( $value = '' ) {
 		// Nothing to do here, although this being called might indicate an error.
+		return true;
 	}
 
 	/**
@@ -52,6 +54,7 @@ final class WPCF_Field_Accessor_Dummy extends WPCF_Field_Accessor_Abstract {
 	 */
 	public function add_raw_value( $value ) {
 		// Nothing to do here, although this being called might indicate an error.
+		return true;
 	}
 
 }

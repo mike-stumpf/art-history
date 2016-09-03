@@ -1,7 +1,11 @@
 <?php
 
+/**
+ * FIXME please document this!
+ */
 class Types_Post_Type {
 
+	/** @var null|WP_Post_Type */
 	protected $wp_post_type;
 
 	protected $name;
@@ -17,8 +21,9 @@ class Types_Post_Type {
 			$this->name = $post_type;
 			$registered = get_post_type_object( $post_type );
 
-			if( $registered )
+			if( $registered ) {
 				$this->wp_post_type = $registered;
+			}
 		}
 	}
 

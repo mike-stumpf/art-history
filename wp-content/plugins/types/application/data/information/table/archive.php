@@ -64,16 +64,6 @@ return array(
 							'label'  => __( 'Learn about creating archives with Toolset', 'types' ),
 							'target' => Types_Helper_Url::get_url( 'creating-archives-with-toolset', 'popup' ),
 						),
-						array(
-							'type' => 'paragraph',
-							'content' => __( 'Or...', 'types' )
-						),
-						array(
-							'type' => 'link',
-							'external' => true,
-							'label' => __( 'Instructions to create the archive-%POST-TYPE-NAME%.php in PHP', 'types' ),
-							'target'  => Types_Helper_Url::get_url( 'creating-archives-with-php', 'popup' )
-						),
 					)
 				)
 			)
@@ -120,17 +110,7 @@ return array(
 							'external' => true,
 							'label'  => __( 'Learn about creating archives with Toolset', 'types' ),
 							'target' => Types_Helper_Url::get_url( 'creating-archives-with-toolset', 'popup' ),
-						),
-						array(
-							'type' => 'paragraph',
-							'content' => __( 'Or...', 'types' )
-						),
-						array(
-							'type' => 'link',
-							'external' => true,
-							'label' => __( 'Instructions to create the archive-%POST-TYPE-NAME%.php in PHP', 'types' ),
-							'target'  => Types_Helper_Url::get_url( 'creating-archives-with-php', 'popup' )
-						),
+						)
 					)
 				)
 			)

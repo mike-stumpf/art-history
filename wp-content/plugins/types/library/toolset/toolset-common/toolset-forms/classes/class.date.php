@@ -96,10 +96,14 @@ class WPToolset_Field_Date extends FieldFactory {
         $data = $this->getData();
 
         $field_disable = false;
-        if (
+        $def_class_aux = 'js-wpt-date-auxiliar';
+
+        if ( // if field should get duplicated
                 is_admin() && defined('WPML_TM_VERSION') && intval($wpml_action) === 1 && function_exists('wpcf_wpml_post_is_original') && !wpcf_wpml_post_is_original() && function_exists('wpcf_wpml_have_original') && wpcf_wpml_have_original()
         ) {
             $field_disable = true;
+            // this will stop js validation of date field value (as it will get duplicated)
+            $def_class_aux = '';
         }
 
         if (!$timestamp) {
@@ -110,8 +114,6 @@ class WPToolset_Field_Date extends FieldFactory {
         }
 
         $def_class = 'js-wpt-date';
-
-        $def_class_aux = 'js-wpt-date-auxiliar';
 
         if (
                 $field_disable || (

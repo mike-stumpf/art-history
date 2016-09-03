@@ -65,10 +65,11 @@ if ( !class_exists('Types_Data_Installer') ) {
             }
 
             if (
-                isset($this->data->$group)
-                && isset($this->data->$group->$element)
+                isset($this->data->{$group})
+                && isset($this->data->{$group}->{$element})
             ) {
-                return $this->get_data($group_name, $this->data->$group->$element);
+                $array = get_object_vars( clone $this->data->{$group}->{$element} );
+                return $this->get_data($group_name, $array);
             }
             return;
         }

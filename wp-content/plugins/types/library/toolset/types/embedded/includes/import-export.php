@@ -8,8 +8,12 @@
 /**
  * Imports data from XML.
  *
- * @global object $wpdb
+ * @param string $data
+ * @param bool $redirect
+ * @param string $context
+ * @param array $args
  *
+ * @return array
  */
 function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types', $args = array() )
 {

@@ -285,8 +285,8 @@ function wpcf_usermeta_get_user( $method = '' ){
 function wpcf_admin_post_add_usermeta_to_editor_js( $menu, $views_callback = false ){
     global $wpcf;
 
-    $post = wpcf_admin_get_edited_post();
-    if ( empty( $post ) ) {
+    $post = apply_filters( 'wpcf_filter_wpcf_admin_get_current_edited_post', null );
+    if ( ! $post ) {
         $post = (object) array('ID' => -1);
     }
 

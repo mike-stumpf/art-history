@@ -15,7 +15,7 @@ function wpcf_fields_textfield() {
                 'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
             )
         ),
-        'font-awesome' => 'minus',
+        'font-awesome' => 'font',
     );
 }
 

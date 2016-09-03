@@ -495,8 +495,8 @@ p.desc a.fieldset-inputs{color:#0074a2;}
 
 .ddl-dialog .ui-slider{border:1px solid #ccc;border-radius: 0px;}
 
-.ddl-dialog .ddl-dialog-content{font-family: "Open Sans",sans-serif;}
-.ddl-dialog .ui-widget, .ddl-dialog .ui-widget input, .ddl-dialog .ui-widget select, .ddl-dialog .ui-widget textarea, .ddl-dialog .ui-widget button{font-family: "Open Sans";}
+.ddl-dialog .ddl-dialog-content{font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", "Open Sans", sans-serif;}
+.ddl-dialog .ui-widget, .ddl-dialog .ui-widget input, .ddl-dialog .ui-widget select, .ddl-dialog .ui-widget textarea, .ddl-dialog .ui-widget button{font-family: "Open Sans",sans-serif;}
 .ddl-dialog .ui-widget button.qt-fullscreen{font: 400 20px/1 dashicons;}
 .ddl-dialog .ui-widget-header, .ui-widget-header *{font-weight: normal;}
 .ddl-dialog .ui-widget-content a.fieldset-inputs{color:#0074a2;}
@@ -764,6 +764,7 @@ ul.grid {
     position: relative;
     padding-top:2px;
     padding-bottom:2px;
+    padding-left:1px;
 }
 .grid-category-item:first-child{padding-left:2px;}
 .grid .item-details {
@@ -947,7 +948,7 @@ a.ddl-show-item-desc, a.ddl-show-item-desc{
 }
 .ddl-preview-cell-name{
     overflow:hidden;
-    font-family:"Open Sans",sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", "Open Sans", sans-serif;
     top:5px;
     background:#cccccc;
     word-wrap: break-word;
@@ -1144,7 +1145,7 @@ a.ddl-show-item-desc, a.ddl-show-item-desc{
 #wrapper-element-box-type a, #wrapper-element-box-type a:focus{box-shadow: none;}
 
 /*#wrapper-element-box-type h3, #wrapper-element-box-type div, #wrapper-element-box-type p, #wrapper-element-box-type span{
-    font-family: "Open Sans",sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", "Open Sans", sans-serif;
 }*/
 #wrapper-element-box-type h3.tree-toggle-element{
     font-family: "FontAwesome",sans-serif;

@@ -18,7 +18,8 @@ class WPCF_Field_DataMapper_Checkbox extends WPCF_Field_DataMapper_Abstract {
 	 */
 	public function post_to_intermediate( $post_value, $form_data ) {
 		if( ! array_key_exists( $this->field_definition->get_slug(), $form_data ) ) {
-			$value = false;
+			// save 0 when option "When unchecked, save 0 to the database" is selected
+			$value = $this->field_definition->get_should_save_empty_value() ? 0 : false;
 		} else {
 			$value = $post_value;
 		}

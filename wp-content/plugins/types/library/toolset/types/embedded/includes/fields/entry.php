@@ -40,7 +40,7 @@ function wpcf_fields_entry_meta_box_form( $field ) {
 function wpcf_fields_entry_editor_callback($field, $settings)
 {
     $post_type  = get_post_type_object( $field['data']['post_type'] );
-    if ( empty($post_type ) ) {
+    if ( null == $post_type ) {
         return;
     }
 

@@ -250,6 +250,7 @@ abstract class Types_Field_Group_Factory {
 	 *     Post type query is added automatically.
 	 *     Additional arguments are allowed:
 	 *     - 'types_search': String for extended search. See WPCF_Field_Group::is_match() for details.
+	 *     - 'is_active' bool: If defined, only active/inactive field groups will be returned.
 	 * 
 	 * @return Types_Field_Group[]
 	 * @since 1.9
@@ -258,10 +259,17 @@ abstract class Types_Field_Group_Factory {
 
 		// Read specific arguments
 		$search_string = wpcf_getarr( $query_args, 'types_search' );
-
+		$is_active = wpcf_getarr( $query_args, 'is_active', null );
 
 		// Query posts
 		$query_args = array_merge( $query_args, array( 'post_type' => $this->get_post_type(), 'posts_per_page' => -1 ) );
+
+		// Group's "activeness" is defined by the post status.
+		if( null !== $is_active ) {
+			unset( $query_args['is_active'] );
+			$query_args['post_status'] = ( $is_active ? 'publish' : 'draft' );
+		}
+
 		$query = new WP_Query( $query_args );
 		$posts = $query->get_posts();
 

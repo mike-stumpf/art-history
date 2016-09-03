@@ -184,6 +184,15 @@ class Toolset_Common_Bootstrap {
 				require_once( TOOLSET_COMMON_PATH . '/inc/toolset.wpml.compatibility.class.php' );
 				$this->wpml_compatibility = new Toolset_WPML_Compatibility();
 			}
+			if ( ! class_exists( 'Toolset_Relevanssi_Compatibility' ) ) {
+				require_once( TOOLSET_COMMON_PATH . '/inc/toolset.relevanssi.compatibility.class.php' );
+				$this->relevanssi_compatibility = new Toolset_Relevanssi_Compatibility();
+			}
+            
+            if ( ! class_exists( 'Toolset_CssComponent' ) ) {
+				require_once( TOOLSET_COMMON_PATH . '/inc/toolset.css.component.class.php' );
+				$toolset_bs_component = Toolset_CssComponent::getInstance();
+			}
 			
 			require_once( TOOLSET_COMMON_PATH . '/inc/toolset.compatibility.php' );
 			require_once( TOOLSET_COMMON_PATH . '/inc/toolset.function.helpers.php' );

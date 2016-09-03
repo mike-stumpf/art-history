@@ -334,8 +334,8 @@ function wpcf_fields_image_view( $params ) {
                     array(
                 'class' => implode( ' ', $class ),
                 'style' => implode( ' ', $style ),
-                'alt' => $alt,
-                'title' => $title
+                'alt'   => wpcf_attachment_placeholder( $image_data['is_attachment'], $alt ),
+                'title' => wpcf_attachment_placeholder( $image_data['is_attachment'], $title )
                     )
             );
         }
@@ -417,9 +417,9 @@ function wpcf_fields_image_view( $params ) {
             return $resized_image;
         }
 
-        $output = sprintf( '<img alt="%s" ', $output .= $alt !== false ? esc_attr($alt) : '');
+        $output = sprintf( '<img alt="%s" ', $output .= $alt !== false ? wpcf_attachment_placeholder( $image_data['is_attachment'], $alt ) : '');
         if ( $title !== false ) {
-            $output .= sprintf(' title="%s"', esc_attr($title));
+            $output .= sprintf(' title="%s"', wpcf_attachment_placeholder( $image_data['is_attachment'], $title ));
         }
         $output .=!empty( $params['onload'] ) ? ' onload="' . esc_attr($params['onload']) . '"' : '';
         $output .=!empty( $class ) ? ' class="' . esc_attr(implode( ' ', $class )) . '"' : '';
@@ -428,6 +428,51 @@ function wpcf_fields_image_view( $params ) {
     }
 
     return $output;
+}
+
+function wpcf_attachment_placeholder( $attachment_id, $string ) {
+    if( empty( $string ) )
+        return $string;
+
+    $placeholders = array(
+        '%%ALT%%',
+        '%%TITLE%%',
+        '%%DESCRIPTION%%',
+        '%%CAPTION%%',
+    );
+
+    $search_pattern = '#(' . implode( '|', $placeholders ).')#';
+
+    if( ! preg_match( $search_pattern, $string ) )
+        return esc_attr( $string );
+
+    $placeholder_values = wpcf_attachment_placeholder_values( $attachment_id );
+
+    if( ! $placeholder_values )
+        return esc_attr( $string );
+
+    foreach( $placeholders as $placeholder ) {
+        if( ! array_key_exists( $placeholder, $placeholder_values ) )
+            continue;
+
+        $string = str_replace( $placeholder, $placeholder_values[$placeholder], $string );
+    }
+
+    return esc_attr( $string );
+}
+
+function wpcf_attachment_placeholder_values( $attachment_id ) {
+    $attachment = get_post( $attachment_id );
+
+    if( ! $attachment )
+        return false;
+
+    return array(
+        '%%ALT%%' => get_post_meta( $attachment->ID, '_wp_attachment_image_alt', true ),
+        '%%CAPTION%%' => $attachment->post_excerpt,
+        '%%DESCRIPTION%%' => $attachment->post_content,
+        '%%TITLE%%' => $attachment->post_title
+    );
 }
 
 /**

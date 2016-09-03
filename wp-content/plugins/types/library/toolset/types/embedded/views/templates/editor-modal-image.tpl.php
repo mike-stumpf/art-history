@@ -41,15 +41,56 @@ if ($data['warning_remote']) {
 <div data-bind="template: {name:'tpl-types-modal-image'}"></div>
 
 <!--TYPES MODAL IMAGE-->
+<script type="text/javascript">
+	jQuery( 'body' ).on( 'click', '.js-wpcf-attachment-placeholder', function() {
+		var inputField = jQuery( '#' + jQuery( this ).data( 'placeholder-target' ) );
+
+		if( inputField.val() == '' ) {
+			inputField.val( inputField.val() + jQuery( this ).html() );
+		} else {
+			inputField.val( inputField.val() + ' ' + jQuery( this ).html() );
+		}
+
+		jQuery( '.wp-pointer-buttons .close' ).trigger( 'click' );
+		inputField.focus();
+	});
+</script>
+
 <script id="tpl-types-modal-image" type="text/html">
 
 <div class="fieldset">
+	<?php
+	if( !function_exists( 'wpcf_print_placeholder_list' ) ) {
+		function wpcf_print_placeholder_list( $target ) {
+			$placeholders = array(
+				'%%TITLE%%',
+				'%%ALT%%',
+				'%%CAPTION%%',
+				'%%DESCRIPTION%%'
+			);
+
+			$placeholder_list = '';
+
+			foreach( $placeholders as $placeholder ) {
+				$placeholder_list .= '<br />- ';
+				$placeholder_list .= "<a class='js-wpcf-attachment-placeholder' data-placeholder-target='" . $target . "' href='javascript:void(0);'>" . $placeholder . '</a>';
+			}
+
+			printf(
+				__( 'You can display image information using the following placeholders: %s', 'wpcf' ),
+				$placeholder_list
+			);
+		}
+	}
+
+	?>
 	<p>
-		<label for="image-title" class="input-title"><?php _e( 'Image title', 'wpcf' ); ?></label>
+		<label for="image-title" class="input-title"><?php _e( 'Image title', 'wpcf' ); ?> <i class="fa fa-question-circle icon-question-sign js-show-tooltip" data-header="<?php _e( 'Placeholders', 'wpcf' ) ?>" data-content="<?php wpcf_print_placeholder_list( 'image-title') ?>"></i></label>
+
 		<input id="image-title" type="text" name="title" value="<?php echo $data['title']; ?>" />
 	</p>
 	<p>
-		<label for="image-alt" class="input-title"><?php _e( 'Alternative text', 'wpcf' ); ?></label>
+		<label for="image-alt" class="input-title"><?php _e( 'Alternative text', 'wpcf' ); ?> <i class="fa fa-question-circle icon-question-sign js-show-tooltip" data-header="<?php _e( 'Placeholders', 'wpcf' ) ?>" data-content="<?php wpcf_print_placeholder_list( 'image-alt') ?>"></i></label>
 		<input id="image-alt" type="text" name="alt" value="<?php echo $data['alt']; ?>" />
 	</p>
 </div>

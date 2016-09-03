@@ -17,14 +17,22 @@ class WPToolset_Field_Select extends FieldFactory {
         $value = $this->getValue();
         $data = $this->getData();
         $attributes = $this->getAttr();
-
         $form = $options = array();
+        $is_multiselect = array_key_exists('multiple', $attributes) && 'multiple' == $attributes['multiple'];
 
-        if( !isset( $data['default_value'] ) ) {
-            $options[] = array(
-                '#value' => '',
-                '#title' => __( '--- not set ---' , 'wpv-views' ),
-            );
+        if (!$is_multiselect) {
+            if (!isset($data['default_value'])) {
+                $options[] = array(
+                    '#value' => '',
+                    '#title' => __('--- not set ---', 'wpv-views'),
+                );
+            }
+            /**
+             * default_value
+             */
+            if (!empty($value) || $value == '0') {
+                $data['default_value'] = $value;
+            }
         }
 
         if (isset($data['options'])) {
@@ -72,17 +80,10 @@ class WPToolset_Field_Select extends FieldFactory {
             $title = $this->getTitle(true);
         }
         $options = apply_filters('wpt_field_options', $options, $title, 'select');
-        /**
-         * default_value
-         */
-        if (!empty($value) || $value == '0') {
-            $data['default_value'] = $value;
-        }
-
-        $is_multiselect = array_key_exists('multiple', $attributes) && 'multiple' == $attributes['multiple'];
         $default_value = isset($data['default_value']) ? $data['default_value'] : null;
+        
         //Fix https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/189219391/comments
-        if ($is_multiselect) {
+        if ($is_multiselect && !empty($default_value)) {
             $default_value = new RecursiveIteratorIterator(new RecursiveArrayIterator($default_value));
             $default_value = iterator_to_array($default_value, false);
         }

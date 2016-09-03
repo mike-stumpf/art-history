@@ -197,6 +197,14 @@ body .ui-dialog .wpcf-ui-dialog-cancel
     margin-left: 0;
 }
 
+body.rtl .ui-dialog .wpcf-ui-dialog-cancel
+{
+    position: relative;
+    left: auto;
+    margin-left: 0;
+    margin-right: 5px;
+}
+
 body.wp-admin .wpcf-ui-dialog
 ,body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar
 ,body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar-close
@@ -1435,4 +1443,11 @@ input#slug+p.wpcf-form-description {
 .toolset_page_wpcf-edit-type #post-body #visibility:before,
 .toolset_page_wpcf-edit-tax #post-body #visibility:before {
     content: '\f173';
+}
+.ui-sortable-handle .wpcf_required_data{
+    font-weight: normal;
+    font-size: 13px;
+}
+.ui-sortable-handle .description{
+    font-weight: normal;
 }

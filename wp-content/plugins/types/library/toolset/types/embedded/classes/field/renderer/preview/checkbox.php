@@ -17,7 +17,9 @@ final class WPCF_Field_Renderer_Preview_Checkbox extends WPCF_Field_Renderer_Pre
 	 */
 	protected function render_single( $value ) {
 
-		$value_of_checked = $this->field->get_definition()->get_forced_value();
+		$field_definition = $this->field->get_definition();
+		$value_of_checked = $field_definition->get_forced_value();
+
 		if( null != $value_of_checked && $value_of_checked == $value ) {
 			return '&#10004;'; // ballot box with check - checkbox - checkmark - miscellaneous symbols
 		}

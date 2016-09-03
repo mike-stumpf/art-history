@@ -125,6 +125,10 @@ var tedFrame = (function(window, $){
 
         // Bind click to the Colorbox close button
         jQuery('.js-close-types-popup').on('click',function(){
+			if (ted.callback == 'views_wizard') {
+                window.parent.typesWPViews.wizardCancel();
+                return false;
+            }
             parent.jQuery.colorbox.close();
         });
     }

@@ -12,6 +12,7 @@
 //var wptValidationData = {};
 
 var wptValidationForms = [];
+var wptValidationDebug = false;
 var wptValidation = (function ($) {
     function init() {
         /**
@@ -42,41 +43,24 @@ var wptValidation = (function ($) {
          * add extension to validator method require
          */
         $.validator.addMethod("required", function (value, element, param) {
+            //console.log(element.nodeName.toLowerCase() + " " + $(element).attr('name') + " default: " + value + " val: " + $(element).val());
+            var _name = $(element).attr('name');
+            var _value = $(element).val();
+
             // check if dependency is met
             if (!this.depend(param, element))
                 return "dependency-mismatch";
 
             switch (element.nodeName.toLowerCase()) {
                 case 'select':
-                    var val = $(element).val();
-                    //Fix https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/189231348/comments
-                    // we have data-types-value that in select contains the exactly value
-                    //With Fix cred-165 
-                    //this could be removed:
-//                        $(element).find('option').each(function(index, option){
-//                            if ($(option).val()==value) {
-//	                        //if $(option).data('typesValue') is undefined i am in backend side
-//                                val = ($(option).data('typesValue')!=undefined)?$(option).data('typesValue'):val;
-//                                return;
-//                            }
-//                        });
-                    //#########################################################################
-                    return val && $.trim(val).length > 0;
+                    return _value && $.trim(_value).length > 0;
                 case 'input':
-
-//                    if (jQuery(element).hasClass("hasDatepicker")) {
-//                        element = jQuery(element).siblings( 'input[type="hidden"]' );
-//                        value = element.val();
-//                        element = element[0];
-//                        console.log(value+" -> "+this.getLength(value, element));
-//                        return this.getLength(value, element) > 0;
-//                    }
-
                     //Fixing YT cred-196
                     if (jQuery(element).hasClass("wpt-form-radio")) {
-                        var $name = jQuery(element).attr("name");
-                        var val = jQuery('input[name="' + $name + '"]:checked').val();
-                        return val && $.trim(val).length > 0;
+                        var val = jQuery('input[name="' + _name + '"]:checked').val();
+                        if (wptValidationDebug)
+                            console.log("radio " + (_value && $.trim(_value).length > 0));
+                        return _value && $.trim(_value).length > 0;
                     }
 
                     //Fixing YT cred-104
@@ -88,21 +72,35 @@ var wptValidation = (function ($) {
                                     jQuery(element[0]).attr('data-wpt-type') == 'image'
                                     )) {
                         var val = jQuery(element[0]).val();
+                        if (wptValidationDebug)
+                            console.log("hidden " + (val && $.trim(val).length > 0));
                         return val && $.trim(val).length > 0;
                     }
 
                     //Fixing YT cred-173
                     element = jQuery(element).siblings('input[type="checkbox"]');
                     if (element[0]) {
+                        if (wptValidationDebug)
+                            console.log("checkbox " + (element[0].checked));
                         return element[0].checked;
                     }
 
                     if (jQuery(element).hasClass("hasDatepicker")) {
+                        if (wptValidationDebug)
+                            console.log("hasDatepicker");
                         return false;
                     }
 
-                    if (this.checkable(element))
+                    if (this.checkable(element)) {
+                        if (wptValidationDebug)
+                            console.log("checkable " + (this.getLength(value, element) > 0));
                         return this.getLength(value, element) > 0;
+                    }
+
+                    if (wptValidationDebug)
+                        console.log(_name + " default: " + value + " val: " + _value + " " + ($.trim(_value).length > 0));
+
+                    return $.trim(_value).length > 0;
                 default:
                     return $.trim(value).length > 0;
             }
@@ -118,6 +116,12 @@ var wptValidation = (function ($) {
                 },
                 "Please enter a valid date"
                 );
+
+        if (wptValidationDebug) {
+            console.log("INIT");
+            console.log(wptValidationForms);
+        }
+
         _.each(wptValidationForms, function (formID) {
             _initValidation(formID);
             applyRules(formID);
@@ -125,6 +129,9 @@ var wptValidation = (function ($) {
     }
 
     function _initValidation(formID) {
+        if (wptValidationDebug) {
+            console.log("_initValidation " + formID);
+        }
         var $form = $(formID);
         $form.validate({
             // :hidden is kept because it's default value.
@@ -171,9 +178,13 @@ var wptValidation = (function ($) {
         // On some pages the form may not be ready yet at this point (e.g. Edit Term page).
         jQuery(document).ready(function () {
             //var formclone = $form.clone();
+            if (wptValidationDebug)
+                console.log($form.selector);
 
             jQuery(document).off('submit', $form.selector, null);
             jQuery(document).on('submit', $form.selector, function () {
+                if (wptValidationDebug)
+                    console.log("submit " + $form.selector);
 
                 var myformid = formID.replace('#', '');
                 myformid = myformid.replace('-', '_');
@@ -201,8 +212,12 @@ var wptValidation = (function ($) {
                     $error_selector.hide();
                 }
 
+                if (wptValidationDebug)
+                    console.log("validation...");
+
                 if ($form.valid()) {
-                    //console.log("form valid 1");
+                    if (wptValidationDebug)
+                        console.log("form validated " + $form);
 
                     $('.js-wpt-remove-on-submit', $(this)).remove();
 
@@ -249,11 +264,14 @@ var wptValidation = (function ($) {
                                         if (data.result != 'redirect')
                                             alert(cred_settings.operation_ko);
                                     }
-                                    try_to_reload_reCAPTCHA(formID);                                    
+                                    try_to_reload_reCAPTCHA(formID);
                                 }
                             }
                         });
                     }
+                } else {
+                    if (wptValidationDebug)
+                        console.log("form not valid!");
                 }
                 if (cred_settings.use_ajax && cred_settings.use_ajax == 1)
                     return false;

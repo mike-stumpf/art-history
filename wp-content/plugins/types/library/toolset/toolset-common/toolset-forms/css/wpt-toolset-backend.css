@@ -46,9 +46,15 @@
 }
 .wpt-form-description {
     font-size: 0.85em;
-    font-style: italic;
+    /*font-style: italic;*/
     margin-bottom: 5px;
 }
+
+.wpt-form-description > p{
+    margin: 0px;
+    font-size: 13px;
+}
+
 .wpt-form-description-fieldset {
     font-size: 1em;
     font-style: normal;
@@ -137,7 +143,7 @@ input.wpt-form-error {
 }
 
 .wpt-form-label {
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 .wpt-form-description {
     margin: 5px 0;

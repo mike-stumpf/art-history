@@ -26,6 +26,7 @@ class Types_Field_Type_Definition_Factory {
 	const RADIO = 'radio';
 	const SELECT = 'select';
 	const SKYPE = 'skype';
+	const TEXTAREA = 'textarea';
 	const TEXTFIELD = 'textfield';
 	const URL = 'url';
 	const VIDEO = 'video';

@@ -221,5 +221,7 @@ if( !class_exists('Toolset_HelpVideo') ) {
         }
     }
 
-    add_action('init', array('Toolset_VideoDetachedPage', 'getInstance'), 99);
+    add_action( 'admin_menu', array( 'Toolset_VideoDetachedPage', 'getInstance' ), 99 );
+    
+
 }

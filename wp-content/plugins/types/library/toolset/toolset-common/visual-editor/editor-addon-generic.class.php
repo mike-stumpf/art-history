@@ -178,7 +178,12 @@ if( !class_exists( 'Editor_addon_generic' ) )
         	throw new Exception( 'You should implement this method '. __METHOD__ );
         }
 
-        
+
+	    /**
+	     * @deprecated This doesn't seem to be used anywhere in Toolset, nor should it be. Consider removing it.
+	     *
+	     * @return array
+	     */
         public static function getWpForbiddenNames()
         {
         	global $wp_post_types;

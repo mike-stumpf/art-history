@@ -106,10 +106,19 @@ abstract class Types_Field_Group {
 
 
 	/**
+	 * @param null|bool $value If boolean value is provided, the group will be activated or deactivated accordingly.
+	 *     For null, nothing happens.
 	 * @return bool True if the field group is active, false if deactivated.
+	 * @since 1.9
 	 */
-	public function is_active() {
-		return ( $this->get_post()->post_status == 'publish' ? true : false );
+	public function is_active( $value = null ) {
+
+		if( null !== $value ) {
+			$this->update_post( array( 'post_status' => ( $value ? 'publish' : 'draft' ) ) );
+		}
+
+		$post = $this->get_post();
+		return ( $post->post_status == 'publish' ? true : false );
 	}
 
 
@@ -125,7 +134,8 @@ abstract class Types_Field_Group {
 	 * @return int ID of the user who edited the field group last.
 	 */
 	public function get_author() {
-		return (int) $this->get_post()->post_author;
+		$post = $this->get_post();
+		return (int) $post->post_author;
 	}
 
 
@@ -145,14 +155,36 @@ abstract class Types_Field_Group {
 	 * @param string $value New value of the post name. Note that it may be further modified by WordPress before saving.
 	 */
 	public function set_name( $value ) {
-		$updated_post_id = wp_update_post(
-			array( 'ID' => $this->get_id(), 'post_name' => sanitize_title( $value ) )
-		);
-		if( 0 !== $updated_post_id ) {
-			// Refresh the post object and notify about renaming field group.
-			$this->post = WP_Post::get_instance( $updated_post_id );
+		$result = $this->update_post( array( 'post_name' => sanitize_title( $value ) ) );
+		if( true == $result ) {
 			do_action( 'wpcf_field_group_renamed', $value, $this );
+		}
+	}
+
+
+	/**
+	 * Update the underlying post object.
+	 *
+	 * Also refreshes the stored post object and fires an action notifying about the change.
+	 *
+	 * @param array $args Arguments for wp_update_post(). ID doesn't have to be provided, it will be added automatically.
+	 * @return bool True on success, false otherwise.
+	 * @since 2.1
+	 */
+	private function update_post( $args ) {
+
+		$args = array_merge( array( 'ID' => $this->get_id() ), $args );
+
+		$updated_post_id = wp_update_post( $args );
+
+		if( 0 !== $updated_post_id ) {
+			// Refresh the post object
+			$this->post = WP_Post::get_instance( $updated_post_id );
+			
 			$this->execute_group_updated_action();
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -161,7 +193,8 @@ abstract class Types_Field_Group {
 	 * @return string The underlying post type of the post representing the field group.
 	 */
 	public function get_post_type() {
-		return $this->post->post_type;
+		$post = $this->get_post();
+		return $post->post_type;
 	}
 
 
@@ -281,6 +314,10 @@ abstract class Types_Field_Group {
 	 */
 	public function remove_field_definition( $field_definition ) {
 
+		if( ! ( $field_definition instanceof WPCF_Field_Definition ) ) {
+			return false;
+		}
+		
 		$field_slugs = $this->get_field_slugs();
 
 		$slug_to_remove = $field_definition->get_slug();
@@ -304,7 +341,11 @@ abstract class Types_Field_Group {
 	 * @since 2.0
 	 */
 	public function add_field_definition( $field_definition ) {
-		
+
+		if( ! ( $field_definition instanceof WPCF_Field_Definition ) ) {
+			return false;
+		}
+
 		$field_slugs = $this->get_field_slugs();
 
 		$slug_to_add = $field_definition->get_slug();

@@ -1,5 +1,8 @@
 <?php
 
+if( class_exists( 'Toolset_Filesystem_File', false ) )
+	return;
+
 class Toolset_Filesystem_File {
 
 	private $handle = false;

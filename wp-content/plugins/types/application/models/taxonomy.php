@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class Types_Taxonomy
+ *
+ * FIXME please document this!
+ */
 class Types_Taxonomy {
 
 	protected $wp_taxonomy;

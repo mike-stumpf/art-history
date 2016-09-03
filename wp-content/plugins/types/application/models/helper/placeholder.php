@@ -7,6 +7,8 @@
  */
 class Types_Helper_Placeholder {
 
+	private static $cache = array();
+
 	private static $post_type;
 
 	public static function set_post_type( $posttype = false ) {
@@ -178,24 +180,27 @@ class Types_Helper_Placeholder {
 	}
 
 	public static function get_archive_permalink() {
-		// cpt edit page
-		if( isset( $_GET['wpcf-post-type'] ) ) {
-			$query = new WP_Query( 'post_type=' . $_GET['wpcf-post-type'] . '&post_status=publish&posts_per_page=1' );
-			if( $query->have_posts() )
-				return get_post_type_archive_link( $_GET['wpcf-post-type'] );
+		if( array_key_exists( 'wpcf-post-type', $_GET ) ) {
+			$post_type = $_GET['wpcf-post-type'];
+		} else {
+			if( ! is_object( self::$post_type ) )
+				self::set_post_type();
 
-			return false;
+			$post_type = self::$post_type->name;
 		}
 
-		if( ! is_object( self::$post_type ) )
-			self::set_post_type();
+		// check cache
+		if( array_key_exists( $post_type, self::$cache ) && array_key_exists( 'archive_permalink', self::$cache[$post_type] ) )
+			return self::$cache[$post_type]['archive_permalink'];
 
-		$query = new WP_Query( 'post_type=' . self::$post_type->name . '&post_status=publish&posts_per_page=1' );
-		if( $query->have_posts() ) {
-			return get_post_type_archive_link( self::$post_type->name );
-		}
+		// get new
+		$query = new WP_Query( 'post_type=' . $post_type . '&post_status=publish&posts_per_page=1' );
 
-		return false;
+		self::$cache[$post_type]['archive_permalink'] = $query->have_posts()
+			? get_post_type_archive_link( $post_type )
+			: false;
+
+		return self::$cache[$post_type]['archive_permalink'];
 	}
 
 	private static function get_post_type_views_list() {

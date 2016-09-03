@@ -413,9 +413,6 @@ class WPCF_Post_Types
     function set($post_type, $settings = null)
     {
         $data = get_post_type_object( $post_type );
-        if ( empty( $data ) ) {
-
-        }
         $this->data = $data;
         $this->settings = is_null( $settings ) ? $this->get_settings( $post_type ) : (array) $settings;
     }
