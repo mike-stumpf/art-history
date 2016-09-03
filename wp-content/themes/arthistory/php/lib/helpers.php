@@ -9,7 +9,7 @@ use artHistory\Data;
 
 // base class
 class Helpers {
-    
+
     public static function getAssetDirectory() {
         return get_template_directory_uri() . '/build/assets/';
     }
@@ -64,4 +64,38 @@ class Helpers {
         }
         return $children;
     }
+
+    public static function resizeImage($imageUrl, $sizeX = 300, $sizeY = 300) {
+        if (!empty($imageUrl)) {
+            $imageFile = parse_url($imageUrl);
+            $imageFullPath = $_SERVER['DOCUMENT_ROOT'].$imageFile['path'];
+            $imagePathPieces = explode('/', $imageFullPath);
+            //remove old file name from path
+            array_pop($imagePathPieces);
+            $imageShortPath = implode('/', $imagePathPieces);
+            //get file info and construct new path
+            $fileInfo = pathinfo($imageFullPath);
+            $newImagePath = $imageShortPath.'/'.$fileInfo['filename'].'-'.$sizeX.'x'.$sizeY.'.'.$fileInfo['extension'];
+            $newImageUrl = substr($newImagePath,strripos($newImagePath,'/wp-content'));
+            if (file_exists($newImagePath)){
+                return $newImageUrl;
+            } else {
+                $imageEditor = wp_get_image_editor($imageFullPath);
+                if (!is_wp_error($imageEditor)) {
+                    try {
+                        $imageEditor->resize($sizeX, $sizeY, true);
+                        $imageEditor->save($newImagePath);
+                        return $newImageUrl;
+                    } catch (Exception $e) {
+                        return $imageUrl;
+                    }
+                } else {
+                    return $imageUrl;
+                }
+            }
+        } else {
+            return $imageUrl;
+        }
+    }
+
 }
