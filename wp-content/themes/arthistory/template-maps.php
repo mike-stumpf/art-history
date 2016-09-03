@@ -92,7 +92,11 @@ $mapGroups = $artHistoryMaps->getMapData();
             slug: '<?php echo $mapGroup['slug'];?>'
         };
         try {
-            mapData[mapTitle].events = JSON.parse(events);
+            var unsortedEvents = JSON.parse(events);
+            unsortedEvents.sort(function(a,b){
+                return a.start > b.start;
+            });
+            mapData[mapTitle].events = unsortedEvents;
         } catch (e){
             console.log(e);
             mapData[mapTitle].events = [];
