@@ -312,7 +312,7 @@ $bullet-spacing: -20px;
   background-color: transparent;
   cursor: pointer;
   @include transition-with-defaults(background-color);
-  &:hover {
+  &:hover, &.active {
     background-color: rgba(255,255,255,0.8);
   }
   .entry-image {
@@ -364,7 +364,7 @@ $bullet-spacing: -20px;
 
 //image zoom
 //-----------------------------
-.imageZoomClass {
+.f--image-zoom {
   cursor: zoom-in;
 }
 

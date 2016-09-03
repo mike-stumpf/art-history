@@ -17,6 +17,7 @@
         imageZoom = $('#image-zoom-container'),
         imageZoomOverlay = $('#image-zoom-overlay'),
         bodyElement = $('body'),
+        activeClass = 'active',
         timelineClass = '.map-timeline',
         timelineArtworkClass = '.timeline-artwork',
         timelineDurationClass = '.timeline-duration',
@@ -154,6 +155,7 @@
 
     function closeSidebar(){
         that.currentEvent = null;
+        $(sidebarEntryClass+'.'+activeClass).removeClass(activeClass);
         return animations.animateElement(sidebarEventContainer, {
             properties: {
                 left: '-300px'
@@ -174,6 +176,7 @@
             closeSidebar()
                 .then(function () {
                     that.currentEvent = eventId;
+                    $(sidebarEntryClass+'[data-event-id="'+that.currentEvent+'"]').addClass(activeClass);
                     sidebarEventContainer.html(html);
                     openSidebar();
                 });
