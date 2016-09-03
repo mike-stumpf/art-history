@@ -10,6 +10,7 @@ class Event {
     private $title;
     private $timelineTitle;
     private $image;
+    private $largeImage;
     private $powerpoints;
     private $books;
     private $articles;
@@ -25,6 +26,7 @@ class Event {
         $timelineTitle = Helpers::getMetaValue($eventId,'event-timeline-title');
         $this->timelineTitle = !empty($timelineTitle)?$timelineTitle:$this->title;
         $this->image = Helpers::resizeImage(Helpers::getMetaValue($eventId,'event-image'),100,100);
+        $this->largeImage = Helpers::resizeImage(Helpers::getMetaValue($eventId,'event-image'),750,750);
         $this->eventStart = Helpers::getMetaValue($eventId,'event-start');
         if(strlen($this->eventStart) > 1) {
             //only convert to date if not null
@@ -59,6 +61,7 @@ class Event {
             'start'=>$this->eventStart,
             'end'=>$this->eventEnd,
             'image'=>$this->image,
+            'largeImage'=>$this->largeImage,
             'powerpoints'=>$this->powerpoints,
             'books'=>$this->books,
             'articles'=>$this->articles,
