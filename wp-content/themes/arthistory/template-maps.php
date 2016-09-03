@@ -74,8 +74,10 @@ $mapGroups = $artHistoryMaps->getMapData();
         </div>
         <a href="#!" class="modal-close" title="Close this modal" data-dismiss="modal" data-close="Close">&times;</a>
     </section>
-    <!--transition overlay-->
-    <div id="maps-transition-overlay"></div>
+    <!--fullscreen overlays-->
+    <div id="image-zoom-container" class="full-screen-takeover faded-out"></div>
+    <div id="image-zoom-overlay" class="full-screen-takeover faded-out"></div>
+    <div id="maps-transition-overlay" class="full-screen-takeover"></div>
     <script type="text/javascript">
         var mapData = {},
             mapTitle,

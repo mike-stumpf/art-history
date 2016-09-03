@@ -13,10 +13,16 @@
         headerMapTitle = $('#maps-header-title'),
         mobileModalTrigger = $('#maps-timeline-mobile-modal-trigger'),
         mobileModalContent = $('#maps-timeline-mobile-modal-content'),
-        timelineTitleContainer = $('#maps-header-title-container'),
         sidebarEventContainer = $('#maps-sidebar-event-container'),
+        imageZoom = $('#image-zoom-container'),
+        imageZoomOverlay = $('#image-zoom-overlay'),
         bodyElement = $('body'),
         timelineClass = '.map-timeline',
+        timelineArtworkClass = '.timeline-artwork',
+        timelineDurationClass = '.timeline-duration',
+        sidebarEntryClass = '.sidebar-entry',
+        closeSidebarClass = '.f--close-sidebar',
+        imageZoomClass = '.f--image-zoom',
         timeFormat = 'YYYY-MM-DD',
         currentTimeline,
         currentEvent;
@@ -134,11 +140,8 @@
             data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
             template = Handlebars.templates.sidebar_modal,
             html = template(data);
-        if (_.size(data.books) > 0 || _.size(data.powerpoints) > 0 || _.size(data.articles) > 0 || _.size(data.videos)){
-            //don't show modal if event has no data
-            mobileModalContent.html(html);
-            mobileModalTrigger.trigger('click');
-        }
+        mobileModalContent.html(html);
+        mobileModalTrigger.trigger('click');
     }
 
     function openSidebar(){
@@ -164,20 +167,16 @@
                 data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
                 template = Handlebars.templates.sidebar_event,
                 html = template(data);
-            //if event has data
-            if (_.size(data.books) > 0 || _.size(data.powerpoints) > 0 || _.size(data.articles) > 0 || _.size(data.videos)) {
-                //scroll timeline to center selected event
-                that.mapTimelines[that.currentTimelineIndex-1].moveTo(data.start,{
-                    animation: true
+            //scroll timeline to center selected event
+            that.mapTimelines[that.currentTimelineIndex-1].moveTo(data.start,{
+                animation: true
+            });
+            closeSidebar()
+                .then(function () {
+                    that.currentEvent = eventId;
+                    sidebarEventContainer.html(html);
+                    openSidebar();
                 });
-                //don't show modal if event has no data
-                closeSidebar()
-                    .then(function () {
-                        that.currentEvent = eventId;
-                        sidebarEventContainer.html(html);
-                        openSidebar();
-                    });
-            }
         } else {
             closeSidebar();
         }
@@ -221,6 +220,7 @@
                     bodyElement.removeClass(previousTimelineSelector);
                     animations.fadeOut($(timelineLogicClass+previousTimelineIndex));
                 }
+                closeSidebar();
                 updateMapTitle();
                 populateSidebar();
                 bodyElement.addClass(selectedTimeline);
@@ -231,12 +231,31 @@
             });
     }
 
+//zoom
+//-----------------------------
+
+    function openImageZoom(element){
+        imageZoom.css('background-image','url(\''+element.attr('src')+'\')');
+        animations.fadeIn(imageZoomOverlay)
+            .then(function() {
+                animations.fadeIn(imageZoom);
+            });
+    }
+
+    function closeImageZoom(){
+        animations.fadeOut(imageZoom)
+            .then(function() {
+                animations.fadeOut(imageZoomOverlay);
+                imageZoom.attr('background-image','');
+            });
+    }
+
 //main
 //-----------------------------
 
     this.init = function(){
 
-        if(window.location.href .indexOf('#maps-timeline-mobile-modal') !== -1){
+        if(window.location.href.indexOf('#maps-timeline-mobile-modal') !== -1){
             //don't show empty modal on page load
             window.location.href = window.location.href.split('#')[0];
         }
@@ -250,17 +269,17 @@
         selectTimeline(1);
 
         bodyElement
-            .on('click', '.timeline-artwork', function(){
+            .on('click', timelineArtworkClass, function(){
                 that.openEvent($(this).attr('data-event-id'));
             });
 
         bodyElement
-            .on('click', '.timeline-duration', function(){
+            .on('click', timelineDurationClass, function(){
                 that.openEvent($(this).attr('data-event-id'));
             });
 
         bodyElement
-            .on('click', '.sidebar-entry', function(){
+            .on('click', sidebarEntryClass, function(){
                 that.openEvent($(this).attr('data-event-id'));
             });
 
@@ -271,8 +290,18 @@
             });
 
         bodyElement
-            .on('click', '.f--close-sidebar', function(){
+            .on('click', closeSidebarClass, function(){
                 closeSidebar();
+            });
+
+        bodyElement
+            .on('click', imageZoomClass, function(){
+                openImageZoom($(this));
+            });
+
+        imageZoomOverlay
+            .on('click', function(){
+                closeImageZoom();
             });
     };
 
