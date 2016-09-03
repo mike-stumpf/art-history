@@ -22,7 +22,8 @@ class Event {
         //fields
         $this->id = $eventId;
         $this->title = Helpers::getMetaValue($eventId,'event-title');
-        $this->timelineTitle = Helpers::getMetaValue($eventId,'event-timeline-title');
+        $timelineTitle = Helpers::getMetaValue($eventId,'event-timeline-title');
+        $this->timelineTitle = !empty($timelineTitle)?$timelineTitle:$this->title;
         $this->image = Helpers::resizeImage(Helpers::getMetaValue($eventId,'event-image'),100,100);
         $this->eventStart = Helpers::getMetaValue($eventId,'event-start');
         if(strlen($this->eventStart) > 1) {
