@@ -85,8 +85,8 @@ $mapGroups = $artHistoryMaps->getMapData();
             events;
         <?php foreach($mapGroups as $mapGroup){?>
         mapTitle = '<?php echo $mapGroup['niceSlug'];?>';
-        events = '<?php echo json_encode($mapGroup['events']);?>';
-        timeline = '<?php echo json_encode($mapGroup['timeline']);?>';
+        events = "<?php echo addslashes(json_encode($mapGroup['events']));?>";
+        timeline = "<?php echo addslashes(json_encode($mapGroup['timeline']));?>";
         mapData[mapTitle] = {
             title: '<?php echo $mapGroup['title'];?>',
             slug: '<?php echo $mapGroup['slug'];?>'
