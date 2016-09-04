@@ -1,1 +1,9 @@
-<div style="background-image: url('{{image}}')" class="timeline-artwork" data-event-id="{{id}}">{{title}}</div>
+<div
+    {{#if image}}
+    style="background-image: url('{{image}}')" class="timeline-artwork"
+    {{else}}
+    class="timeline-artwork maps-active-color-light"
+    {{/if}}
+    data-event-id="{{id}}">
+    {{title}}
+</div>

@@ -4,7 +4,7 @@
   .vis-item, .timeline-artwork, #maps-main-content, .maps-header-title-element-container {
     border-color: $value;
   }
-  .maps-header-title-element, #maps-sidebar-container {
+  .maps-header-title-element, #maps-sidebar-container, .maps-active-color-light {
     background-color: lighten($value, 25%);
   }
   .sidebar-entry .entry-image {
