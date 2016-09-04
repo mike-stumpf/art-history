@@ -316,6 +316,9 @@ $bullet-spacing: -20px;
 .sidebar-entry {
   background-color: transparent;
   cursor: pointer;
+  display: table;
+  width: 100%;
+  padding: 5px 0;
   @include transition-with-defaults(background-color);
   &:hover, &.active {
     background-color: rgba(255,255,255,0.8);
@@ -327,6 +330,11 @@ $bullet-spacing: -20px;
     vertical-align: middle;
     margin: 5px;
     display: inline-block;
+  }
+  .entry-title {
+    display: table-cell;
+    vertical-align: middle;
+    width: 75%;
   }
 }
 
