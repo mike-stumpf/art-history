@@ -94,7 +94,7 @@ $mapGroups = $artHistoryMaps->getMapData();
         try {
             var unsortedEvents = JSON.parse(events);
             unsortedEvents.sort(function(a,b){
-                return a.start > b.start;
+                return new Date(a.start) - new Date(b.start);
             });
             mapData[mapTitle].events = unsortedEvents;
         } catch (e){

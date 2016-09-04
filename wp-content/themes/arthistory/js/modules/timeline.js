@@ -68,7 +68,7 @@
             data = mapData[getDataItemsList(container)],
             options = {
                 zoomable: false,
-                zoomMax: 173448000000,//5.5 years
+                zoomMax: 173448000000,//5.5 years to ms
                 minHeight: 350,
                 stack: true,
                 throttleRedraw: 100,
