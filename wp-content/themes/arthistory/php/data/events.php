@@ -30,14 +30,12 @@ class Event {
         $this->eventStart = Helpers::getMetaValue($eventId,'event-start');
         if(strlen($this->eventStart) > 1) {
             //only convert to date if not null
-            $eventStartTime = new DateTime();
-            $eventStartTime->setTimestamp((int)$this->eventStart);
+            $eventStartTime = new DateTime('@'.(float)$this->eventStart);
             $this->eventStart = $eventStartTime->format('Y-m-d');
         }
         $this->eventEnd = Helpers::getMetaValue($eventId,'event-end');
         if(strlen($this->eventEnd) > 1){
-            $eventEndTime = new DateTime();
-            $eventEndTime->setTimestamp((int)$this->eventEnd);
+            $eventEndTime = new DateTime('@'.(float)$this->eventEnd);
             $this->eventEnd = $eventEndTime->format('Y-m-d');
         }
 
