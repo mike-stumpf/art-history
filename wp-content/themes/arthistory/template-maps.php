@@ -83,30 +83,32 @@ $mapGroups = $artHistoryMaps->getMapData();
             mapTitle,
             timeline,
             events;
-        <?php foreach($mapGroups as $mapGroup){?>
-        mapTitle = '<?php echo $mapGroup['niceSlug'];?>';
-        events = "<?php echo addslashes(json_encode($mapGroup['events']));?>";
-        timeline = "<?php echo addslashes(json_encode($mapGroup['timeline']));?>";
-        mapData[mapTitle] = {
+        <?php $i = 1;
+        foreach($mapGroups as $mapGroup){?>
+        mapTitle<?php echo $i;?> = '<?php echo $mapGroup['niceSlug'];?>';
+        events<?php echo $i;?> = "<?php echo addslashes(json_encode($mapGroup['events']));?>";
+        timeline<?php echo $i;?> = "<?php echo addslashes(json_encode($mapGroup['timeline']));?>";
+        mapData[mapTitle<?php echo $i;?>] = {
             title: '<?php echo $mapGroup['title'];?>',
             slug: '<?php echo $mapGroup['slug'];?>'
         };
         try {
-            var unsortedEvents = JSON.parse(events);
+            var unsortedEvents = JSON.parse(events<?php echo $i;?>);
             unsortedEvents.sort(function(a,b){
                 return new Date(a.start) - new Date(b.start);
             });
-            mapData[mapTitle].events = unsortedEvents;
+            mapData[mapTitle<?php echo $i;?>].events = unsortedEvents;
         } catch (e){
             console.log(e);
-            mapData[mapTitle].events = [];
+            mapData[mapTitle<?php echo $i;?>].events = [];
         }
         try {
-            mapData[mapTitle].timeline = JSON.parse(timeline);
+            mapData[mapTitle<?php echo $i;?>].timeline = JSON.parse(timeline<?php echo $i;?>);
         } catch (e){
             console.log(e);
-            mapData[mapTitle].timeline = {};
+            mapData[mapTitle<?php echo $i;?>].timeline = {};
         }
-        <?php } ?>
+        <?php $i++;
+        } ?>
     </script>
 <?php get_footer();
