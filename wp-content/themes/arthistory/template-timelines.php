@@ -82,12 +82,14 @@ $timelines = $artHistoryTimelines->getTimelineData();
         var timelineData = {},
             timelineTitle,
             timeline,
-            events;
+            events,
+            movements;
         <?php $i = 1;
         foreach($timelines as $timeline){?>
         timelineTitle<?php echo $i;?> = '<?php echo $timeline['niceSlug'];?>';
         events<?php echo $i;?> = "<?php echo addslashes(json_encode($timeline['timelineEvents']));?>";
         timeline<?php echo $i;?> = "<?php echo addslashes(json_encode($timeline));?>";
+        movements<?php echo $i;?> = "<?php echo addslashes(json_encode($timeline['movements']));?>";
         timelineData[timelineTitle<?php echo $i;?>] = {
             title: '<?php echo $timeline['title'];?>',
             slug: '<?php echo $timeline['slug'];?>'
@@ -107,6 +109,12 @@ $timelines = $artHistoryTimelines->getTimelineData();
         } catch (e){
             console.log(e);
             timelineData[timelineTitle<?php echo $i;?>].timeline = {};
+        }
+        try {
+            timelineData[timelineTitle<?php echo $i;?>].movements = JSON.parse(movements<?php echo $i;?>);
+        } catch (e){
+            console.log(e);
+            timelineData[timelineTitle<?php echo $i;?>].movements = {};
         }
         <?php $i++;
         } ?>

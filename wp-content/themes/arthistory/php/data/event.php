@@ -7,6 +7,8 @@ class Event {
     private $title;
     private $image;
     private $largeImage;
+    private $eventStart;
+    private $eventEnd;
     public function __construct($eventId) {
         //fields
         $this->id = $eventId;

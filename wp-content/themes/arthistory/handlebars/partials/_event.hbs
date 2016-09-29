@@ -1,5 +1,20 @@
-{{#if largeImage}}
-    <img src="{{largeImage}}" alt="{{title}}" class="f--image-zoom"/>
+{{#if artworks}}
+    <section class="event-section">
+        <span class="fa fa-paint-brush" aria-hidden="true"></span>
+        <h4 class="event-header">Artworks</h4>
+        {{#each artworks}}
+            <div class="event-entry" data-event-id="{{id}}">
+                {{#if image}}
+                    <img class="entry-image f--image-zoom" src="{{largeImage}}" alt="{{title}}"/>
+                {{else}}
+                    <span class="entry-image"></span>
+                {{/if}}
+                <span class="entry-title">
+                    {{title}}
+                </span>
+            </div>
+        {{/each}}
+    </section>
 {{/if}}
 {{#if powerpoints}}
     <section class="event-section">
@@ -30,7 +45,7 @@
 {{#if videos}}
     <section class="event-section">
         <span class="fa fa-play-circle-o" aria-hidden="true"></span>
-        <h4 class="event-header">Videos</h4>
+        <h4 class="event-header">Music &amp; Film</h4>
         {{#each videos}}
             <div class="event-entry">
                 <p>{{title}}</p>
@@ -46,6 +61,18 @@
         {{#each articles}}
             <div class="event-entry">
                 <p>{{author}}{{#if author}},{{/if}} {{title}}{{#if year}}.{{/if}} {{year}}</p>
+            </div>
+        {{/each}}
+    </section>
+{{/if}}
+{{#if websites}}
+    <section class="event-section">
+        <span class="fa fa-globe" aria-hidden="true"></span>
+        <h4 class="event-header">Websites</h4>
+        {{#each websites}}
+            <div class="event-entry">
+                <p>{{title}}</p>
+                <a href="{{url}}" target="_blank">{{url}}</a>
             </div>
         {{/each}}
     </section>

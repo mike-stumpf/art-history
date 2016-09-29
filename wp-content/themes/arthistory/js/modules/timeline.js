@@ -20,13 +20,12 @@
         activeClass = 'active',
         timelineClass = '.timeline',
         timelineArtworkClass = '.timeline-artwork',
-        timelineDurationClass = '.timeline-duration',
         sidebarEntryClass = '.sidebar-entry',
         closeSidebarClass = '.f--close-sidebar',
         imageZoomClass = '.f--image-zoom',
         timeFormat = 'YYYY-MM-DD',
         currentTimeline,
-        currentEvent;
+        currentMovement;
 
     this.timelines = [];
 
@@ -116,12 +115,12 @@
         that.timelines.push(new vis.Timeline(container, items, options));
     }
 
-    this.openEvent = function(eventId){
+    this.openEvent = function(movementId){
         if(mediaQueries.isDesktop()){
             //if desktop
-            highlightSidebarEvent(eventId);
+            highlightSidebarEvent(movementId);
         } else {
-            populateModal(eventId);
+            populateModal(movementId);
         }
     };
 
@@ -136,9 +135,9 @@
         sidebarContainer.html(html);
     }
 
-    function populateModal(eventId){
+    function populateModal(movementId){
         var currentTimelineData = timelineData[getDataItemsList('#timeline-'+that.currentTimelineIndex)],
-            data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
+            data = _.find(currentTimelineData.movements, {id: parseInt(movementId)}),
             template = Handlebars.templates.sidebar_modal,
             html = template(data);
         mobileModalContent.html(html);
@@ -154,7 +153,7 @@
     }
 
     function closeSidebar(){
-        that.currentEvent = null;
+        that.currentMovement = null;
         $(sidebarEntryClass+'.'+activeClass).removeClass(activeClass);
         return animations.animateElement(sidebarDataContainer, {
             properties: {
@@ -163,20 +162,20 @@
         });
     }
 
-    function highlightSidebarEvent(eventId){
-        if(eventId !== that.currentEvent) {
+    function highlightSidebarEvent(movementId){
+        if(movementId !== that.currentMovement) {
             var currentTimelineData = timelineData[getDataItemsList('#timeline-' + that.currentTimelineIndex)],
-                data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
+                data = _.find(currentTimelineData.movements, {id: parseInt(movementId)}),
                 template = Handlebars.templates.sidebar_event,
                 html = template(data);
             //scroll timeline to center selected event
-            that.timelines[that.currentTimelineIndex-1].moveTo(data.start,{
+            that.timelines[that.currentTimelineIndex-1].moveTo(convertDate(data.start),{
                 animation: true
             });
             closeSidebar()
                 .then(function () {
-                    that.currentEvent = eventId;
-                    $(sidebarEntryClass+'[data-event-id="'+that.currentEvent+'"]').addClass(activeClass);
+                    that.currentMovement = movementId;
+                    $(sidebarEntryClass+'[data-movement-id="'+that.currentMovement+'"]').addClass(activeClass);
                     sidebarDataContainer.html(html);
                     openSidebar();
                 });
@@ -198,7 +197,6 @@
     }
 
     function updateTimelineTitle(){
-        console.log('title','#timeline-'+that.currentTimelineIndex,getDataItemsList('#timeline-'+that.currentTimelineIndex));
         var data = timelineData[getDataItemsList('#timeline-'+that.currentTimelineIndex)];
         headerTimelineTitle.html(data.title.replace('-',' \u2013 '));
     }
@@ -274,17 +272,12 @@
 
         bodyElement
             .on('click', timelineArtworkClass, function(){
-                that.openEvent($(this).attr('data-event-id'));
-            });
-
-        bodyElement
-            .on('click', timelineDurationClass, function(){
-                that.openEvent($(this).attr('data-event-id'));
+                that.openEvent($(this).attr('data-movement-id'));
             });
 
         bodyElement
             .on('click', sidebarEntryClass, function(){
-                that.openEvent($(this).attr('data-event-id'));
+                that.openEvent($(this).attr('data-movement-id'));
             });
 
         timelineSelectors

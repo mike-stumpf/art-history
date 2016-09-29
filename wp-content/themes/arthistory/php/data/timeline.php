@@ -123,7 +123,8 @@ class Timeline {
             'niceSlug'=>$this->niceSlug,
             'timeline'=>$this->timeline,
             'timelineEvents'=>$this->timelineEvents,
-            'image'=>$this->image
+            'image'=>$this->image,
+            'movements'=>$this->movements
         );
     }
 

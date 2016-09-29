@@ -63,6 +63,10 @@ class Helpers {
                         $child = new Data\Artwork($childId);
                         array_push($children, $child->getArtwork());
                         break;
+                    case Dictionary::$typeWebsite:
+                        $child = new Data\Website($childId);
+                        array_push($children, $child->getWebsite());
+                        break;
                 }
             }
         }
