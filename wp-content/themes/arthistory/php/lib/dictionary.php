@@ -6,6 +6,7 @@ class Dictionary {
      */
     public static $typeTimeline = 'timeline';
     public static $typeEvent = 'event';
+    public static $typeArtwork = 'artwork';
     public static $typeBook = 'book';
     public static $typeArticle = 'article';
     public static $typePowerpoint = 'powerpoint';

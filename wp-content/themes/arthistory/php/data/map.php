@@ -47,7 +47,7 @@ class Map {
         //get event objects
         $eventArguments = array(
             'post_status' => 'publish',
-            'post_type' => Dictionary::$typeEvent,
+            'post_type' => Dictionary::$typeArtwork,
             'tax_query' => array(
                 array(
                     'taxonomy' => Dictionary::$typeEventTimeline,
@@ -62,8 +62,8 @@ class Map {
             while ($eventQuery->have_posts()) {
                 $eventQuery->the_post();
                 $eventId = get_the_ID();
-                $eventObject = new Event($eventId);
-                array_push($this->events, $eventObject->getEvent());
+                $eventObject = new Artwork($eventId);
+                array_push($this->events, $eventObject->getArtwork());
             }
         }
         $optionNiceSlug = '';

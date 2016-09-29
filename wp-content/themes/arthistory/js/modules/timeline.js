@@ -13,7 +13,7 @@
         headerMapTitle = $('#maps-header-title'),
         mobileModalTrigger = $('#maps-timeline-mobile-modal-trigger'),
         mobileModalContent = $('#maps-timeline-mobile-modal-content'),
-        sidebarEventContainer = $('#maps-sidebar-event-container'),
+        sidebarDataContainer = $('#maps-sidebar-data-container'),
         imageZoom = $('#image-zoom-container'),
         imageZoomOverlay = $('#image-zoom-overlay'),
         bodyElement = $('body'),
@@ -29,7 +29,6 @@
         currentEvent;
 
     this.mapTimelines = [];
-
 
 //helpers
 //-----------------------------
@@ -90,20 +89,20 @@
             compiledDataObject = {
                 id: entry.id,
                 image: entry.image,
-                title: entry.timelineTitle,
-                start: entry.start
+                title: entry.title,
+                start: entry.date
             };
-            entry.start = convertDate(entry.start);
+            entry.date = convertDate(entry.date);
             if (!minDate || !maxDate){
-                minDate = maxDate = entry.start;//everything is stored in momentjs format
+                minDate = maxDate = entry.date;//everything is stored in momentjs format
             }
-            minDate = compareDates(entry.start, minDate, false);
+            minDate = compareDates(entry.date, minDate, false);
             if (isDateDuration(entry)){
                 compiledDataObject.end = entry.end;
                 entry.end = convertDate(entry.end);
                 maxDate = compareDates(entry.end, maxDate, true);
             } else {
-                maxDate = compareDates(entry.start, maxDate, true);
+                maxDate = compareDates(entry.date, maxDate, true);
             }
             items.push(compiledDataObject);
         });
@@ -147,7 +146,7 @@
     }
 
     function openSidebar(){
-        return animations.animateElement(sidebarEventContainer, {
+        return animations.animateElement(sidebarDataContainer, {
             properties: {
                 left: '25.5%'
             }
@@ -157,7 +156,7 @@
     function closeSidebar(){
         that.currentEvent = null;
         $(sidebarEntryClass+'.'+activeClass).removeClass(activeClass);
-        return animations.animateElement(sidebarEventContainer, {
+        return animations.animateElement(sidebarDataContainer, {
             properties: {
                 left: '-300px'
             }
@@ -171,14 +170,14 @@
                 template = Handlebars.templates.sidebar_event,
                 html = template(data);
             //scroll timeline to center selected event
-            that.mapTimelines[that.currentTimelineIndex-1].moveTo(data.start,{
+            that.mapTimelines[that.currentTimelineIndex-1].moveTo(data.date,{
                 animation: true
             });
             closeSidebar()
                 .then(function () {
                     that.currentEvent = eventId;
                     $(sidebarEntryClass+'[data-event-id="'+that.currentEvent+'"]').addClass(activeClass);
-                    sidebarEventContainer.html(html);
+                    sidebarDataContainer.html(html);
                     openSidebar();
                 });
         } else {

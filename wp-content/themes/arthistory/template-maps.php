@@ -12,7 +12,7 @@ $mapGroups = $artHistoryMaps->getMapData();
     <aside id="maps-sidebar-container" class="show-for-large">
         <!-- dynamically populated -->
     </aside>
-    <div id="maps-sidebar-event-container" class="show-for-large">
+    <div id="maps-sidebar-data-container" class="show-for-large">
         <!-- dynamically populated -->
     </div>
     <!--main content-->
@@ -95,7 +95,7 @@ $mapGroups = $artHistoryMaps->getMapData();
         try {
             var unsortedEvents = JSON.parse(events<?php echo $i;?>);
             unsortedEvents.sort(function(a,b){
-                return new Date(a.start) - new Date(b.start);
+                return new Date(a.date) - new Date(b.date);
             });
             mapData[mapTitle<?php echo $i;?>].events = unsortedEvents;
         } catch (e){
