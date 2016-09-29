@@ -1,10 +1,10 @@
 // core
 //-----------------------------
 @mixin timeline-active-color($value) {
-  .vis-item, .timeline-artwork, #maps-main-content, .maps-header-title-element-container {
+  .vis-item, .timeline-artwork, #timelines-main-content, .timelines-header-title-element-container {
     border-color: $value;
   }
-  .maps-header-title-element, #maps-sidebar-container, .maps-active-color-light {
+  .timelines-header-title-element, #timelines-sidebar-container, .timelines-active-color-light {
     background-color: lighten($value, 25%);
   }
   .sidebar-entry .entry-image {
@@ -12,22 +12,22 @@
   }
 }
 
-.page-template-template-maps {
-  &.map-timeline-1 {
-    @include timeline-active-color($color-map-1);
+.page-template-template-timelines {
+  &.timeline-1 {
+    @include timeline-active-color($color-timeline-1);
   }
-  &.map-timeline-2 {
-    @include timeline-active-color($color-map-2);
+  &.timeline-2 {
+    @include timeline-active-color($color-timeline-2);
   }
-  &.map-timeline-3 {
-    @include timeline-active-color($color-map-3);
+  &.timeline-3 {
+    @include timeline-active-color($color-timeline-3);
   }
-  &.map-timeline-4 {
-    @include timeline-active-color($color-map-4);
+  &.timeline-4 {
+    @include timeline-active-color($color-timeline-4);
   }
 }
 
-#maps-main-content {
+#timelines-main-content {
   border: 10px solid transparent;
   padding: 0;
   @include tablet {
@@ -43,15 +43,15 @@
 //-----------------------------
 $bullet-spacing: -20px;
 
-.map-header-image {
+.timeline-header-image {
   width: 100%;
 }
 
-#maps-header-image-container {
+#timelines-header-image-container {
   position: relative;
 }
 
-#maps-header-title-container {
+#timelines-header-title-container {
   min-width: 225px;
   width: 50%;
   bottom: -20px;
@@ -63,7 +63,7 @@ $bullet-spacing: -20px;
   }
 }
 
-#maps-header-title {
+#timelines-header-title {
   margin: 0;
   letter-spacing: 0.2em;
   font-size: 0.975em;
@@ -75,11 +75,11 @@ $bullet-spacing: -20px;
   }
 }
 
-.maps-header-title-element {
+.timelines-header-title-element {
   padding: 5px;
 }
 
-.maps-header-title-element-container {
+.timelines-header-title-element-container {
   position: absolute;
   text-align: center;
   padding: 4px;
@@ -88,7 +88,7 @@ $bullet-spacing: -20px;
   background: white;
 }
 
-.maps-header-title-bullet {
+.timelines-header-title-bullet {
   top: -2px;
   font-size: 0.75em;
   @include tablet {
@@ -99,25 +99,25 @@ $bullet-spacing: -20px;
   }
 }
 
-#maps-header-title-left {
+#timelines-header-title-left {
   left: $bullet-spacing;
   border-top-left-radius: 50%;
   border-bottom-left-radius: 50%;
   padding-right: 0;
   border-right: none;
-  .maps-header-title-element {
+  .timelines-header-title-element {
     border-top-left-radius: 50%;
     border-bottom-left-radius: 50%;
   }
 }
 
-#maps-header-title-right {
+#timelines-header-title-right {
   right: $bullet-spacing;
   border-top-right-radius: 50%;
   border-bottom-right-radius: 50%;
   padding-left: 0;
   border-left: none;
-  .maps-header-title-element {
+  .timelines-header-title-element {
     border-top-right-radius: 50%;
     border-bottom-right-radius: 50%;
   }
@@ -126,7 +126,7 @@ $bullet-spacing: -20px;
 
 //body
 //-----------------------------
-#maps-timeline-container {
+#timelines-timeline-container {
   padding: 50px 0;
 }
 
@@ -169,18 +169,18 @@ $bullet-spacing: -20px;
   border-right: 1px dotted $timeline-green;
 }
 
-#maps-transition-overlay {
+#timelines-transition-overlay {
   overflow: hidden;
 }
 
 
 //navigation
 //-----------------------------
-#maps-selector-container {
+#timelines-selector-container {
   background-color: rgba(0,0,0,0.4);
 }
 
-.maps-timeline-selector {
+.timelines-selector {
   display: block;
   padding: 40px 0 20px 0;
   color: white;
@@ -190,15 +190,15 @@ $bullet-spacing: -20px;
     padding: 60px 0 40px 0;
   }
   &.active, &:hover {
-    .maps-timeline-selector-indicator {
+    .timelines-selector-indicator {
       background-color: white;
     }
   }
 }
 
-.maps-timeline-selector-indicator {
-  border: 2px solid $color-map-navigation;
-  background-color: $color-grey; //this value is calculated from #maps-selector-container background color w/ opacity
+.timelines-selector-indicator {
+  border: 2px solid $color-timeline-navigation;
+  background-color: $color-grey; //this value is calculated from #timelines-selector-container background color w/ opacity
   border-radius: 50%;
   position: absolute;
   top: 15px;
@@ -214,7 +214,7 @@ $bullet-spacing: -20px;
   }
 }
 
-.maps-timeline-selector-block {
+.timelines-selector-block {
   float: left;
   text-align: center;
   width: 50%;
@@ -223,8 +223,8 @@ $bullet-spacing: -20px;
   }
 }
 
-.maps-timeline-selector-line {
-  border-top: 2px solid $color-map-navigation;
+.timelines-selector-line {
+  border-top: 2px solid $color-timeline-navigation;
   top: 22px;
   display: block;
   position: absolute;
@@ -292,7 +292,7 @@ $bullet-spacing: -20px;
 
 //sidebar
 //-----------------------------
-#maps-sidebar-container {
+#timelines-sidebar-container {
   position: fixed;
   top: 0;
   left: 0;
@@ -338,7 +338,7 @@ $bullet-spacing: -20px;
   }
 }
 
-#maps-sidebar-data-container {
+#timelines-sidebar-data-container {
   position: fixed;
   top: 0;
   left: -300px;

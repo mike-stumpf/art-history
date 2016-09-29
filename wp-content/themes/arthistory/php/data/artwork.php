@@ -2,7 +2,6 @@
 
 use DateTime;
 use artHistory\Lib\Helpers;
-use artHistory\Lib\Dictionary;
 
 class Artwork {
 
@@ -10,15 +9,9 @@ class Artwork {
     private $title;
     private $image;
     private $largeImage;
-    private $powerpoints;
-    private $books;
-    private $articles;
-    private $videos;
     private $artworkDate;
 
     public function __construct($artworkId) {
-        //variables
-        $parentType = Dictionary::$typeArtwork;
 
         //fields
         $this->id = $artworkId;
@@ -31,12 +24,6 @@ class Artwork {
             $artworkDateTime = new DateTime('@'.(float)$this->artworkDate);
             $this->artworkDate = $artworkDateTime->format('Y-m-d');
         }
-
-        //get children
-        $this->books = Helpers::getChildren($artworkId,$parentType,Dictionary::$typeBook);
-        $this->powerpoints = Helpers::getChildren($artworkId,$parentType,Dictionary::$typePowerpoint);
-        $this->articles = Helpers::getChildren($artworkId,$parentType,Dictionary::$typeArticle);
-        $this->videos = Helpers::getChildren($artworkId,$parentType,Dictionary::$typeVideo);
         
     }
 
@@ -50,11 +37,7 @@ class Artwork {
             'title'=>$this->title,
             'date'=>$this->artworkDate,
             'image'=>$this->image,
-            'largeImage'=>$this->largeImage,
-            'powerpoints'=>$this->powerpoints,
-            'books'=>$this->books,
-            'articles'=>$this->articles,
-            'videos'=>$this->videos
+            'largeImage'=>$this->largeImage
         );
     }
 }

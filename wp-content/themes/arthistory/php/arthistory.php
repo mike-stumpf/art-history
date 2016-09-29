@@ -7,33 +7,33 @@ use artHistory\Lib\Dictionary;
 // base class
 class artHistory {
 
-    private $mapData;
+    private $timelineData;
 
     public function __construct(){
         //variables
-        $maps = array();
+        $timelines = array();
 
         //get timeline categories
-        $mapOptions = get_terms(
+        $timelineOptions = get_terms(
             array(
                 'taxonomy' => Dictionary::$typeEventTimeline,
                 'hide_empty' => false
             )
         );
         //sort timeline options by starting year
-        usort($mapOptions, array('artHistory\Lib\Helpers','sortByName'));
+        usort($timelineOptions, array('artHistory\Lib\Helpers','sortByName'));
 
         //get timeline objects and events based on timeline category
-        foreach($mapOptions as $option){
-            $map = new Data\Map($option);
-            array_push($maps, $map->getMap());
+        foreach($timelineOptions as $option){
+            $timeline = new Data\Timeline($option);
+            array_push($timelines, $timeline->getTimeline());
         }
 
-        $this->mapData = $maps;
+        $this->timelineData = $timelines;
     }
 
-    public function getMapData(){
-        return $this->mapData;
+    public function getTimelineData(){
+        return $this->timelineData;
     }
 
 }

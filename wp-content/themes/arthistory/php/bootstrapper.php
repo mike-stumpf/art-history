@@ -9,10 +9,11 @@ include_once('data/article.php');
 include_once('data/book.php');
 include_once('data/powerpoint.php');
 include_once('data/video.php');
-//parents
 include_once('data/artwork.php');
+include_once('data/event.php');
+//parents
 include_once('data/timeline.php');
-include_once('data/map.php');
+include_once('data/movement.php');
 
 //logic
 include_once('arthistory.php');

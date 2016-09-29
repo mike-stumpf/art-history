@@ -7,18 +7,18 @@
         animations = artHistory.animations,
         helpers = artHistory.helpers,
         mediaQueries = artHistory.mediaQueries,
-        sidebarContainer = $('#maps-sidebar-container'),
-        timelineSelectors = $('.maps-timeline-selector'),
-        transitionOverlay = $('#maps-transition-overlay'),
-        headerMapTitle = $('#maps-header-title'),
-        mobileModalTrigger = $('#maps-timeline-mobile-modal-trigger'),
-        mobileModalContent = $('#maps-timeline-mobile-modal-content'),
-        sidebarDataContainer = $('#maps-sidebar-data-container'),
+        sidebarContainer = $('#timelines-sidebar-container'),
+        timelineSelectors = $('.timelines-selector'),
+        transitionOverlay = $('#timelines-transition-overlay'),
+        headerTimelineTitle = $('#timelines-header-title'),
+        mobileModalTrigger = $('#timeline-mobile-modal-trigger'),
+        mobileModalContent = $('#timeline-mobile-modal-content'),
+        sidebarDataContainer = $('#timelines-sidebar-data-container'),
         imageZoom = $('#image-zoom-container'),
         imageZoomOverlay = $('#image-zoom-overlay'),
         bodyElement = $('body'),
         activeClass = 'active',
-        timelineClass = '.map-timeline',
+        timelineClass = '.timeline',
         timelineArtworkClass = '.timeline-artwork',
         timelineDurationClass = '.timeline-duration',
         sidebarEntryClass = '.sidebar-entry',
@@ -28,7 +28,7 @@
         currentTimeline,
         currentEvent;
 
-    this.mapTimelines = [];
+    this.timelines = [];
 
 //helpers
 //-----------------------------
@@ -64,7 +64,7 @@
 
     function initializeTimeline(element){
         var container = element,
-            data = mapData[getDataItemsList(container)],
+            data = timelineData[getDataItemsList(container)],
             options = {
                 zoomable: false,
                 zoomMax: 173448000000,//5.5 years to ms
@@ -113,7 +113,7 @@
             options.max = moment(maxDate).add(4,'year').format(timeFormat);
         }
         items = new vis.DataSet(items);
-        that.mapTimelines.push(new vis.Timeline(container, items, options));
+        that.timelines.push(new vis.Timeline(container, items, options));
     }
 
     this.openEvent = function(eventId){
@@ -130,14 +130,14 @@
 //----------------------------- 
 
     function populateSidebar(){
-        var data = mapData[getDataItemsList('#timeline-map-'+that.currentTimelineIndex)],
+        var data = timelineData[getDataItemsList('#timeline-'+that.currentTimelineIndex)],
             template = Handlebars.templates.sidebar,
             html = template(data);
         sidebarContainer.html(html);
     }
 
     function populateModal(eventId){
-        var currentTimelineData = mapData[getDataItemsList('#timeline-map-'+that.currentTimelineIndex)],
+        var currentTimelineData = timelineData[getDataItemsList('#timeline-'+that.currentTimelineIndex)],
             data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
             template = Handlebars.templates.sidebar_modal,
             html = template(data);
@@ -165,12 +165,12 @@
 
     function highlightSidebarEvent(eventId){
         if(eventId !== that.currentEvent) {
-            var currentTimelineData = mapData[getDataItemsList('#timeline-map-' + that.currentTimelineIndex)],
+            var currentTimelineData = timelineData[getDataItemsList('#timeline-' + that.currentTimelineIndex)],
                 data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
                 template = Handlebars.templates.sidebar_event,
                 html = template(data);
             //scroll timeline to center selected event
-            that.mapTimelines[that.currentTimelineIndex-1].moveTo(data.date,{
+            that.timelines[that.currentTimelineIndex-1].moveTo(data.date,{
                 animation: true
             });
             closeSidebar()
@@ -197,16 +197,17 @@
         }
     }
 
-    function updateMapTitle(){
-        var data = mapData[getDataItemsList('#timeline-map-'+that.currentTimelineIndex)];
-        headerMapTitle.html(data.title.replace('-',' \u2013 '));
+    function updateTimelineTitle(){
+        console.log('title','#timeline-'+that.currentTimelineIndex,getDataItemsList('#timeline-'+that.currentTimelineIndex));
+        var data = timelineData[getDataItemsList('#timeline-'+that.currentTimelineIndex)];
+        headerTimelineTitle.html(data.title.replace('-',' \u2013 '));
     }
 
     function selectTimeline(selectedTimelineIndex){
         that.currentTimelineIndex = selectedTimelineIndex;
         var bodyClasses = bodyElement.attr('class').split(' '),
-            timelineLogicClass = '.l--show-for-map-',
-            selectedTimePrefix = 'map-timeline-',
+            timelineLogicClass = '.l--show-for-timeline-',
+            selectedTimePrefix = 'timeline-',
             selectedTimeline = selectedTimePrefix+that.currentTimelineIndex,
             previousTimelineSelector,
             previousTimelineIndex;
@@ -224,7 +225,7 @@
                     animations.fadeOut($(timelineLogicClass+previousTimelineIndex));
                 }
                 closeSidebar();
-                updateMapTitle();
+                updateTimelineTitle();
                 populateSidebar();
                 bodyElement.addClass(selectedTimeline);
                 animations.fadeIn($(timelineLogicClass+that.currentTimelineIndex))
@@ -258,7 +259,7 @@
 
     this.init = function(){
 
-        if(window.location.href.indexOf('#maps-timeline-mobile-modal') !== -1){
+        if(window.location.href.indexOf('#timeline-mobile-modal') !== -1){
             //don't show empty modal on page load
             window.location.href = window.location.href.split('#')[0];
         }
