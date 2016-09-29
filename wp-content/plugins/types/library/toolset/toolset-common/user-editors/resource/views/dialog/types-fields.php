@@ -48,7 +48,7 @@ class Toolset_User_Editors_Resource_Views_Dialog_Types_Fields
 		wp_enqueue_script(
 			'wpcf-js-embedded',
 			TYPES_RELPATH . '/library/toolset/types/embedded/resources/js/basic.js',
-			array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs', 'select2'),
+			array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs', 'toolset_select2'),
 			WPCF_VERSION
 		);
 

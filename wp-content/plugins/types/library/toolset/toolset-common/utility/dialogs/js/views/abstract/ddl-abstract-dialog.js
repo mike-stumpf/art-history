@@ -15,7 +15,7 @@ var DDLayout = DDLayout || {};
             this._trigger('refresh');
         },
         _allowInteraction: function( event ) {
-            return !!$( event.target ).is( ".select2-input" ) || this._super( event );
+            return !!$( event.target ).is( ".toolset_select2-input" ) || this._super( event );
         },
         _create:function( ){
             this._super("_create");

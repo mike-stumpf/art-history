@@ -54,13 +54,13 @@ if( !class_exists('Toolset_HelpVideo') ) {
 
         public function add_register_scripts($scripts)
         {
-            $scripts[] = new Toolset_Script('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/js/toolset-help-videos.js', array('jquery', 'underscore', 'backbone', 'wp-mediaelement', 'toolset-utils'), '1.0', true);
+            $scripts['toolset-help-video'] = new Toolset_Script('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/js/toolset-help-videos.js', array('jquery', 'underscore', 'backbone', 'wp-mediaelement', 'toolset-utils'), '1.0', true);
             return $scripts;
         }
 
         public function add_register_styles($styles)
         {
-            $styles[] = new Toolset_Style('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/css/toolset-help-videos.css');
+            $styles['toolset-help-video'] = new Toolset_Style('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/css/toolset-help-videos.css');
             return $styles;
         }
 

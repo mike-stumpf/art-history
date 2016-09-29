@@ -1,3 +1,17 @@
+Common 2.2.2 (September 26, 2016)
+  - Updated the bundled select2 script to version 4.0.3
+  - Fixed a problem with some assets URLs lacking a backslash
+  - Improved management of CRED file fields uploads
+  - Improved the frontend markup for CRED taxonomy fields
+  - Added an internal Toolset compatibility class
+
+-------------------------------------------------------------------------------------------------------------------
+
+Common 2.2.1 (August 25, 2016)
+  - Avoid translating the Toolset top level admin menu label
+
+-------------------------------------------------------------------------------------------------------------------
+
 Common 2.2 (August 24, 2016)
   - Added compatibility classes for Relevanssi and Beaver Builder
   - Added a CSS components class

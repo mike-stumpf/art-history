@@ -97,7 +97,7 @@ ul.ddl-form { /* If .ddl-form class is added directly to <ul> element */
 .ddl-form .checkbox,
 .ddl-form .fields-group,
 .ddl-form .desc,
-.ddl-form .select2-container {
+.ddl-form .toolset_select2-container {
 	display: block;
 	float: right;
 	clear: right;
@@ -127,7 +127,7 @@ ul.ddl-form { /* If .ddl-form class is added directly to <ul> element */
 .ddl-form .checkbox.ddl-form-indent,
 .ddl-form .fields-group.ddl-form-indent,
 .ddl-form .desc.ddl-form-indent,
-.ddl-form .select2-container.ddl-form-indent {
+.ddl-form .toolset_select2-container.ddl-form-indent {
 	width: 534px;
 }
 
@@ -191,7 +191,7 @@ ul.ddl-form { /* If .ddl-form class is added directly to <ul> element */
 .ddl-form .fields-group .radio,
 .ddl-form .fields-group .checkbox,
 .ddl-form .fields-group .desc,
-.ddl-form .fields-group .select2-container {
+.ddl-form .fields-group .toolset_select2-container {
 	float: none;
 }
 
@@ -209,7 +209,7 @@ ul.ddl-form { /* If .ddl-form class is added directly to <ul> element */
 .ddl-form .ddl-form-item-fullwidth textarea,
 .ddl-form .ddl-form-item-fullwidth select,
 .ddl-form .ddl-form-item-fullwidth .desc,
-.ddl-form .ddl-form-item-fullwidth .ddl-form .select2-container,
+.ddl-form .ddl-form-item-fullwidth .ddl-form .toolset_select2-container,
 .ddl-form .ddl-form-item-fullwidth .fields-group {
 	display: block;
 	width: 100%;
@@ -246,11 +246,11 @@ ul.ddl-form { /* If .ddl-form class is added directly to <ul> element */
 /* Validation */
 .ddl-form .invalid,
 .ddl-form .invalid:focus,
-.ddl-form .invalid .select2-choices {
+.ddl-form .invalid .toolset_select2-choices {
 	border-color: #e9322d;
 	box-shadow: 0 0 6px #f8b9b7 inset;
 }
-.ddl-form .invalid.select2-container {
+.ddl-form .invalid.toolset_select2-container {
 	border: none;
 	box-shadow: none;
 }
@@ -363,7 +363,7 @@ input#searchbar-input{float:none;}
 .cm-s-default { z-index: 0; }
 
 /* SHOW MORE POSTS */
-li.select2-results-dept-0.select2-result.show-more-posts-options{font-weight:bold;color:#f05a28;}
+li.toolset_select2-results-dept-0.toolset_select2-result.show-more-posts-options{font-weight:bold;color:#f05a28;}
 i.load-posts-spinner{color:black;}
 i.load-posts-spinner:hover{color:white;}
 /* ////// LANGUAGE SWITCHER///////// */

@@ -1040,8 +1040,7 @@ final class WP_Installer{
                     $this->settings['repositories'][$repository_id]['subscription'] = array('key' => $site_key, 'data' => $subscription_data);
                     $this->save_settings();
                 } else {
-                    $error = __( 'Invalid site key for the current site.', 'installer' )
-                        . '<br /><div class="installer-footnote">' .  __('Please note that the site key is case sensitive.', 'installer') . '</div>';
+                    $error = __( 'Invalid site key for the current site.', 'installer' );
                 }
 
             } catch (Exception $e ){

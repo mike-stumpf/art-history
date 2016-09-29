@@ -1,7 +1,13 @@
 <tr>
     <td>
         <div class="types-information-td-inner">
-            <p class="types-information-paragraph toolset-dashboard-post-type"><a href="{{ post_type.get_edit_link }}">{{ post_type.name }}</a></p>
+            <p class="types-information-paragraph toolset-dashboard-post-type">
+                {% if post_type_edit_link %}
+                    <a href="{{ post_type.get_edit_link }}">{{ post_type.name }}</a>
+                {% else %}
+                    {{ post_type.name }}
+                {% endif %}
+            </p>
         </div>
     </td>
     <td>

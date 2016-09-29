@@ -29,14 +29,6 @@
     font-weight:bold;
 }
 
-.installer-footnote{
-    color:#3d5e69;
-    display:block;
-    float: left;
-    font-style: italic;
-    font-size: 90%;
-}
-
 .installer-products-list li{
     display: inline;
     margin-right: 20px;

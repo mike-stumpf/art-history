@@ -1,5 +1,6 @@
 {{ content.title }}
 
+{% if content.description %}
 <a  id="types-pointer-target-{{ content.id }}" href="javascript:void(0)" class="dashicons dashicons-editor-help"
     data-types-open-pointer="types-pointer-{{ content.id }}" style="position:relative;"></a>
 
@@ -15,3 +16,4 @@
         </div>
     </div>
 </div>
+{% endif %}

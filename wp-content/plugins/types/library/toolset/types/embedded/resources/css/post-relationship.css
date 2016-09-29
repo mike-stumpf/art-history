@@ -35,7 +35,30 @@
 #wpcf-post-relationship .belongs .form-item
 {
     padding-top: .5em;
-    max-width: 300px;
+}
+
+#wpcf-post-relationship .belongs .select2-container {
+	vertical-align: middle;
+}
+
+#wpcf-post-relationship .belongs .wpcf-pr-parent-edit {
+	margin-left: 5px;
+	vertical-align: middle;
+	-webkit-transition: all 0.5s linear;
+	-moz-transition: all 0.5s linear;
+	-ms-transition: all 0.5s linear;
+	-o-transition: all 0.5s linear;
+	transition: all 0.5s linear;
+}
+
+#wpcf-post-relationship .belongs .wpcf-pr-parent-edit.wpcf-saved {
+	box-shadow: 0 0 2px 3px #7ad03a !important;
+	border-color: #7ad03a;
+}
+
+#wpcf-post-relationship .belongs .wpcf-pr-parent-edit.wpcf-deleted {
+	box-shadow: 0 0 3px red !important;
+	border-color: red;
 }
 
 .wpcf-pr-sort-DESC,

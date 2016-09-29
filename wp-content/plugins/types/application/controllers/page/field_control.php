@@ -171,7 +171,8 @@ final class Types_Page_Field_Control extends Types_Page_Abstract {
 				'wp-admin',
 				'common',
 				'font-awesome',
-				'wpcf-css-embedded'
+				'wpcf-css-embedded',
+				'wp-jquery-ui-dialog'
 			)
 		);
 

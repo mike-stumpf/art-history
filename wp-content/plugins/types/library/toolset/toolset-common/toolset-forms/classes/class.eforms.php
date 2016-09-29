@@ -748,7 +748,17 @@ class Enlimbo_Forms {
             $value = $element['#default_value'];
         }
 
-        $element['_render']['element'] .= ( empty($element['#value']) && !preg_match('/^0$/', $element['#value']) ) ? $value : esc_attr($element['#value']);
+        // Decide whether we should use the default value from field definition
+	    // or the current value this checkbox has (from database, presumably)
+	    //
+	    // fixme this logic needs to be reviewed and simplified
+	    $is_zero = ! preg_match('/^0$/', $element['#value'] );
+	    $is_empty = empty( $element['#value'] );
+	    $is_boolean = is_bool( $element['#value'] );
+        $use_default_value = ( ( $is_empty && $is_zero ) || $is_boolean );
+        $value_output = ( $use_default_value ? $value : esc_attr( $element['#value'] ) );
+	    $element['_render']['element'] .= $value_output;
+
         $element['_render']['element'] .= '"' . $element['_attributes_string'];
         if (
                 (

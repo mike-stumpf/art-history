@@ -1,9 +1,32 @@
+Common 2.2.2 (September 26, 2016)
+  - Updated the bundled select2 script to version 4.0.3
+  - Fixed a problem with some assets URLs lacking a backslash
+  - Improved management of CRED file fields uploads
+  - Improved the frontend markup for CRED taxonomy fields
+  - Added an internal Toolset compatibility class
+
+-------------------------------------------------------------------------------------------------------------------
+
+Common 2.2.1 (August 25, 2016)
+  - Avoid translating the Toolset top level admin menu label
+	
+-------------------------------------------------------------------------------------------------------------------
+
+Common 2.2 (August 24, 2016)
+  - Added compatibility classes for Relevanssi and Beaver Builder
+  - Added a CSS components class
+  - Improved the Toolset Common assets management
+  - Added the Glyphicons library
+
+-------------------------------------------------------------------------------------------------------------------
+
 Common 2.1 (June 13, 2016)
   - Refactored event-manager library to toolset-event manager to namespace it and avoid conficts with ACF Plugin
   - Added a new class for promotional and help videos management
   - Improved compatibility with PHP 5.2
   - Improved compatibility with WPML, including admin language switchers and loading times
   - Improved compatibility for CRED file uploads and bundled scripts
+  - Fixed double slashes on assets URLs
 
 -------------------------------------------------------------------------------------------------------------------
 

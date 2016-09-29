@@ -7,28 +7,23 @@
  */
 
 /**
- * Caches get_post_meta() calls.
+ * Returns the post meta or empty string if not available
+ * Since 2.3 the function no longer has its own caching.
  *
- * @staticvar array $cache
  * @param type $post_id
  * @param type $meta_key
  * @param type $single
  * @return string
  */
-function wpcf_get_post_meta($post_id, $meta_key, $single)
-{
-    static $cache = array();
+function wpcf_get_post_meta($post_id, $meta_key, $single) {
 
-    if ( !isset( $cache[$post_id] ) ) {
-        $cache[$post_id] = get_post_custom( $post_id );
+    $post_meta = get_post_meta( $post_id, $meta_key, $single );
+
+    if( $post_meta && ! empty( $post_meta ) ) {
+        return maybe_unserialize( $post_meta  );
     }
-    if ( isset( $cache[$post_id][$meta_key] ) ) {
-        if ( $single && isset( $cache[$post_id][$meta_key][0] ) ) {
-            return maybe_unserialize( $cache[$post_id][$meta_key][0] );
-        } elseif ( !$single && !empty( $cache[$post_id][$meta_key] ) ) {
-            return maybe_unserialize( $cache[$post_id][$meta_key] );
-        }
-    }
+
+    // no meta data
     return '';
 }
 
@@ -541,7 +536,7 @@ function wpcf_enqueue_scripts()
     wp_enqueue_script(
         'wpcf-js-embedded',
         WPCF_EMBEDDED_RES_RELPATH . '/js/basic.js',
-        array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs', 'select2'),
+        array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs', 'toolset_select2'),
         WPCF_VERSION
     );
     wp_localize_script( 'wpcf-js-embedded', 'WPCF_basic', array(
@@ -585,11 +580,11 @@ function wpcf_enqueue_scripts()
     /**
      * select2
      */
-    $select2_version = '3.5.2';
-    if ( !wp_script_is('select2', 'registered') ) {
+    $select2_version = '4.0.3';
+    if ( !wp_script_is('toolset_select2', 'registered') ) {
         wp_register_script(
-            'select2',
-            WPCF_EMBEDDED_TOOLSET_RELPATH. '/toolset-common/res/lib/select2/select2.min.js',
+            'toolset_select2',
+            WPCF_EMBEDDED_TOOLSET_RELPATH. '/toolset-common/res/lib/select2/select2.js',
             array( 'jquery' ),
             $select2_version
         );

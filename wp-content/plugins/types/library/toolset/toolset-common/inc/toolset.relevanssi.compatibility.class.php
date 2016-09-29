@@ -62,11 +62,17 @@ if ( ! class_exists( 'Toolset_Relevanssi_Compatibility' ) ) {
 					// Views queries compatibility
 					add_filter( 'wpv_filter_query',											array( $this, 'wpv_filter_query_compatibility' ), 99, 3 );
 					add_filter( 'wpv_filter_query_post_process',							array( $this, 'wpv_filter_query_post_proccess_compatibility' ), 99, 3 );
-					// Register search contet options
+					// Register search content options
 					add_filter( 'wpv_filter_wpv_extend_post_search_content_options',		array( $this, 'wpv_extend_post_search_content_options' ) );
-					// Fix Relevanssi max_num_pages
+					// Fix Relevanssi on archive pages by forcing the Relevanssi query when needed
 					add_action( 'wpv_action_wpv_before_clone_archive_loop',					array( $this, 'wpv_fix_relevanssi_on_archive_loops' ), 10, 2 );
+					// Fix Relevanssi sorting as we were getting the Views objects one
+					// Note that we do not allow table sorting on Relevanssi searches for now
+					add_action( 'toolset_action_toolset_relevanssi_do_query_before',		array( $this, 'wpv_fix_relevanssi_orderby' ) );
+					// Fix Relevanssi max_num_pages
 					add_action( 'toolset_action_toolset_relevanssi_do_query_processed',		array( $this, 'wpv_fix_relevanssi_max_num_pages' ) );
+					// Fix Relevanssi returning posts as objects but not as WP_Post objects
+					add_action( 'toolset_action_toolset_relevanssi_do_query_processed',		array( $this, 'wpv_fix_relevanssi_return_as_post_objects' ) );
 				}
 			}
 			
@@ -186,7 +192,6 @@ if ( ! class_exists( 'Toolset_Relevanssi_Compatibility' ) ) {
 						'field_type' => array( 'textfield', 'textarea', 'wysiwyg' ),
 						'group_id' => $group->get_id()
 					);
-					// https://onthegosystems.myjetbrains.com/youtrack/issue/types-742
 					$fields_in_group = apply_filters( 'types_filter_query_field_definitions', array(), $args );
 					if ( ! empty( $fields_in_group ) ) {
 						$indexable_fields[ $group->get_display_name() ] = $fields_in_group;
@@ -611,6 +616,7 @@ if ( ! class_exists( 'Toolset_Relevanssi_Compatibility' ) ) {
 						&& ! empty( $_GET['wpv_post_search'] )
 					) {
 						// Modify the POSTed search
+						do_action( 'toolset_action_toolset_relevanssi_do_query_before', $post_query );
 						$relevanssi_posts = relevanssi_do_query( $post_query );
 						do_action( 'toolset_action_toolset_relevanssi_do_query_processed', $post_query );
 					} else if ( 
@@ -620,6 +626,7 @@ if ( ! class_exists( 'Toolset_Relevanssi_Compatibility' ) ) {
 					) {
 						// Modify the specific search
 						//add_filter('posts_request', 'relevanssi_prevent_default_request', 10, 3 );
+						do_action( 'toolset_action_toolset_relevanssi_do_query_before', $post_query );
 						$relevanssi_posts = relevanssi_do_query( $post_query );
 						do_action( 'toolset_action_toolset_relevanssi_do_query_processed', $post_query );
 					}
@@ -696,14 +703,16 @@ if ( ! class_exists( 'Toolset_Relevanssi_Compatibility' ) ) {
 				}
 			} else if (
 				is_search() 
-				&& isset( $_GET['s'] )
-				&& ! empty( $_GET['s'] )
+				&& isset( $query->query_vars['s'] )
+				&& ! empty( $query->query_vars['s'] )
 			) {
 				$do_relevanssi_query = true;
 			}
 			
 			if ( $do_relevanssi_query ) {
+				do_action( 'toolset_action_toolset_relevanssi_do_query_before', $query );
 				$relevanssi_posts = relevanssi_do_query( $query );
+				do_action( 'toolset_action_toolset_relevanssi_do_query_processed', $query );
 				$wpa_object = isset( $args['wpa_object'] ) ? $args['wpa_object'] : null;
 				if ( $wpa_object ) {
 					if ( empty( $relevanssi_posts ) ) {
@@ -739,6 +748,19 @@ if ( ! class_exists( 'Toolset_Relevanssi_Compatibility' ) ) {
 		}
 		
 		/**
+		 * wpv_fix_relevanssi_orderby
+		 *
+		 * Relevanssi only applies its sorting options when no other sorting setting was passed to the query it modifies.
+		 * Views will always set a default sorting setting, hence on Relevanssi queries we need to null it.
+		 *
+		 * @since 2.3.0
+		 */
+		
+		function wpv_fix_relevanssi_orderby( $query ) {
+			$query->set( 'orderby', null );
+		}
+		
+		/**
 		* wpv_fix_relevanssi_max_num_pages
 		*
 		* Relevanssi stores an incorrect number in max_num_pages when posts_per_page = -1
@@ -747,8 +769,25 @@ if ( ! class_exists( 'Toolset_Relevanssi_Compatibility' ) ) {
 		*/
 		
 		function wpv_fix_relevanssi_max_num_pages( $query ) {
-			if ( $query->query_vars["posts_per_page"] == -1 ) {
+			if ( 
+				isset( $query->query_vars["posts_per_page"] ) 
+				&& $query->query_vars["posts_per_page"] == -1 
+			) {
 				$query->max_num_pages = 1;
+			}
+		}
+		
+		/**
+		* wpv_fix_relevanssi_return_as_post_objects
+		*
+		* Relevanssi return posts as dummy objects instead of WP_Post instances, and we need them.
+		*
+		* @since 2.3
+		*/
+		
+		function wpv_fix_relevanssi_return_as_post_objects( $query ) {
+			if ( $query->posts ) {
+				$query->posts = array_map( 'get_post', $query->posts );
 			}
 		}
 

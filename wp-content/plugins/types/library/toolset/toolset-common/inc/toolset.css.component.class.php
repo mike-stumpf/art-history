@@ -45,14 +45,14 @@ if ( ! class_exists( 'Toolset_CssComponent' ) ) {
         }
         
         public function add_register_scripts($scripts){           
-            $scripts[] = new Toolset_Script('toolset-css-component-buttons', TOOLSET_COMMON_URL . "/res/js/toolset-bs-component-buttons.js", array('jquery'), false);
-            $scripts[] = new Toolset_Script( 'toolset-css-component-events', TOOLSET_COMMON_URL . "/res/js/toolset-bs-component-events.js", array('jquery'), true);
+            $scripts['toolset-css-component-buttons']	= new Toolset_Script( 'toolset-css-component-buttons', TOOLSET_COMMON_URL . "/res/js/toolset-bs-component-buttons.js", array('jquery'), false );
+            $scripts['toolset-css-component-events']	= new Toolset_Script( 'toolset-css-component-events', TOOLSET_COMMON_URL . "/res/js/toolset-bs-component-events.js", array('jquery'), true );
             return $scripts;
         }
 
         public function add_register_styles($styles){
-            $styles[] = new Toolset_Style('toolset-bs-component-style', TOOLSET_COMMON_URL . '/res/css/toolset-bs-component.css', array(), TOOLSET_VERSION );
-            $styles[] = new Toolset_Style('glyphicons', TOOLSET_COMMON_URL. '/res/lib/glyphicons/css/glyphicons.css', array(), '3.3.5', 'screen');
+            $styles['toolset-bs-component-style']	= new Toolset_Style( 'toolset-bs-component-style', TOOLSET_COMMON_URL . '/res/css/toolset-bs-component.css', array(), TOOLSET_VERSION );
+            $styles['glyphicons']					= new Toolset_Style( 'glyphicons', TOOLSET_COMMON_URL. '/res/lib/glyphicons/css/glyphicons.css', array(), '3.3.5', 'screen' );
             return $styles;
         }
         

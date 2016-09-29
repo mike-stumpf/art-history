@@ -121,7 +121,7 @@ class WPCF_Loader
         $min = '';//WPCF_DEBUG ? '-min' : '';
         wp_register_script( 'types',
 	        WPCF_EMBEDDED_RES_RELPATH . '/js/basic.js',
-	        array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs', 'select2'),
+	        array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs', 'toolset_select2'),
 	        WPCF_VERSION, true );
         wp_register_script( 'types-knockout',
                 WPCF_EMBEDDED_RES_RELPATH . '/js/knockout-2.2.1.js',

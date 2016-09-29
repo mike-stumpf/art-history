@@ -1021,118 +1021,94 @@ function wpcfBindSelect2($) {
 }
 
 function wpcfBindSelect2For( element ) {
-    var $ = jQuery;
-    element.select2({
-        id: function(item){
-            return item.ID;
-        },
-        allowClear: true,
-        placeholder: $(this).data('placeholder'),
-        minimumInputLength: 0,
-        formatInputTooShort: $(this).data('input-too-short'),
-        ajax: {
-            url: ajaxurl,
-            dataType: 'json',
-            quietMillis: 250,
-            data: function (term, page) {
-                return {
-                    nounce: $(this).data('nounce'),
-                    post_id: $(this).data('post-id'),
-                    post_type: $(this).data('post-type'),
-                    action: 'wpcf_relationship_search',
-                    page: page || 1,
-                    s: term, // search term
-                };
-            },
-            results: function (data, page) {
-                var more = (page * data.posts_per_page) < data.total_count;
-                return { results: data.items, more: more };
-            },
-            cache: true
-        },
-        initSelection: function(element, callback) {
-            var id = $(element).val();
-            if (0 < parseInt(id)) {
-                $(element).select2("data", { ID: 0, post_title: $(element).data('loading') });
-                $(element).select2("enable", false);
-                $.ajax({
-                    url: ajaxurl,
-                    dataType: "json",
-                    data: {
-                        nounce: element.data('nounce'),
-                        p: id,
-                        post_id: element.data('post-id'),
-                        post_type: element.data('post-type'),
-                        action: 'wpcf_relationship_entry'
-                    }
-                }).done(function(data) {
-                    wpcfInitValueOfSelect2( $(element ).attr( 'id' ), data.ID );
-                    $(element).select2("enable", true);
-                    callback(data);
-                });
-            }
-        },
-        formatResult: function(item) {
-            return '<div data-id="'+item.ID+'" class="item">' + item.post_title + '</div>';
-        },
-        formatSelection: function(item) {
-            var target = $('#wpcf_pr_belongs_'+item.parent_id+'_'+item.post_type);
-            var parent;
-            var message;
-            $('a.button', target.closest('.form-item')).attr('href', item.edit_link).removeClass('disabled');
-            if ( 'undefined' != typeof item.save && 'no-save' == item.save ) {
-                return item.post_title;
-            }
-            parent = target.closest('.belongs');
-            if ( $('.js-message', parent).length == 0 ) {
-                $('a.button', parent).after('<div class="notice notice-success below-h2"><p class="wpcf-relationship-message js-message"></p></div>');
-            }
-            var message = $('.js-message', parent);
-            $.ajax({
-                url: ajaxurl,
-                dataType: "json",
-                data: {
-                    action: 'wpcf_relationship_save',
-                    nounce: target.data('nounce'),
-                    post_id: item.parent_id,
-                    post_type: item.post_type,
-                    p: item.ID
-                },
-                beforeSend: function() {
-                    message.parent().slideDown();
-                    message.html(wpcf_post_relationship_messages.parent_saving);
-                },
-                success: function() {
-                    message.html(wpcf_post_relationship_messages.parent_saving_success);
-                    setTimeout(function(){ message.parent().slideUp(); }, 3000);
-                }
-            });
-            target.val(item.ID);
-            return item.post_title;
-        },
-    }).on('select2-clearing', function() {
-        $.ajax({
-            url: ajaxurl,
-            dataType: "json",
-            data: {
-                nounce: $(this).data('nounce'),
-                post_id: $(this).data('post-id'),
-                post_type: $(this).data('post-type'),
-                action: 'wpcf_relationship_delete'
-            }
-        }).done(function(data) {
-            target = $(data.target);
-            $('a.button', target).addClass('disabled').attr('href', '#');
-            parent = target.closest('.belongs');
-            if ( $('.js-message', parent).length == 0 ) {
-                $('a.button', parent).after('<div class="notice notice-success below-h2"><p class="wpcf-relationship-message js-message"></p></div>');
-            }
-            var message = $('.js-message', parent);
-            message.parent().slideDown();
-            message.html(wpcf_post_relationship_messages.parent_saving_success);
-            setTimeout(function(){ message.parent().slideUp(); }, 3000);
-        });
-    } );
+	var $ = jQuery;
+	element.toolset_select2({
+		allowClear: true,
+		ajax: {
+			url: ajaxurl + '?action=wpcf_relationship_search&nounce='+element.data('nounce'),
+			dataType: 'json',
+			delay: 250,
+			type: 'post',
+			data: function (params) {
+				return {
+					s:			params.term,
+					page:		params.page,
+					post_id:	element.data('post-id'),
+                    post_type:	element.data('post-type')
+				};
+			},
+			processResults: function (data, params) {
+				params.page = params.page || 1;
+				return {
+					results: data.items,
+					pagination: {
+					  more: ( params.page * wpcf_post_relationship_messages.parent_per_page ) < data.total_count
+					}
+				};
+			},
+			cache: false
+		},
+		escapeMarkup: function (markup) { return markup; },
+		minimumInputLength: 2,
+		triggerChange: true,
+	})
+	.on('toolset_select2:select', function( evt ) {
+		$.ajax({
+			url:		ajaxurl,
+			dataType:	"json",
+			data: 		{
+				action: 	'wpcf_relationship_update',
+				nounce:		element.data('nounce'),
+				post_id: 	element.data('post-id'),
+				post_type:	element.data('post-type'),
+				p:			element.val()
+			},
+			success: function( response ) {
+				var parent_edit_button = element
+											.closest( '.form-item' )
+												.find( '.js-wpcf-pr-parent-edit' );
+				parent_edit_button
+					.removeClass( 'disabled' )
+					.fadeIn( 'fast' )
+					.addClass( 'wpcf-saved' )
+					.attr( 'href', response.data.edit_link + '?post=' + element.val() + '&action=edit' );
+				setTimeout( function() {
+						parent_edit_button.removeClass( 'wpcf-saved' );
+					},
+					1000
+				);
+			}
+		});
+	})
+	.on('toolset_select2:unselect', function( evt ) {
+		$.ajax({
+			url:		ajaxurl,
+			dataType:	"json",
+			data: 		{
+				action: 	'wpcf_relationship_update',
+				nounce:		element.data('nounce'),
+				post_id: 	element.data('post-id'),
+				post_type:	element.data('post-type'),
+				p:			0
+			},
+			success: function() {
+				var parent_edit_button = element
+											.closest( '.form-item' )
+												.find( '.js-wpcf-pr-parent-edit' );
+				parent_edit_button
+					.addClass( 'disabled wpcf-deleted' )
+					.attr( 'href', '#');
+				setTimeout( function() {
+						parent_edit_button
+							.fadeOut( 500, function() {
+								parent_edit_button.removeClass( 'wpcf-deleted' );
+							});
+					},
+					1000
+				);
+			}
+		});
+	});
 }
 jQuery(document).ready(function($) {
     wpcfBindSelect2($);
@@ -1168,7 +1144,7 @@ var wpcfInitValueOfSelect2Done = {};
 
 function wpcfInitValueOfSelect2( elementID, value ) {
     if( wpcfInitValueOfSelect2Done[elementID] != 1 ) {
-        jQuery( '#'+elementID ).select2( 'val', value );
+        jQuery( '#'+elementID ).toolset_select2( 'val', value );
     }
 
     wpcfInitValueOfSelect2Done[elementID] = 1;

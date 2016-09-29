@@ -327,3 +327,7 @@ Overlay
 	color: #c09853;
 	background: #fcf8e3;
 }
+
+.select2-container--open{
+	z-index: 10000 !important;
+}

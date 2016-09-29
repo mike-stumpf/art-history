@@ -16,7 +16,7 @@ class WPToolset_Field_Taxonomy extends WPToolset_Field_Textfield {
         $terms = apply_filters('toolset_filter_taxonomy_terms', wp_get_post_terms(CredForm::$current_postid, $this->getName(), array("fields" => "all")));
         $i = 0;
         foreach ($terms as $n => $term) {
-            $this->values .= ($i == 0) ? $term->slug : "," . $term->slug;
+            $this->values .= ($i == 0) ? $term->name : "," . $term->name;
             $this->objValues[$term->slug] = $term;
             $i++;
         }

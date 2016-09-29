@@ -47,7 +47,16 @@ class Types_Field_Group_Term extends Types_Field_Group {
 	 */
 	public function get_associated_taxonomies() {
 		$postmeta = get_post_meta( $this->get_id(), self::POSTMETA_ASSOCIATED_TAXONOMY, false );
-		$postmeta = array_filter( $postmeta, function( $value ) { $value = trim( $value ); return ( ! empty( $value ) ); } );
+
+		// Survive empty or whitespace taxonomy slugs (skip them). They are invalid values but
+		// if we have only them, we need to return an empty array to keep the group displayed everywhere.
+		foreach( $postmeta as $index => $taxonomy_slug ) {
+			$taxonomy_slug = trim( $taxonomy_slug );
+			if( empty( $taxonomy_slug ) ) {
+				unset( $postmeta[ $index ] );
+			}
+		}
+
 		return wpcf_ensarr( $postmeta );
 	}
 

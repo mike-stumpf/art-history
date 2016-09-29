@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/types/
 Description: Toolset Types defines custom content in WordPress. Easily create custom post types, fields and taxonomy and connect everything together.
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com
-Version: 2.2.1
+Version: 2.2.2
 License: GPLv2 or later
 
 Types is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ if( !function_exists( 'add_action' ) )
 
 // version
 if( ! defined( 'TYPES_VERSION' ) )
-	define( 'TYPES_VERSION', '2.2.1' );
+	define( 'TYPES_VERSION', '2.2.2' );
 
 // backward compatibility
 if ( ! defined( 'WPCF_VERSION' ) )
@@ -36,7 +36,7 @@ if ( ! defined( 'WPCF_VERSION' ) )
 
 // release notes
 if( ! defined( 'TYPES_RELEASE_NOTES' ) )
-	define( 'TYPES_RELEASE_NOTES', 'https://wp-types.com/version/types-2-2/?utm_source=typesplugin&utm_campaign=types&utm_medium=release-notes-admin-notice&utm_term=Types 2.2 release notes' );
+	define( 'TYPES_RELEASE_NOTES', 'https://wp-types.com/version/types-2-2-2/?utm_source=typesplugin&utm_campaign=types&utm_medium=release-notes-admin-notice&utm_term=Types 2.2 release notes' );
 
 /*
  * Path Constants

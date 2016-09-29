@@ -61,64 +61,10 @@ if (!class_exists("FieldConfig")) {
             return $this->attr;
         }
 
-        public function setDefaultValue($type, $field_arr) {
-            switch ($type) {
-                case 'date':
-                    $this->add_time = false;
-                    if (isset($field_arr['data']['date_and_time']) && 'and_time' == $field_arr['data']['date_and_time']) {
-                        $this->add_time = true;
-                    }
-                    if (isset($field_arr['value']['timestamp'])) {
-                        $this->default_value = array('timestamp' => $field_arr['value']['timestamp']);
-                    } else {
-                        //In Edit + Ajax call the object contains array of 5 elements timestamps only 1 and 5 (starting from 0) contains number timestamp
-                        if (isset($field_arr['value'][1]['timestamp']) &&
-                                is_numeric($field_arr['value'][1]['timestamp']))
-                            $this->default_value = array('timestamp' => $field_arr['value'][1]['timestamp']);
-                    }
-                    break;
-                case 'checkboxes':
-                    /* Output for Toolset common must be:
-                     * [option_key] => 1 
-                     */
-                    $def = array();
-                    if (!empty($field_arr['value']))
-                        foreach ($field_arr['value'] as $n => $value) {
-                            $def[$value] = 1;
-                        }
-                    $this->default_value = $def;
-                    break;
-
-                case 'select':
-                    if (isset($field_arr['attr']['multiple'])) {
-                        $this->default_value = $field_arr['value'];
-                    } else {
-                        if (isset($field_arr['attr']['actual_value'])) {
-                            //This value is not array if from parent
-                            if (is_array($field_arr['attr']['actual_value']))
-                                $this->default_value = isset($field_arr['attr']['actual_value'][0]) ? $field_arr['attr']['actual_value'][0] : null;
-                            else
-                                $this->default_value = isset($field_arr['attr']['actual_value']) ? $field_arr['attr']['actual_value'] : null;
-                        } else {
-                            $this->default_value = null;
-                        }                        
-                    }
-                    break;
-
-                case 'radios':
-                    $this->default_value = $field_arr['attr']['default'];
-                    break;
-
-                case 'checkbox':
-                    $this->default_value = isset($field_arr['data']['checked']) ? true : false;
-                    break;
-
-                default:
-                    $this->default_value = $field_arr['value'];
-                    break;
-            }
-        }
-
+        public function setDefaultValue($value) {
+            $this->default_value = $value;
+        }       
+ 
         public function setOptions($name, $type, $values, $attrs) {
             $arr = array();
             switch ($type) {

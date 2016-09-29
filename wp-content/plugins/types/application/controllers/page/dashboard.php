@@ -8,9 +8,15 @@
 final class Types_Page_Dashboard extends Types_Page_Abstract {
 
 	protected $dashboard;
-	protected $table = false;
 	protected $twig;
-	protected $cpts;
+
+	protected $table_toolset = false;
+	protected $table_3rd = false;
+	protected $table_wordpress;
+
+	protected $types_by_toolset;
+	protected $types_by_3rd;
+	protected $types_by_wordpress;
 
 	private static $instance;
 
@@ -162,7 +168,9 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 
 		$context = array(
 			'page' => self::get_instance(),
-			'table' => $this->table,
+			'table_toolset' => $this->table_toolset,
+			'table_3rd' => $this->table_3rd,
+			'table_wordpress' => $this->table_wordpress,
 			'labels' => array(
 				'create_type' => __( 'Add new post type', 'types' ),
 				'msg_no_custom_post_types' =>
@@ -174,34 +182,22 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 		return $context;
 	}
 
-	private function get_post_types() {
-		if( $this->cpts !== null )
-			return $this->cpts;
+	/**
+	 * Types by Toolset
+	 *
+	 * @return array
+	 */
+	private function get_types_by_toolset() {
+		if( $this->types_by_toolset !== null )
+			return $this->types_by_toolset;
 
 		$cpts_raw = ! isset( $_GET['toolset-dashboard-simulate-no-custom-post-types'] )
 			? get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() )
 			: array();
 
-		// make sure post type "post" is added
-		if( !isset( $cpts_raw['post'] ) )
-			$cpts_raw['post'] = array(
-				'slug' => 'post',
-				'_builtin' => 1
-			);
+		// remove buildin types
+		$cpts_raw = array_diff_key( $cpts_raw, $this->get_types_by_wordpress() );
 
-		// make sure post type "page" is added
-		if( !isset( $cpts_raw['page'] ) )
-			$cpts_raw['page'] = array(
-				'slug' => 'page',
-				'_builtin' => 1
-			);
-
-		// make sure post type "attachment" is added
-		if( !isset( $cpts_raw['attachment'] ) )
-			$cpts_raw['attachment'] = array(
-				'slug' => 'attachment',
-				'_builtin' => 1
-			);
 		$cpts = array();
 
 		foreach( $cpts_raw as $cpt_raw ) {
@@ -213,16 +209,80 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 
 		uasort( $cpts, array( $this, 'sort_post_types_by_name' ) );
 
-		$this->cpts = $cpts;
-		return $this->cpts;
+		$this->types_by_toolset = $cpts;
+		return $this->types_by_toolset;
+	}
+
+	/**
+	 * Types by WordPress
+	 * @return array
+	 */
+	private function get_types_by_wordpress() {
+		if( $this->types_by_wordpress !== null )
+			return $this->types_by_wordpress;
+
+		$cpts_raw = array(
+			'post' => array(
+				'slug'      => 'post',
+				'_buildin'  => 1
+			),
+			'page' => array(
+				'slug'      => 'page',
+				'_buildin'  => 1
+			),
+			'attachment' => array(
+				'slug'      => 'attachment',
+				'_buildin'  => 1
+			),
+		);
+
+		$cpts = array();
+		foreach( $cpts_raw as $cpt_raw ) {
+			$post_type = new Types_Post_Type( $cpt_raw['slug'] );
+			// only use active post types
+			if( isset( $post_type->name ) )
+				$cpts[$cpt_raw['slug']] = $post_type;
+		}
+
+		uasort( $cpts, array( $this, 'sort_post_types_by_name' ) );
+		$this->types_by_wordpress = $cpts;
+
+		return $this->types_by_wordpress;
+	}
+
+	/**
+	 * Types by 3rd (by themes/plugins)
+	 * @return array
+	 */
+	private function get_types_by_3rd() {
+		if( $this->types_by_3rd !== null )
+			return $this->types_by_3rd;
+
+		$cpts_raw = get_post_types( array( 'public' => true ) );
+		$cpts = array();
+		foreach( $cpts_raw as $cpt_slug => $cpt_raw ) {
+			$post_type = new Types_Post_Type( $cpt_slug );
+			// only use active post types
+			if( isset( $post_type->name ) )
+				$cpts[$cpt_slug] = $post_type;
+		}
+
+		$cpts = array_diff_key( $cpts, $this->get_types_by_wordpress(), $this->get_types_by_toolset() );
+
+		uasort( $cpts, array( $this, 'sort_post_types_by_name' ) );
+		$this->types_by_3rd = $cpts;
+
+		return $this->types_by_3rd;
 	}
 
 	private function sort_post_types_by_name( $a, $b ) {
 		return strcasecmp( $a->name, $b->name ) > 0 ? true : false;
 	}
 
-	private function get_post_types_filtered_by_screen_options() {
-		$cpts = $this->get_post_types();
+	private function get_post_types_filtered_by_screen_options( $cpts = false ) {
+		if( $cpts === false )
+			$cpts = array_merge( $this->get_types_by_toolset(), $this->get_types_by_wordpress(), $this->get_types_by_3rd() );
+
 		$cpts_filtered = array();
 
 		$user = get_current_user_id();
@@ -264,13 +324,132 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 	}
 
 	private function get_dashboard() {
-		// post types
-		$post_types = $this->get_post_types_filtered_by_screen_options();
+		// Types by Toolset
+		$post_types = $this->get_post_types_filtered_by_screen_options( $this->get_types_by_toolset() );
 
-		// abort if there are no post types
-		if( empty( $post_types ) )
-			return false;
+		if( ! empty( $post_types ) )
+			$this->table_toolset = $this->get_dashboard_types_table(
+				$post_types,
+				__( 'Custom post types that you created with Toolset', 'types' )
+			);
 
+
+		// Types by 3rd
+		$post_types = $this->get_post_types_filtered_by_screen_options( $this->get_types_by_3rd() );
+
+		if( ! empty( $post_types ) )
+			$this->table_3rd = $this->get_dashboard_types_table(
+				$post_types,
+				__( 'Custom post types created by the theme and other plugins', 'types' ),
+				false
+			);
+
+
+		// Types by Wordpress
+		$post_types = $this->get_post_types_filtered_by_screen_options( $this->get_types_by_wordpress() );
+
+		if( ! empty( $post_types ) )
+			$this->table_wordpress = $this->get_dashboard_types_table(
+				$post_types,
+				__( 'Built-in post types created by WordPress', 'types' ),
+				false
+			);
+
+	}
+
+	protected function load_data_to_table( $path, &$info ) {
+		$data = require( $path );
+
+		foreach( $data as $msg_id => $msg_data ) {
+			$msg = new Types_Information_Message();
+			$msg_data['id'] = $msg_id;
+			$msg->data_import( $msg_data );
+			$info->add_message( $msg );
+		}
+	}
+
+	public function screen_settings( $status, $args ) {
+		$return = $status;
+
+		$cpts_filtered = $this->get_post_types_filtered_by_screen_options();
+
+		// Types by Toolset
+		$cpts = $this->get_types_by_toolset();
+		if( ! empty( $cpts ) ) {
+			$string_legend = __( 'Custom post types that you created with Toolset', 'types' );
+			$return .= $this->screen_settings_fieldset( $cpts, $cpts_filtered, $string_legend );
+		}
+
+		// Types by 3rd
+		$cpts = $this->get_types_by_3rd();
+		if( ! empty( $cpts ) ) {
+			$string_legend = __( 'Custom post types created by the theme and other plugins', 'types' );
+			$return .= $this->screen_settings_fieldset( $cpts, $cpts_filtered, $string_legend );
+		}
+
+		// Types by WordPress
+		$cpts = $this->get_types_by_wordpress();
+		$string_legend = __( 'Built-in post types created by WordPress', 'types' );
+		$return .= $this->screen_settings_fieldset( $cpts, $cpts_filtered, $string_legend );
+
+		$return .= get_submit_button( __( 'Apply' ), 'button button-primary', 'screen-options-apply', false );
+		return $return;
+	}
+	
+	private function screen_settings_fieldset( $cpts, $cpts_filtered, $legend ) {
+		$string = '
+        <fieldset>
+        <legend>' . $legend . '</legend>
+        <div class="metabox-prefs">
+        <div><input type="hidden" name="wp_screen_options[option]" value="toolset_dashboard_screen_post_types" /></div>
+        <div><input type="hidden" name="wp_screen_options[value]" value="yes" /></div>
+        <div class="toolset-dashboard-screen-post-types">';
+		foreach( $cpts as $cpt ) {
+			$checked = isset( $cpts_filtered[$cpt->get_name()] ) ? ' checked="checked" ' : ' ';
+			$string .= '<input type="hidden" value="off" name="toolset_dashboard_screen_post_types['.$cpt->get_name().']" />';
+			$string .= '<label for="toolset-dashboard-screen-post-type-'.$cpt->get_name().'"><input type="checkbox"' . $checked . 'value="on" name="toolset_dashboard_screen_post_types['.$cpt->get_name().']" id="toolset-dashboard-screen-post-type-'.$cpt->get_name().'" /> '.$cpt->name.'</label>';
+		}
+		$string .= '</div>
+        </div>
+        </fieldset>
+        <br class="clear">
+        ';
+
+		return $string;
+	}
+
+	public function screen_settings_save($status, $option, $value) {
+		if ( 'toolset_dashboard_screen_post_types' == $option ) {
+			$value = $_POST['toolset_dashboard_screen_post_types'];
+		}
+		return $value;
+	}
+
+
+	private function help_information() {
+		$title = __('Toolset Dashboard', 'types');
+		$help_content = $this->get_twig()->render(
+			'/page/dashboard/help.twig',
+			array( 'title' => $title )
+		);
+
+		$screen = get_current_screen();
+		$screen->add_help_tab(
+			array(
+				'id'		=> 'toolset-dashboard-information',
+				'title'		=> $title,
+				'content'	=> $help_content,
+			)
+		);
+	}
+
+	/**
+	 * @param $post_types
+	 * @param $headline
+	 *
+	 * @return string
+	 */
+	private function get_dashboard_types_table( $post_types, $headline, $post_type_edit_link = true ) {
 		// documentation urls
 		$documentation_urls = include( TYPES_DATA . '/documentation-urls.php' );
 
@@ -303,7 +482,7 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 			$row = $this->get_twig()->render(
 				'/page/dashboard/table/tbody-row.twig',
 				array(
-					'labels' => array(
+					'labels'    => array(
 						'or'                 => __( 'Or...', 'types' ),
 						'create_taxonomy'    => __( 'Create taxonomy', 'types' ),
 						'create_field_group' => __( 'Create field group', 'types' ),
@@ -311,7 +490,8 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 					),
 					'admin_url' => admin_url(),
 					'post_type' => $post_type,
-					'table' => $info_post_type
+					'table'     => $info_post_type,
+					'post_type_edit_link' => $post_type_edit_link
 				)
 			);
 
@@ -321,84 +501,22 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 
 
 		// table view
-		$data_thead = require( TYPES_DATA . '/dashboard/table/head.php' );
-		$this->table = $this->get_twig()->render(
+		$data_thead          = require( TYPES_DATA . '/dashboard/table/head.php' );
+		$table = $this->get_twig()->render(
 			'/page/dashboard/table.twig',
 			array(
-				'labels' => array(
-					'admin'     => __( 'WordPress admin', 'types' ),
-					'frontend'  => __( 'Front-end', 'types' ),
-					'or'        => __( 'Or...', 'types' ),
+				'labels'    => array(
+					'headline' => $headline,
+					'admin'    => __( 'WordPress admin', 'types' ),
+					'frontend' => __( 'Front-end', 'types' ),
+					'or'       => __( 'Or...', 'types' ),
 				),
 				'admin_url' => admin_url(),
-				'thead' => $data_thead,
-				'rows' => $rows
+				'thead'     => $data_thead,
+				'rows'      => $rows
 			)
 		);
-	}
 
-	protected function load_data_to_table( $path, &$info ) {
-		$data = require( $path );
-
-		foreach( $data as $msg_id => $msg_data ) {
-			$msg = new Types_Information_Message();
-			$msg_data['id'] = $msg_id;
-			$msg->data_import( $msg_data );
-			$info->add_message( $msg );
-		}
-	}
-
-	public function screen_settings( $status, $args ) {
-		$return = $status;
-
-		$cpts = $this->get_post_types();
-		$cpts_filtered = $this->get_post_types_filtered_by_screen_options();
-
-		$button = get_submit_button( __( 'Apply' ), 'button button-primary', 'screen-options-apply', false );
-
-		$return .= '
-        <fieldset>
-        <legend>' . __( 'Post Types on Dashboard', 'types' ) . '</legend>
-        <div class="metabox-prefs">
-        <div><input type="hidden" name="wp_screen_options[option]" value="toolset_dashboard_screen_post_types" /></div>
-        <div><input type="hidden" name="wp_screen_options[value]" value="yes" /></div>
-        <div class="toolset-dashboard-screen-post-types">';
-		foreach( $cpts as $cpt ) {
-			$checked = isset( $cpts_filtered[$cpt->get_name()] ) ? ' checked="checked" ' : ' ';
-			$return .= '<input type="hidden" value="off" name="toolset_dashboard_screen_post_types['.$cpt->get_name().']" />';
-			$return .= '<label for="toolset-dashboard-screen-post-type-'.$cpt->get_name().'"><input type="checkbox"' . $checked . 'value="on" name="toolset_dashboard_screen_post_types['.$cpt->get_name().']" id="toolset-dashboard-screen-post-type-'.$cpt->get_name().'" /> '.$cpt->name.'</label>';
-		}
-		$return .= '</div>
-        </div>
-        </fieldset>
-        <br class="clear">
-        ' . $button;
-
-		return $return;
-	}
-
-	public function screen_settings_save($status, $option, $value) {
-		if ( 'toolset_dashboard_screen_post_types' == $option ) {
-			$value = $_POST['toolset_dashboard_screen_post_types'];
-		}
-		return $value;
-	}
-
-
-	private function help_information() {
-		$title = __('Toolset Dashboard', 'types');
-		$help_content = $this->get_twig()->render(
-			'/page/dashboard/help.twig',
-			array( 'title' => $title )
-		);
-
-		$screen = get_current_screen();
-		$screen->add_help_tab(
-			array(
-				'id'		=> 'toolset-dashboard-information',
-				'title'		=> $title,
-				'content'	=> $help_content,
-			)
-		);
+		return $table;
 	}
 }

@@ -4,18 +4,6 @@ $question_marks = array(
 	'type' => array(
 		'id'            => 'type',
 		'title'         => __( 'Post Type', 'types' ),
-		'description'   => array(
-			array(
-				'type' => 'paragraph',
-				'content' => __( 'A list of all Post Types available in your site.', 'types' )
-			),
-			array(
-				'type'   => 'link',
-				'external' => true,
-				'label'  => __( 'Learn more', 'types' ),
-				'target' => Types_Helper_Url::get_url( 'learn-how-post-types', 'tooltip' )
-			),
-		)
 	),
 
 	'fields' => array(

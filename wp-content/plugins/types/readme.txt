@@ -151,6 +151,14 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 
 == Changelog ==
 
+= 2.2.2 =
+
+* Toolset Dashboard now supports custom post types created by theme or other plugins
+* Updated select2 to version 4
+* Fixed issue using [types] shortcode in CRED notification
+* Fixed minor incompatibility with the latest version of Toolset Access.
+* Fixed issue with custom values for checkboxes fields not being respected.
+
 = 2.2.1 =
 
 * Fixed path for Toolset Installer
