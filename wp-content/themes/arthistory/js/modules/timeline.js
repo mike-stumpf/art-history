@@ -89,7 +89,8 @@
                 id: entry.id,
                 image: entry.image,
                 title: entry.title,
-                start: entry.start
+                start: entry.start,
+                movementId: entry.movementId
             };
             entry.start = convertDate(entry.start);
             if (!minDate || !maxDate){
@@ -116,11 +117,13 @@
     }
 
     this.openEvent = function(movementId){
-        if(mediaQueries.isDesktop()){
-            //if desktop
-            highlightSidebarEvent(movementId);
-        } else {
-            populateModal(movementId);
+        if(movementId) {
+            if (mediaQueries.isDesktop()) {
+                //if desktop
+                highlightSidebarEvent(movementId);
+            } else {
+                populateModal(movementId);
+            }
         }
     };
 

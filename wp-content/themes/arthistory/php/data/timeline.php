@@ -68,7 +68,14 @@ class Timeline {
                 $movementQuery->the_post();
                 $movementId = get_the_ID();
                 $movementObject = new Movement($movementId);
-                array_push($this->movements, $movementObject->getMovement());
+                $movement = $movementObject->getMovement();
+                array_push($this->movements, $movement);
+
+                //add artworks to timeline from movement
+                foreach($movement['artworks'] as $artwork){
+                    $artwork['movementId'] = $movement['id'];
+                    array_push($this->timelineEvents, $artwork);
+                }
             }
         }
         
@@ -93,11 +100,6 @@ class Timeline {
                 $eventObject = new Event($eventId);
                 array_push($this->timelineEvents, $eventObject->getEvent());
             }
-        }
-
-        //get artworks from movements
-        foreach($this->movements as $movement){
-            $this->timelineEvents = array_merge($this->timelineEvents, $movement['artworks']);
         }
         
         //get slug
