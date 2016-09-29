@@ -5,15 +5,12 @@ use artHistory\Lib\Helpers;
 class Event {
     private $id;
     private $title;
-    private $timelineTitle;
     private $image;
     private $largeImage;
     public function __construct($eventId) {
         //fields
         $this->id = $eventId;
         $this->title = Helpers::getMetaValue($eventId,'event-title');
-        $timelineTitle = Helpers::getMetaValue($eventId,'event-timeline-title');
-        $this->timelineTitle = !empty($timelineTitle)?$timelineTitle:$this->title;
         $this->image = Helpers::resizeImage(Helpers::getMetaValue($eventId,'event-image'),100,100);
         $this->largeImage = Helpers::getMetaValue($eventId,'event-image');
         $this->eventStart = Helpers::getMetaValue($eventId,'event-start');
@@ -36,7 +33,6 @@ class Event {
         return array(
             'id'=>$this->id,
             'title'=>$this->title,
-            'timelineTitle'=>$this->timelineTitle,
             'start'=>$this->eventStart,
             'end'=>$this->eventEnd,
             'image'=>$this->image,

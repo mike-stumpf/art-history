@@ -35,7 +35,7 @@ class Artwork {
         return array(
             'id'=>$this->id,
             'title'=>$this->title,
-            'date'=>$this->artworkDate,
+            'start'=>$this->artworkDate,
             'image'=>$this->image,
             'largeImage'=>$this->largeImage
         );

@@ -13,7 +13,7 @@ class Timeline {
     private $slug;
     private $niceSlug;
     private $timeline;
-    private $events;
+    private $timelineEvents;
     private $image;
 
     public function __construct($option){
@@ -23,7 +23,7 @@ class Timeline {
         $this->name = $option->name;
         $this->slug = $option->slug;
         $this->timeline = null;
-        $this->events = array();
+        $this->timelineEvents = array();
 
         //get timeline object
         $timelineArguments = array(
@@ -47,7 +47,7 @@ class Timeline {
             }
         }
 
-        //get event objects
+        //get artworks
         $eventArguments = array(
             'post_status' => 'publish',
             'post_type' => Dictionary::$typeArtwork,
@@ -66,9 +66,34 @@ class Timeline {
                 $eventQuery->the_post();
                 $eventId = get_the_ID();
                 $eventObject = new Artwork($eventId);
-                array_push($this->events, $eventObject->getArtwork());
+                array_push($this->timelineEvents, $eventObject->getArtwork());
             }
         }
+        
+        //get events
+        $eventArguments = array(
+            'post_status' => 'publish',
+            'post_type' => Dictionary::$typeEvent,
+            'tax_query' => array(
+                array(
+                    'taxonomy' => Dictionary::$typeEventTimeline,
+                    'field'    => 'slug',
+                    'terms'    => $option->slug
+                )
+            ),
+            'posts_per_page' => -1
+        );
+        $eventQuery = new WP_Query($eventArguments);
+        if ($eventQuery->have_posts()) {
+            while ($eventQuery->have_posts()) {
+                $eventQuery->the_post();
+                $eventId = get_the_ID();
+                $eventObject = new Event($eventId);
+                array_push($this->timelineEvents, $eventObject->getEvent());
+            }
+        }
+        
+        //get slug
         $optionNiceSlug = '';
         $optionNiceSlugPieces = explode('-',$option->slug);
         $i = 0;
@@ -90,7 +115,7 @@ class Timeline {
             'slug'=>$this->slug,
             'niceSlug'=>$this->niceSlug,
             'timeline'=>$this->timeline,
-            'events'=>$this->events,
+            'timelineEvents'=>$this->timelineEvents,
             'image'=>$this->image
         );
     }

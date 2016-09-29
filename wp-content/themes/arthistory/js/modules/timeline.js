@@ -90,19 +90,19 @@
                 id: entry.id,
                 image: entry.image,
                 title: entry.title,
-                start: entry.date
+                start: entry.start
             };
-            entry.date = convertDate(entry.date);
+            entry.start = convertDate(entry.start);
             if (!minDate || !maxDate){
-                minDate = maxDate = entry.date;//everything is stored in momentjs format
+                minDate = maxDate = entry.start;//everything is stored in momentjs format
             }
-            minDate = compareDates(entry.date, minDate, false);
+            minDate = compareDates(entry.start, minDate, false);
             if (isDateDuration(entry)){
                 compiledDataObject.end = entry.end;
                 entry.end = convertDate(entry.end);
                 maxDate = compareDates(entry.end, maxDate, true);
             } else {
-                maxDate = compareDates(entry.date, maxDate, true);
+                maxDate = compareDates(entry.start, maxDate, true);
             }
             items.push(compiledDataObject);
         });
@@ -170,7 +170,7 @@
                 template = Handlebars.templates.sidebar_event,
                 html = template(data);
             //scroll timeline to center selected event
-            that.timelines[that.currentTimelineIndex-1].moveTo(data.date,{
+            that.timelines[that.currentTimelineIndex-1].moveTo(data.start,{
                 animation: true
             });
             closeSidebar()

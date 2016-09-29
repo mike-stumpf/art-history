@@ -86,7 +86,7 @@ $timelines = $artHistoryTimelines->getTimelineData();
         <?php $i = 1;
         foreach($timelines as $timeline){?>
         timelineTitle<?php echo $i;?> = '<?php echo $timeline['niceSlug'];?>';
-        events<?php echo $i;?> = "<?php echo addslashes(json_encode($timeline['events']));?>";
+        events<?php echo $i;?> = "<?php echo addslashes(json_encode($timeline['timelineEvents']));?>";
         timeline<?php echo $i;?> = "<?php echo addslashes(json_encode($timeline));?>";
         timelineData[timelineTitle<?php echo $i;?>] = {
             title: '<?php echo $timeline['title'];?>',
@@ -95,7 +95,7 @@ $timelines = $artHistoryTimelines->getTimelineData();
         try {
             var unsortedEvents = JSON.parse(events<?php echo $i;?>);
             unsortedEvents.sort(function(a,b){
-                return new Date(a.date) - new Date(b.date);
+                return new Date(a.start) - new Date(b.start);
             });
             timelineData[timelineTitle<?php echo $i;?>].events = unsortedEvents;
         } catch (e){
