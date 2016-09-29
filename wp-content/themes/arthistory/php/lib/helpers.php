@@ -59,6 +59,10 @@ class Helpers {
                         $child = new Data\Video($childId);
                         array_push($children, $child->getVideo());
                         break;
+                    case Dictionary::$typeArtwork:
+                        $child = new Data\Artwork($childId);
+                        array_push($children, $child->getArtwork());
+                        break;
                 }
             }
         }

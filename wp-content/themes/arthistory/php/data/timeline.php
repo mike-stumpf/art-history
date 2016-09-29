@@ -15,6 +15,7 @@ class Timeline {
     private $timeline;
     private $timelineEvents;
     private $image;
+    private $movements;
 
     public function __construct($option){
 //var_dump($option);
@@ -24,6 +25,7 @@ class Timeline {
         $this->slug = $option->slug;
         $this->timeline = null;
         $this->timelineEvents = array();
+        $this->movements = array();
 
         //get timeline object
         $timelineArguments = array(
@@ -47,10 +49,10 @@ class Timeline {
             }
         }
 
-        //get artworks
-        $eventArguments = array(
+        //get movements
+        $movementArguments = array(
             'post_status' => 'publish',
-            'post_type' => Dictionary::$typeArtwork,
+            'post_type' => Dictionary::$typeMovement,
             'tax_query' => array(
                 array(
                     'taxonomy' => Dictionary::$typeEventTimeline,
@@ -60,13 +62,13 @@ class Timeline {
             ),
             'posts_per_page' => -1
         );
-        $eventQuery = new WP_Query($eventArguments);
-        if ($eventQuery->have_posts()) {
-            while ($eventQuery->have_posts()) {
-                $eventQuery->the_post();
-                $eventId = get_the_ID();
-                $eventObject = new Artwork($eventId);
-                array_push($this->timelineEvents, $eventObject->getArtwork());
+        $movementQuery = new WP_Query($movementArguments);
+        if ($movementQuery->have_posts()) {
+            while ($movementQuery->have_posts()) {
+                $movementQuery->the_post();
+                $movementId = get_the_ID();
+                $movementObject = new Movement($movementId);
+                array_push($this->movements, $movementObject->getMovement());
             }
         }
         
@@ -91,6 +93,11 @@ class Timeline {
                 $eventObject = new Event($eventId);
                 array_push($this->timelineEvents, $eventObject->getEvent());
             }
+        }
+
+        //get artworks from movements
+        foreach($this->movements as $movement){
+            $this->timelineEvents = array_merge($this->timelineEvents, $movement['artworks']);
         }
         
         //get slug
