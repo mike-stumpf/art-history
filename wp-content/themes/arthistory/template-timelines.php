@@ -111,7 +111,11 @@ $timelines = $artHistoryTimelines->getTimelineData();
             timelineData[timelineTitle<?php echo $i;?>].timeline = {};
         }
         try {
-            timelineData[timelineTitle<?php echo $i;?>].movements = JSON.parse(movements<?php echo $i;?>);
+            var unsortedMovements = JSON.parse(movements<?php echo $i;?>);
+            unsortedMovements.sort(function(a,b){
+                return new Date(a.start) - new Date(b.start);
+            });
+            timelineData[timelineTitle<?php echo $i;?>].movements = unsortedMovements;
         } catch (e){
             console.log(e);
             timelineData[timelineTitle<?php echo $i;?>].movements = {};
