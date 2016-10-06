@@ -69,7 +69,15 @@
         <h4 class="event-header">Articles</h4>
         {{#each articles}}
             <div class="event-entry">
-                <p>{{author}}{{#if author}},{{/if}} {{title}}{{#if year}}.{{/if}} {{year}}</p>
+                <p>
+                    {{#if pdf}}
+                        <a href="{{pdf}}" target="_blank">
+                            {{>article}}
+                        </a>
+                    {{else}}
+                        {{>article}}
+                    {{/if}}
+                </p>
             </div>
         {{/each}}
     </section>
