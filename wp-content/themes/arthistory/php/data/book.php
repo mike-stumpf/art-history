@@ -9,6 +9,8 @@ class Book {
     private $author;
     private $callNumber;
     private $year;
+    private $url;
+    private $publisher;
 
     public function __construct($bookId){
 
@@ -18,7 +20,8 @@ class Book {
         $this->author = Helpers::getMetaValue($bookId,'book-author');
         $this->callNumber = Helpers::getMetaValue($bookId,'book-call-number');
         $this->year = Helpers::getMetaValue($bookId,'book-year');
-        
+        $this->url = Helpers::getMetaValue($bookId,'book-url');
+        $this->publisher = Helpers::getMetaValue($bookId,'book-publisher');
     }
 
     public function __toString(){
@@ -31,7 +34,9 @@ class Book {
             'title'=>$this->title,
             'author'=>$this->author,
             'callNumber'=>$this->callNumber,
-            'year'=>$this->year
+            'year'=>$this->year,
+            'url'=>$this->url,
+            'publisher'=>$this->publisher
         );
     }
 }

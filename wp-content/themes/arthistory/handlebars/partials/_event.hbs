@@ -22,8 +22,9 @@
         <h4 class="event-header">Powerpoints</h4>
         {{#each powerpoints}}
             <div class="event-entry">
-                <p>{{title}}</p>
-                <a href="{{url}}" target="_blank">{{url}}</a>
+                <p>
+                    <a href="{{url}}" target="_blank">{{title}}</a>
+                </p>
             </div>
         {{/each}}
     </section>
@@ -34,9 +35,12 @@
         <h4 class="event-header">Books</h4>
         {{#each books}}
             <div class="event-entry">
-                <p>{{author}}{{#if author}},{{/if}} {{title}}{{#if year}}.{{/if}} {{year}}</p>
-                {{# if callNumber}}
-                    <p class="entry-subtext">{{callNumber}}</p>
+                {{#if url}}
+                    <a href="{{url}}" target="_blank">
+                        {{>book}}
+                    </a>
+                {{else}}
+                    {{>book}}
                 {{/if}}
             </div>
         {{/each}}
@@ -48,8 +52,9 @@
         <h4 class="event-header">Music &amp; Film</h4>
         {{#each videos}}
             <div class="event-entry">
-                <p>{{title}}</p>
-                <a href="{{url}}" target="_blank">{{url}}</a>
+                <p>
+                    <a href="{{url}}" target="_blank">{{title}}</a>
+                </p>
             </div>
         {{/each}}
     </section>
@@ -71,8 +76,9 @@
         <h4 class="event-header">Websites</h4>
         {{#each websites}}
             <div class="event-entry">
-                <p>{{title}}</p>
-                <a href="{{url}}" target="_blank">{{url}}</a>
+                <p>
+                    <a href="{{url}}" target="_blank">{{title}}</a>
+                </p>
             </div>
         {{/each}}
     </section>
