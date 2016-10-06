@@ -8,6 +8,7 @@ class Article {
     private $title;
     private $author;
     private $year;
+    private $pdf;
 
     public function __construct($articleId){
 
@@ -16,6 +17,7 @@ class Article {
         $this->title = Helpers::getMetaValue($articleId,'article-title');
         $this->author = Helpers::getMetaValue($articleId,'article-author');
         $this->year = Helpers::getMetaValue($articleId,'article-year');
+        $this->pdf = Helpers::getMetaValue($articleId,'article-pdf');
     }
 
     public function __toString(){
@@ -27,7 +29,8 @@ class Article {
             'id'=>$this->id,
             'title'=>$this->title,
             'author'=>$this->author,
-            'year'=>$this->year
+            'year'=>$this->year,
+            'pdf'=>$this->pdf
         );
     }
 }

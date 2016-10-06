@@ -23,7 +23,11 @@
         {{#each powerpoints}}
             <div class="event-entry">
                 <p>
-                    <a href="{{url}}" target="_blank">{{title}}</a>
+                    {{#if file}}
+                        <a href="{{file}}" target="_blank">{{title}}</a>
+                    {{else}}
+                        <a href="{{url}}" target="_blank">{{title}}</a>
+                    {{/if}}
                 </p>
             </div>
         {{/each}}

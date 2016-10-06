@@ -7,6 +7,7 @@ class PowerPoint {
     private $id;
     private $title;
     private $url;
+    private $file;
 
     public function __construct($powerpointId){
 
@@ -14,7 +15,8 @@ class PowerPoint {
         $this->id = $powerpointId;
         $this->title = Helpers::getMetaValue($powerpointId,'powerpoint-title');
         $this->url = Helpers::getMetaValue($powerpointId,'powerpoint-url');
-        
+        $this->file = Helpers::getMetaValue($powerpointId,'powerpoint-file');
+
     }
 
     public function __toString(){
@@ -25,7 +27,8 @@ class PowerPoint {
         return array(
             'id'=>$this->id,
             'title'=>$this->title,
-            'url'=>$this->url
+            'url'=>$this->url,
+            'file'=>$this->file
         );
     }
 }
