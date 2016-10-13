@@ -1,9 +1,21 @@
-<div
-    {{#if image}}
-    style="background-image: url('{{image}}')" class="timeline-artwork"
-    {{else}}
-    class="timeline-artwork timeline-active-color-light"
-    {{/if}}
-    data-movement-id="{{movementId}}">
-    {{title}}
-</div>
+{{#if movementId}}
+    <div
+        {{#if image}}
+        style="background-image: url('{{image}}')" class="timeline-artwork"
+        {{else}}
+        class="timeline-artwork timeline-active-color-light"
+        {{/if}}
+        data-movement-id="{{movementId}}">
+        {{title}}
+    </div>
+{{else}}
+    <div
+        {{#if image}}
+        style="background-image: url('{{image}}')" class="timeline-event"
+        {{else}}
+        class="timeline-event timeline-active-color-light"
+        {{/if}}
+        data-event-id="{{id}}">
+        {{title}}
+    </div>
+{{/if}}

@@ -11,7 +11,6 @@
         timelineSelectors = $('.timelines-selector'),
         transitionOverlay = $('#timelines-transition-overlay'),
         headerTimelineTitle = $('#timelines-header-title'),
-        mobileModalTrigger = $('#timeline-mobile-modal-trigger'),
         mobileModalContent = $('#timeline-mobile-modal-content'),
         sidebarDataContainer = $('#timelines-sidebar-data-container'),
         imageZoom = $('#image-zoom-container'),
@@ -20,6 +19,7 @@
         activeClass = 'active',
         timelineClass = '.timeline',
         timelineArtworkClass = '.timeline-artwork',
+        timelineEventClass = '.timeline-event',
         sidebarEntryClass = '.sidebar-entry',
         closeSidebarClass = '.f--close-sidebar',
         imageZoomClass = '.f--image-zoom',
@@ -55,6 +55,10 @@
 
     function getDataItemsList(container){
         return $(container).attr('data-items-list');
+    }
+    
+    function openModal(){
+        window.location.href = window.location.origin+'/#timeline-mobile-modal';
     }
 
 
@@ -113,17 +117,23 @@
             options.max = moment(maxDate).add(4,'year').format(timeFormat);
         }
         items = new vis.DataSet(items);
-        that.timelines.push(new vis.Timeline(container, items, options));
+        that.timelines.push(new vis.Timeline(container[0], items, options));
     }
 
-    this.openEvent = function(movementId){
+    this.openArtwork = function(movementId){
         if(movementId) {
             if (mediaQueries.isDesktop()) {
                 //if desktop
                 highlightSidebarEvent(movementId);
             } else {
-                populateModal(movementId);
+                populateArtworkModal(movementId);
             }
+        }
+    };
+
+    this.openEvent = function(eventId){
+        if(eventId) {
+            populateEventModal(eventId);
         }
     };
 
@@ -138,13 +148,22 @@
         sidebarContainer.html(html);
     }
 
-    function populateModal(movementId){
+    function populateArtworkModal(movementId){
         var currentTimelineData = timelineData[getDataItemsList('#timeline-'+that.currentTimelineIndex)],
             data = _.find(currentTimelineData.movements, {id: parseInt(movementId)}),
             template = Handlebars.templates.sidebar_modal,
             html = template(data);
         mobileModalContent.html(html);
-        mobileModalTrigger.trigger('click');
+        openModal();
+    }
+
+    function populateEventModal(eventId){
+        var currentTimelineData = timelineData[getDataItemsList('#timeline-'+that.currentTimelineIndex)],
+            data = _.find(currentTimelineData.events, {id: parseInt(eventId)}),
+            template = Handlebars.templates.sidebar_modal,
+            html = template(data);
+        mobileModalContent.html(html);
+        openModal();
     }
 
     function openSidebar(){
@@ -267,20 +286,28 @@
 
         artHistory.handlebars.applyHelpers();
 
-        $(timelineClass).each(function(element){
-            initializeTimeline(element);
+        $(timelineClass).each(function(){
+            initializeTimeline($(this));
         });
 
         selectTimeline(1);
 
         bodyElement
             .on('click', timelineArtworkClass, function(){
-                that.openEvent($(this).attr('data-movement-id'));
+                event.preventDefault();
+                that.openArtwork($(this).attr('data-movement-id'));
+            });
+
+        bodyElement
+            .on('click', timelineEventClass, function(){
+                event.preventDefault();
+                that.openEvent($(this).attr('data-event-id'));
             });
 
         bodyElement
             .on('click', sidebarEntryClass, function(){
-                that.openEvent($(this).attr('data-movement-id'));
+                event.preventDefault();
+                that.openArtwork($(this).attr('data-movement-id'));
             });
 
         timelineSelectors
@@ -291,16 +318,19 @@
 
         bodyElement
             .on('click', closeSidebarClass, function(){
+                event.preventDefault();
                 closeSidebar();
             });
 
         bodyElement
             .on('click', imageZoomClass, function(){
+                event.preventDefault();
                 openImageZoom($(this));
             });
 
         imageZoomOverlay
             .on('click', function(){
+                event.preventDefault();
                 closeImageZoom();
             });
     };

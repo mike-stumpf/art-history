@@ -12,9 +12,9 @@
             easing = params.hasOwnProperty('easing') ? params.easing : 'swing';
         return new Promise(function(resolve,reject) {
             if (!queue){
-                Velocity($(element), 'stop', true);
+                $(element).velocity('stop', true);
             }
-            Velocity($(element), params.properties, {
+            $(element).velocity(params.properties, {
                 duration: duration,
                 begin: begin,
                 delay: delay,

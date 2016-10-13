@@ -67,7 +67,7 @@ $timelines = $artHistoryTimelines->getTimelineData();
             } ?>
         </section>
     </main>
-    <a href="#timeline-mobile-modal" id="timeline-mobile-modal-trigger" class="faded-out"></a>
+    <a href="#timeline-mobile-modal" id="timeline-mobile-modal-trigger" class="faded-out">Modal Trigger</a>
     <section class="modal--fade" id="timeline-mobile-modal" data-stackable="false" tabindex="-1" role="dialog" aria-labelledby="label-fade" aria-hidden="true">
         <div id="timeline-mobile-modal-content" class="modal-inner">
             <!-- dynamically populated -->
