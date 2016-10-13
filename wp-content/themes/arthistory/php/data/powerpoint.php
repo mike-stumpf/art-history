@@ -17,6 +17,10 @@ class PowerPoint {
         $this->url = Helpers::getMetaValue($powerpointId,'powerpoint-url');
         $this->file = Helpers::getMetaValue($powerpointId,'powerpoint-file');
 
+        //add url fallbacks for external url vs internal
+        if(empty($this->url)){
+            $this->url = $this->file;
+        }
     }
 
     public function __toString(){
