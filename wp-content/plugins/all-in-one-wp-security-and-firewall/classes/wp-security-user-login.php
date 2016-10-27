@@ -109,8 +109,17 @@ class AIOWPSecurity_User_Login
             $this->increment_failed_logins($username);
             if($aio_wp_security->configs->get_value('aiowps_enable_login_lockdown')=='1')
             {
-                if($login_attempts_permitted <= $this->get_login_fail_count()  || $aio_wp_security->configs->get_value('aiowps_enable_invalid_username_lockdown')=='1')
-                {
+                $too_many_failed_logins = $login_attempts_permitted <= $this->get_login_fail_count();
+                $invalid_username_lockdown = $aio_wp_security->configs->get_value('aiowps_enable_invalid_username_lockdown') == '1';
+                
+                $instant_lockout_users_list = $aio_wp_security->configs->get_value('aiowps_instantly_lockout_specific_usernames');
+                if(empty($instant_lockout_users_list)){
+                    $instant_lockout_users_list = array();
+                }
+                $username_blacklisted = in_array($username, $instant_lockout_users_list);
+
+                if ( $too_many_failed_logins || $invalid_username_lockdown || $username_blacklisted )
+                {                  
                     $this->lock_the_user($username, 'login_fail');
                 }
             }
@@ -214,7 +223,7 @@ class AIOWPSecurity_User_Login
         if(empty($ip_range)) return false;
 
         $username = sanitize_user($username);
-	    $user = get_user_by('login',$username); //Returns WP_User object if exists
+        $user = get_user_by('login', $username); //Returns WP_User object if exists
         $ip_range = apply_filters('aiowps_before_lockdown', $ip_range);
         if ($user)
         {

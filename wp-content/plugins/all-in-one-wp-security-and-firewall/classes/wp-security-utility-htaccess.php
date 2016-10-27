@@ -1009,7 +1009,6 @@ class AIOWPSecurity_Utility_Htaccess
      * Example: If URL passed to function = "http://www.mysite.com"
      * Result = "http(s)?://(.*)?mysite\.com"
      */
-
     static function return_regularized_url($url)
     {
         if (filter_var($url, FILTER_VALIDATE_URL)) {
@@ -1028,7 +1027,9 @@ class AIOWPSecurity_Utility_Htaccess
                     $j++;
                 }
                 //Now replace the "http" with "http(s)?" to cover both secure and non-secure
-                if (strpos($y, 'http') !== false) {
+                if (strpos($y, 'https') !== false) {
+                    $y = str_replace('https', 'http(s)?', $y);
+                }else if (strpos($y, 'http') !== false) {
                     $y = str_replace('http', 'http(s)?', $y);
                 }
                 return $y;
