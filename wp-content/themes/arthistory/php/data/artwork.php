@@ -16,7 +16,7 @@ class Artwork {
         //fields
         $this->id = $artworkId;
         $this->title = Helpers::getMetaValue($artworkId,'artwork-title');
-        $this->image = Helpers::resizeImage(Helpers::getMetaValue($artworkId,'artwork-image'),100,100);
+        $this->image = get_home_url().Helpers::resizeImage(Helpers::getMetaValue($artworkId,'artwork-image'),100,100);
         $this->largeImage = Helpers::getMetaValue($artworkId,'artwork-image');
         $this->artworkDate = Helpers::getMetaValue($artworkId,'artwork-date');
         if(strlen($this->artworkDate) > 1) {
