@@ -13,7 +13,7 @@ class Event {
         //fields
         $this->id = $eventId;
         $this->title = Helpers::getMetaValue($eventId,'event-title');
-        $this->image = Helpers::resizeImage(Helpers::getMetaValue($eventId,'event-image'),100,100);
+        $this->image = get_home_url().Helpers::resizeImage(Helpers::getMetaValue($eventId,'event-image'),100,100);
         $this->largeImage = Helpers::getMetaValue($eventId,'event-image');
         $this->eventStart = Helpers::getMetaValue($eventId,'event-start');
         if(strlen($this->eventStart) > 1) {

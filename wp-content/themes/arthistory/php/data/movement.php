@@ -25,7 +25,7 @@ class Movement {
         //fields
         $this->id = $movementId;
         $this->title = Helpers::getMetaValue($movementId,'movement-title');
-        $this->image = Helpers::resizeImage(Helpers::getMetaValue($movementId,'movement-image'),100,100);
+        $this->image = get_home_url().Helpers::resizeImage(Helpers::getMetaValue($movementId,'movement-image'),100,100);
         $this->largeImage = Helpers::getMetaValue($movementId,'movement-image');
 
         //get children
