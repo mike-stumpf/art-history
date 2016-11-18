@@ -58,7 +58,7 @@
     }
     
     function openModal(){
-        window.location.href = window.location.origin+'/#timeline-mobile-modal';
+        window.location.href = window.location.href+'/#timeline-mobile-modal';
     }
 
 
