@@ -18,8 +18,6 @@ class Timeline {
     private $movements;
 
     public function __construct($option){
-//var_dump($option);
-//        die();
         //variables
         $this->name = $option->name;
         $this->slug = $option->slug;

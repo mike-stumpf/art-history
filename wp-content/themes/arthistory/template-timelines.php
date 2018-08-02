@@ -19,9 +19,9 @@ $timelines = $artHistoryTimelines->getTimelineData();
     <main id="timelines-main-content" class="small-12 large-9 large-grid-end">
         <section id="timelines-header-image-container">
             <!-- timeline images-->
-            <?php foreach($timelines as $timeline){
+            <?php foreach($timelines as $index=>$timeline){
                 if (!empty($timeline['image'])){ ?>
-                    <img class="timeline-header-image faded-out l--show-for-<?php echo $timeline['slug'];?>" src="<?php echo $timeline['image'];?>" alt="<?php echo $timeline['title'];?>"/>
+                    <img class="timeline-header-image faded-out l--show-for-timeline-<?php echo $index;?>" src="<?php echo $timeline['image'];?>" alt="<?php echo $timeline['title'];?>"/>
                 <?php }
             } ?>
             <!-- timeline title-->
@@ -43,28 +43,26 @@ $timelines = $artHistoryTimelines->getTimelineData();
         </section>
         <section id="timelines-timeline-container">
             <!--timelines-->
-            <?php foreach($timelines as $timeline){?>
-                <div id="<?php echo $timeline['slug'];?>" class="timeline l--show-for-<?php echo $timeline['slug'];?> faded-out" data-items-list="<?php echo $timeline['niceSlug'];?>"></div>
+            <?php foreach($timelines as $index=>$timeline){?>
+                <div id="timeline-<?php echo $index;?>" class="timeline l--show-for-timeline-<?php echo $index;?> faded-out" data-items-list="<?php echo $timeline['niceSlug'];?>"></div>
             <?php } ?>
         </section>
         <section id="timelines-selector-container" class="grid-container">
             <!--navigation-->
-            <?php $i = 1;
-            foreach($timelines as $timeline) {
-                $className = $i===1?'active':'';
+            <?php foreach($timelines as $index=>$timeline) {
+                $className = $index===0?'active':'';
                 $gridEnd = '';
-                if(sizeof($timeline) === $i){
+                if(sizeof($timeline) === $index - 1){
                     $gridEnd = ' grid-end';
                 } ?>
                 <div class="timelines-selector-block <?php echo $gridEnd;?>">
-                    <a href="#" data-timeline-selector="<?php echo $i;?>" class="timelines-selector <?php echo $className;?>">
+                    <a href="#" data-timeline-selector="<?php echo $index;?>" class="timelines-selector <?php echo $className;?>">
                         <?php echo $timeline['title']?>
                         <span class="timelines-selector-line"></span>
                         <span class="timelines-selector-indicator"></span>
                     </a>
                 </div>
-                <?php $i++;
-            } ?>
+            <?php } ?>
         </section>
     </main>
     <a href="#timeline-mobile-modal" id="timeline-mobile-modal-trigger" class="faded-out">Modal Trigger</a>
@@ -84,43 +82,41 @@ $timelines = $artHistoryTimelines->getTimelineData();
             timeline,
             events,
             movements;
-        <?php $i = 1;
-        foreach($timelines as $timeline){?>
-        timelineTitle<?php echo $i;?> = '<?php echo $timeline['niceSlug'];?>';
-        events<?php echo $i;?> = "<?php echo addslashes(json_encode($timeline['timelineEvents']));?>";
-        timeline<?php echo $i;?> = "<?php echo addslashes(json_encode($timeline));?>";
-        movements<?php echo $i;?> = "<?php echo addslashes(json_encode($timeline['movements']));?>";
-        timelineData[timelineTitle<?php echo $i;?>] = {
+        <?php foreach($timelines as $index=>$timeline){?>
+        timelineTitle<?php echo $index;?> = '<?php echo $timeline['niceSlug'];?>';
+        events<?php echo $index;?> = "<?php echo addslashes(json_encode($timeline['timelineEvents']));?>";
+        timeline<?php echo $index;?> = "<?php echo addslashes(json_encode($timeline));?>";
+        movements<?php echo $index;?> = "<?php echo addslashes(json_encode($timeline['movements']));?>";
+        timelineData[timelineTitle<?php echo $index;?>] = {
             title: '<?php echo $timeline['title'];?>',
             slug: '<?php echo $timeline['slug'];?>'
         };
         try {
-            var unsortedEvents = JSON.parse(events<?php echo $i;?>);
+            var unsortedEvents = JSON.parse(events<?php echo $index;?>);
             unsortedEvents.sort(function(a,b){
                 return new Date(a.start) - new Date(b.start);
             });
-            timelineData[timelineTitle<?php echo $i;?>].events = unsortedEvents;
+            timelineData[timelineTitle<?php echo $index;?>].events = unsortedEvents;
         } catch (e){
-            console.log(e);
-            timelineData[timelineTitle<?php echo $i;?>].events = [];
+            console.warn(e);
+            timelineData[timelineTitle<?php echo $index;?>].events = [];
         }
         try {
-            timelineData[timelineTitle<?php echo $i;?>].timeline = JSON.parse(timeline<?php echo $i;?>);
+            timelineData[timelineTitle<?php echo $index;?>].timeline = JSON.parse(timeline<?php echo $index;?>);
         } catch (e){
-            console.log(e);
-            timelineData[timelineTitle<?php echo $i;?>].timeline = {};
+            console.warn(e);
+            timelineData[timelineTitle<?php echo $index;?>].timeline = {};
         }
         try {
-            var unsortedMovements = JSON.parse(movements<?php echo $i;?>);
+            var unsortedMovements = JSON.parse(movements<?php echo $index;?>);
             unsortedMovements.sort(function(a,b){
                 return new Date(a.start) - new Date(b.start);
             });
-            timelineData[timelineTitle<?php echo $i;?>].movements = unsortedMovements;
+            timelineData[timelineTitle<?php echo $index;?>].movements = unsortedMovements;
         } catch (e){
-            console.log(e);
-            timelineData[timelineTitle<?php echo $i;?>].movements = {};
+            console.warn(e);
+            timelineData[timelineTitle<?php echo $index;?>].movements = {};
         }
-        <?php $i++;
-        } ?>
+        <?php } ?>
     </script>
 <?php get_footer();

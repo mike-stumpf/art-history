@@ -23,9 +23,7 @@
         sidebarEntryClass = '.sidebar-entry',
         closeSidebarClass = '.f--close-sidebar',
         imageZoomClass = '.f--image-zoom',
-        timeFormat = 'YYYY-MM-DD',
-        currentTimeline,
-        currentMovement;
+        timeFormat = 'YYYY-MM-DD';
 
     this.timelines = [];
 
@@ -65,9 +63,8 @@
 //timeline
 //-----------------------------
 
-    function initializeTimeline(element){
-        var container = element,
-            data = timelineData[getDataItemsList(container)],
+    function initializeTimeline(container){
+        var data = timelineData[getDataItemsList(container)],
             options = {
                 zoomable: false,
                 zoomMax: 173448000000,//5.5 years to ms
@@ -290,7 +287,7 @@
             initializeTimeline($(this));
         });
 
-        selectTimeline(1);
+        selectTimeline(0);
 
         bodyElement
             .on('click', timelineArtworkClass, function(){
