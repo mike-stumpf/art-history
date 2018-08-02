@@ -1,29 +1,14 @@
 // core
 //-----------------------------
-@mixin timeline-active-color($value) {
+.page-template-template-timelines {
   .vis-item, .timeline-artwork, #timelines-main-content, .timelines-header-title-element-container, .timeline-event {
-    border-color: $value;
+    border-color: $color-black;
   }
   .timelines-header-title-element, #timelines-sidebar-container, .timelines-active-color-light {
-    background-color: lighten($value, 25%);
+    background-color: lighten($color-black, 25%);
   }
   .sidebar-entry .entry-image {
-    background-color: $value;
-  }
-}
-
-.page-template-template-timelines {
-  &.timeline-1 {
-    @include timeline-active-color($color-timeline-1);
-  }
-  &.timeline-2 {
-    @include timeline-active-color($color-timeline-2);
-  }
-  &.timeline-3 {
-    @include timeline-active-color($color-timeline-3);
-  }
-  &.timeline-4 {
-    @include timeline-active-color($color-timeline-4);
+    background-color: $color-black;
   }
 }
 
