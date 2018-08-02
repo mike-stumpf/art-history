@@ -1,7 +1,7 @@
 <?php
 /*
 * Tiny Compress Images - WordPress plugin.
-* Copyright (C) 2015-2016 Voormedia B.V.
+* Copyright (C) 2015-2018 Tinify B.V.
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the Free
@@ -43,7 +43,9 @@ class Tiny_Image_Size {
 	}
 
 	public function add_tiny_meta_start() {
-		$this->meta = array( 'start' => time() );
+		$this->meta = array(
+			'start' => time(),
+		);
 	}
 
 	public function add_tiny_meta( $response ) {

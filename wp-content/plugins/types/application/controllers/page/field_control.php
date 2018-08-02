@@ -185,10 +185,10 @@ final class Types_Page_Field_Control extends Types_Page_Abstract {
 			$main_handle,
 			TYPES_RELPATH . '/public/page/field_control/main.js',
 			array( 
-				'jquery', 'backbone', 'headjs', 'underscore',
+				'jquery', 'backbone', 'underscore',
+				Types_Asset_Manager::SCRIPT_HEADJS,
 				Types_Asset_Manager::SCRIPT_ADJUST_MENU_LINK,
 				Types_Asset_Manager::SCRIPT_KNOCKOUT,
-				Types_Asset_Manager::SCRIPT_DIALOG_BOXES,
 				Types_Asset_Manager::SCRIPT_UTILS
 			),
 			TYPES_VERSION
@@ -440,7 +440,7 @@ final class Types_Page_Field_Control extends Types_Page_Abstract {
 		foreach( $groups as $group ) {
 			$group_data[ $group->get_slug() ] = array(
 				'slug' => $group->get_slug(),
-				'displayName' => $group->get_display_name()
+				'displayName' => stripslashes( $group->get_display_name() )
 			);
 		}
 

@@ -64,7 +64,7 @@ final class Types_Admin_Menu {
 		// Add legacy pages
 		$pages = wpcf_admin_toolset_register_menu_pages( $pages );
 
-		$page_name = wpcf_getget( 'page' );
+		$page_name = sanitize_text_field( wpcf_getget( 'page' ) );
 		if( !empty( $page_name ) ) {
 			$pages = $this->maybe_add_ondemand_submenu( $pages, $page_name );
 		}

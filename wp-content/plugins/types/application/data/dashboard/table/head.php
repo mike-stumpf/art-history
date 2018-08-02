@@ -3,21 +3,21 @@ $question_marks = array(
 
 	'type' => array(
 		'id'            => 'type',
-		'title'         => __( 'Post Type', 'types' ),
+		'title'         => __( 'Post Type', 'wpcf' ),
 	),
 
 	'fields' => array(
 		'id'            => 'fields',
-		'title'         => __( 'Fields', 'types' ),
+		'title'         => __( 'Fields', 'wpcf' ),
 		'description'   => array(
 			array(
 				'type' => 'paragraph',
-				'content' => __( 'A list of all Post Fields and their attachment to the Post Types.', 'types' )
+				'content' => __( 'A list of all Post Fields and their attachment to the Post Types.', 'wpcf' )
 			),
 			array(
 				'type'   => 'link',
 				'external' => true,
-				'label'  => __( 'Learn more', 'types' ),
+				'label'  => __( 'Learn more', 'wpcf' ),
 				'target' => Types_Helper_Url::get_url( 'learn-how-fields', 'tooltip' )
 			),
 		)
@@ -25,16 +25,16 @@ $question_marks = array(
 
 	'taxonomies' => array(
 		'id'            => 'taxonomies',
-		'title'         => __( 'Taxonomies', 'types' ),
+		'title'         => __( 'Taxonomies', 'wpcf' ),
 		'description'   => array(
 			array(
 				'type' => 'paragraph',
-				'content' => __( 'A list of all Taxonomies and their attachment to the Post Types.', 'types' )
+				'content' => __( 'A list of all Taxonomies and their attachment to the Post Types.', 'wpcf' )
 			),
 			array(
 				'type'   => 'link',
 				'external' => true,
-				'label'  => __( 'Learn more', 'types' ),
+				'label'  => __( 'Learn more', 'wpcf' ),
 				'target' => Types_Helper_Url::get_url( 'learn-how-taxonomies', 'tooltip' )
 			),
 		)
@@ -46,16 +46,16 @@ $question_marks = array(
 
 	'template' => array(
 		'id'            => 'template',
-		'title'         => __( 'Template', 'types' ),
+		'title'         => __( 'Template', 'wpcf' ),
 		'description'   => array(
 			array(
 				'type' => 'paragraph',
-				'content' => __( 'A template displays single-item pages with your design and fields.', 'types' )
+				'content' => __( 'A template displays single-item pages with your design and fields.', 'wpcf' )
 			),
 			array(
 				'type'   => 'link',
 				'external' => true,
-				'label'  => __( 'Learn more', 'types' ),
+				'label'  => __( 'Learn more', 'wpcf' ),
 				'target' => Types_Helper_Url::get_url( 'learn-how-template', 'tooltip' )
 			),
 		)
@@ -63,16 +63,16 @@ $question_marks = array(
 
 	'archive' => array(
 		'id'            => 'archive',
-		'title'         => __( 'Archive', 'types' ),
+		'title'         => __( 'Archive', 'wpcf' ),
 		'description'   => array(
 			array(
 				'type' => 'paragraph',
-				'content' => __( 'An archive is the standard list that WordPress produces for content.', 'types' )
+				'content' => __( 'An archive is the standard list that WordPress produces for content.', 'wpcf' )
 			),
 			array(
 				'type'   => 'link',
 				'external' => true,
-				'label'  => __( 'Learn more', 'types' ),
+				'label'  => __( 'Learn more', 'wpcf' ),
 				'target' => Types_Helper_Url::get_url( 'learn-how-archive', 'tooltip' )
 			),
 		)
@@ -80,16 +80,16 @@ $question_marks = array(
 
 	'views' => array(
 		'id'            => 'views',
-		'title'         => __( 'Views', 'types' ),
+		'title'         => __( 'Views', 'wpcf' ),
 		'description'   => array(
 			array(
 				'type' => 'paragraph',
-				'content' => __( 'Views are custom lists of content, which you can display anywhere in the site.', 'types' )
+				'content' => __( 'Views are custom lists of content, which you can display anywhere in the site.', 'wpcf' )
 			),
 			array(
 				'type'   => 'link',
 				'external' => true,
-				'label'  => __( 'Learn more', 'types' ),
+				'label'  => __( 'Learn more', 'wpcf' ),
 				'target' => Types_Helper_Url::get_url( 'learn-how-views', 'tooltip' )
 			),
 		)
@@ -97,16 +97,16 @@ $question_marks = array(
 
 	'forms' => array(
 		'id'            => 'forms',
-		'title'         => __( 'Forms', 'types' ),
+		'title'         => __( 'Forms', 'wpcf' ),
 		'description'   => array(
 			array(
 				'type' => 'paragraph',
-				'content' => __( 'Forms allow to create and edit content from the site’s front-end.', 'types' )
+				'content' => __( 'Forms allow to create and edit content from the site’s front-end.', 'wpcf' )
 			),
 			array(
 				'type'   => 'link',
 				'external' => true,
-				'label'  => __( 'Learn more', 'types' ),
+				'label'  => __( 'Learn more', 'wpcf' ),
 				'target' => Types_Helper_Url::get_url( 'learn-how-forms', 'tooltip' )
 			),
 		)
@@ -115,15 +115,15 @@ $question_marks = array(
 
 // Visual Composer
 if( defined( 'WPB_VC_VERSION' ) ) {
-	$question_marks['template']['description'][1]['label'] = __( 'Creating templates with Visual Composer', 'types' );
+	$question_marks['template']['description'][1]['label'] = __( 'Creating templates with Visual Composer', 'wpcf' );
 }
 // Beaver Builder
 else if( class_exists( 'FLBuilderLoader' ) ) {
-	$question_marks['template']['description'][1]['label'] = __( 'Creating templates with Beaver Builder', 'types' );
+	$question_marks['template']['description'][1]['label'] = __( 'Creating templates with Beaver Builder', 'wpcf' );
 }
 // Layouts
 else if( defined( 'WPDDL_DEVELOPMENT' ) || defined( 'WPDDL_PRODUCTION' ) ) {
-	$question_marks['template']['description'][1]['label'] = __( 'Creating templates with Layouts', 'types' );
+	$question_marks['template']['description'][1]['label'] = __( 'Creating templates with Layouts', 'wpcf' );
 }
 
 return $question_marks;

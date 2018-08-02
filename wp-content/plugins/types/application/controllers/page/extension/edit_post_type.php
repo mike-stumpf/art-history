@@ -19,9 +19,11 @@ final class Types_Page_Extension_Edit_Post_Type {
 	private function __construct() {
 		if( ! isset( $_GET['wpcf-post-type'] ) )
 			return;
+		
+		$wpcf_post_type = sanitize_text_field( $_GET['wpcf-post-type'] );
 
-		Types_Helper_Placeholder::set_post_type( $_GET['wpcf-post-type'] );
-		Types_Helper_Condition::set_post_type( $_GET['wpcf-post-type'] );
+		Types_Helper_Placeholder::set_post_type( $wpcf_post_type );
+		Types_Helper_Condition::set_post_type( $wpcf_post_type );
 
 		$this->prepare();
 	}

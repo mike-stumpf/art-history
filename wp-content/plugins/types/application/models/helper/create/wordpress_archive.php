@@ -22,7 +22,7 @@ class Types_Helper_Create_Wordpress_Archive {
 
 		// for type 'post'
 		if( $type == 'post' ) {
-			$name = __( 'Archive for Home/Blog', 'types' );
+			$name = __( 'Archive for Home/Blog', 'wpcf' );
 			$option = 'view_home-blog-page';
 		}
 
@@ -33,7 +33,7 @@ class Types_Helper_Create_Wordpress_Archive {
 		// set name if not given
 		if( ! $name ) {
 			$type_object = get_post_type_object( $type );
-			$name = sprintf( __( 'Archive for %s', 'types' ), $type_object->labels->name );
+			$name = sprintf( __( 'Archive for %s', 'wpcf' ), $type_object->labels->name );
 		}
 
 		$name = $this->validate_name( $name );

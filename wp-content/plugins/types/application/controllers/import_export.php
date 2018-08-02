@@ -3,25 +3,28 @@
 /**
  * Types import and export controller.
  *
- * Currently it only contains new code that is hooked into legacy methods plus a bunch of temporary workarounds, but 
+ * Currently it only contains new code that is hooked into legacy methods plus a bunch of temporary workarounds, but
  * has the ambition to become the central point of handling all import and export-related activities.
  *
  * @since 2.1
  */
 final class Types_Import_Export {
-	
+
 	private static $instance;
-	
+
 	public static function get_instance() {
-		if( null == self::$instance ) {
+		if ( null == self::$instance ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
-	
-	private function __clone() { }
-	
-	private function __construct() { }
+
+	private function __clone() {
+	}
+
+	private function __construct() {
+	}
 
 
 	/**
@@ -78,17 +81,18 @@ final class Types_Import_Export {
 	 * Completely handle retrieving export data for field groups of one domain.
 	 *
 	 * @param string $domain Valid field domain.
+	 *
 	 * @return array Exported field groups.
 	 * @since 2.1
 	 */
 	public function export_field_groups_for_domain( $domain ) {
 
 		$group_factory = Types_Field_Utils::get_group_factory_by_domain( $domain );
-		$all_groups = $group_factory->query_groups();
+		$all_groups    = $group_factory->query_groups();
 
 		// Each group will handle its own export.
 		$results = array();
-		foreach( $all_groups as $field_group ) {
+		foreach ( $all_groups as $field_group ) {
 			$results[] = $field_group->get_export_object();
 		}
 
@@ -102,18 +106,19 @@ final class Types_Import_Export {
 	 * Completely handle retrieving export data for field definitions of one domain.
 	 *
 	 * @param string $domain Valid field domain.
+	 *
 	 * @return array Exported field definitions.
 	 * @since 2.1
 	 */
 	public function export_field_definitions_for_domain( $domain ) {
 
 		$definition_factory = Types_Field_Utils::get_definition_factory_by_domain( $domain );
-		$all_definitions = $definition_factory->query_definitions( array( 'filter' => 'types' ) );
+		$all_definitions    = $definition_factory->query_definitions( array( 'filter' => 'types' ) );
 
 		// Each field definition will handle its own export.
 		$results = array();
 		/** @var WPCF_Field_Definition $field_definition */
-		foreach( $all_definitions as $field_definition ) {
+		foreach ( $all_definitions as $field_definition ) {
 			$results[] = $field_definition->get_export_object();
 		}
 
@@ -137,7 +142,7 @@ final class Types_Import_Export {
 	public function add_checksum_to_object( $data, $keys_for_checksum = null, $keys_to_remove = null ) {
 
 		// pluck requested keys
-		if( null == $keys_for_checksum ) {
+		if ( null == $keys_for_checksum ) {
 			$checksum_source = $data;
 		} else {
 			$checksum_source = array();
@@ -147,16 +152,16 @@ final class Types_Import_Export {
 				}
 			}
 		}
-		
+
 		// unset undesired keys
-		if( is_array( $keys_to_remove ) ) {
+		if ( is_array( $keys_to_remove ) ) {
 			$checksum_source = $this->unset_recursive( $checksum_source, $keys_to_remove );
 		}
 
 		$checksum = $this->generate_checksum( $checksum_source );
 
 		$data[ self::XML_KEY_CHECKSUM ] = $checksum;
-		$data[ self::XML_KEY_HASH ] = $checksum;
+		$data[ self::XML_KEY_HASH ]     = $checksum;
 
 		return $data;
 	}
@@ -182,19 +187,19 @@ final class Types_Import_Export {
 	 * @since 2.1
 	 */
 	private function unset_recursive( $unset_from, $unset_what ) {
-		if( is_array( $unset_from ) ) {
-			
+		if ( is_array( $unset_from ) ) {
+
 			foreach ( $unset_what as $key => $value ) {
-			
+
 				if ( is_array( $value ) && isset( $unset_from[ $key ] ) ) {
 					$unset_from[ $key ] = $this->unset_recursive( $unset_from[ $key ], $value );
 				} else {
 					unset( $unset_from[ $value ] );
 				}
 			}
-			
+
 		}
-		
+
 		return $unset_from;
 	}
 
@@ -205,12 +210,14 @@ final class Types_Import_Export {
 	 * @param array $data An associative array representing an object.
 	 * @param string $title
 	 * @param string $id
+	 *
 	 * @return array Updated $data.
 	 * @since 2.1
 	 */
 	public function annotate_object( $data, $title, $id ) {
-		$data[ self::XML_TYPES_ID ] = $id;
+		$data[ self::XML_TYPES_ID ]    = $id;
 		$data[ self::XML_TYPES_TITLE ] = $title;
+
 		return $data;
 	}
 
@@ -221,6 +228,7 @@ final class Types_Import_Export {
 	 * Note: Do not touch this.
 	 *
 	 * @param array $data
+	 *
 	 * @return string Checksum
 	 * @since 2.1
 	 */
@@ -233,6 +241,7 @@ final class Types_Import_Export {
 	 * Sort a multidimensional array by keys recursively.
 	 *
 	 * @param array|mixed $data
+	 *
 	 * @return array|mixed Sorted $data.
 	 * @since 2.1
 	 */
@@ -243,55 +252,75 @@ final class Types_Import_Export {
 				$data[ $key ] = $this->ksort_as_string( $value );
 			}
 		}
+
 		return $data;
 	}
 
 
 	/**
 	 * Import field definitions for given domain.
-	 * 
+	 *
 	 * Note: Currently only term fields are supported.
-	 * 
+	 *
 	 * @param string $domain Valid field domain.
 	 * @param SimpleXMLElement $data Import data from XML.
 	 * @param string $fields_key Node name where the field definitions can be found.
 	 * @param bool $delete_other_fields If true, fields that are not being imported will be deleted from the site.
-	 * @param array $field_settings Part of $_POST from the import form related to these fields. 
+	 * @param array $field_settings Part of $_POST from the import form related to these fields.
+	 * @param array $args Used for making skip/overwrite decisions per item (used for toolset-based themes import)
 	 *
 	 * @return array
 	 */
-	public function process_field_definition_import_per_domain( $domain, $data, $fields_key, $delete_other_fields, $field_settings ) {
+	public function process_field_definition_import_per_domain(
+		$domain,
+		$data,
+		$fields_key,
+		$delete_other_fields,
+		$field_settings,
+		$args = array()
+	) {
 
 		$results = array();
 
 		$fields_to_preserve = array();
 
 		$fields_import_data = array();
-		if( isset( $data->$fields_key ) ) {
+		if ( isset( $data->$fields_key ) ) {
 			/** @noinspection PhpParamsInspection */
 			$fields_import_data = $this->simplexmlelement_to_object( $data->$fields_key, true );
-			$fields_import_data = isset( $fields_import_data[ Types_Import_Export::XML_KEY_FIELD ] ) ? $fields_import_data[ Types_Import_Export::XML_KEY_FIELD ] : array();
+			$fields_import_data = isset( $fields_import_data[ Types_Import_Export::XML_KEY_FIELD ] )
+				? $fields_import_data[ Types_Import_Export::XML_KEY_FIELD ] : array();
 		}
 
-		foreach( $fields_import_data as $field_import_data ) {
+		foreach ( $fields_import_data as $field_import_data ) {
 			$field_slug = $field_import_data['slug'];
 
+			// check if via $_POST the field is allowed
 			$import_field = isset( $field_settings[ $field_slug ] ) && isset( $field_settings[ $field_slug ]['add'] );
 
-			if( $import_field ) {
+			// on toolset based themes we allow every field
+			$import_field = array_key_exists( 'toolset-themes', $args ) ? true : $import_field;
+
+			// User choices on import/update process (TBT toolset-based themes)
+			$field_import_data = tbt_user_choice( $args, $field_import_data );
+			if ( array_key_exists( 'add', $field_import_data ) ) {
+				$import_field = $field_import_data['add'];
+			}
+
+			if ( $import_field ) {
 				$result = $this->import_field_definition( $domain, $field_import_data );
-				if( $result['is_success'] ) {
+				if ( $result['is_success'] ) {
 					$fields_to_preserve[] = $field_slug;
 				}
 				$results[] = array(
-					'type' => ( $result['is_success'] ? 'success' : 'error' ),
+					'type'    => ( $result['is_success'] ? 'success' : 'error' ),
 					'content' => $result['display_message']
 				);
 			}
 		}
 
 		$delete_results = $this->maybe_delete_fields( $domain, $delete_other_fields, $fields_to_preserve );
-		$results = array_merge( $results, $delete_results );
+		$results        = array_merge( $results, $delete_results );
 
 		return $results;
 
@@ -303,18 +332,18 @@ final class Types_Import_Export {
 	 * @param bool $delete_other_fields
 	 * @param string[] $fields_to_preserve Array of field slugs that should be preserved.
 	 *
-	 * @return array 
+	 * @return array
 	 */
 	private function maybe_delete_fields( $domain, $delete_other_fields, $fields_to_preserve ) {
 
 		$results = array();
 
 		$definition_factory = Types_Field_Utils::get_definition_factory_by_domain( $domain );
-		$option_name = $definition_factory->get_option_name_workaround();
+		$option_name        = $definition_factory->get_option_name_workaround();
 
 		if ( $delete_other_fields ) {
 
-			$fields_existing = wpcf_admin_fields_get_fields( false, false, false, $option_name );
+			$fields_existing = wpcf_admin_fields_get_fields( false, false, false, $option_name, false, true );
 
 			foreach ( $fields_existing as $key => $existing_field_definition ) {
 
@@ -326,7 +355,7 @@ final class Types_Import_Export {
 
 				if ( ! in_array( $existing_field_slug, $fields_to_preserve ) ) {
 					$results[] = array(
-						'type' => 'success',
+						'type'    => 'success',
 						'content' => sprintf(
 							__( 'User field "%s" deleted', 'wpcf' ),
 							$existing_field_definition['name']
@@ -353,21 +382,23 @@ final class Types_Import_Export {
 	private function import_field_definition( $domain, $definition_array_import ) {
 
 		$definition = array(
-			'id' => $definition_array_import['id'],
-			'name' => $definition_array_import['name'],
-			'description' => isset( $definition_array_import['description'] ) ? $definition_array_import['description'] : '',
-			'type' => $definition_array_import['type'],
-			'slug' => $definition_array_import['slug'],
-			'data' => ( isset( $definition_array_import['data'] ) && is_array( $definition_array_import['data'] ) ) ? $definition_array_import['data'] : array()
+			'id'          => $definition_array_import['id'],
+			'name'        => $definition_array_import['name'],
+			'description' => isset( $definition_array_import['description'] ) ? $definition_array_import['description']
+				: '',
+			'type'        => $definition_array_import['type'],
+			'slug'        => $definition_array_import['slug'],
+			'data'        => ( isset( $definition_array_import['data'] ) && is_array( $definition_array_import['data'] ) )
+				? $definition_array_import['data'] : array()
 		);
 
-		if( isset( $definition_array_import['meta_key'] ) ) {
+		if ( isset( $definition_array_import['meta_key'] ) ) {
 			$definition['meta_key'] = $definition_array_import['meta_key'];
 		}
 
 		// WPML
 		global $iclTranslationManagement;
-		if ( !empty( $iclTranslationManagement ) && isset( $definition['wpml_action'] ) ) {
+		if ( ! empty( $iclTranslationManagement ) && isset( $definition['wpml_action'] ) ) {
 			$iclTranslationManagement->settings['custom_fields_translation'][ wpcf_types_get_meta_prefix( $definition ) . $definition['slug'] ] = $definition['wpml_action'];
 			$iclTranslationManagement->save_settings();
 		}
@@ -376,7 +407,7 @@ final class Types_Import_Export {
 		$definition_factory->set_field_definition_workaround( $definition['slug'], $definition );
 
 		return array(
-			'is_success' => true,
+			'is_success'      => true,
 			'display_message' => sprintf( __( 'Term field "%s" added/updated', 'wpcf' ), $definition['name'] )
 		);
 	}
@@ -393,30 +424,63 @@ final class Types_Import_Export {
 	 * @param bool $bulk_overwrite_groups If true, all (conflicting) groups will be overwritten by the ones from import.
 	 * @param bool $delete_other_groups If true, groups that are not being imported will be deleted from the site.
 	 * @param array $group_settings Part of $_POST from the import form related to these groups.
+	 * @param array $args Used for making skip/overwrite decisions per item (used for toolset-based themes import)
+	 *
 	 * @return array
 	 */
-	public function process_field_group_import_per_domain( $domain, $data, $groups_key, $bulk_overwrite_groups, $delete_other_groups, $group_settings ) {
+	public function process_field_group_import_per_domain(
+		$domain,
+		$data,
+		$groups_key,
+		$bulk_overwrite_groups,
+		$delete_other_groups,
+		$group_settings,
+		$args = array()
+	) {
 
-		$results = array();
+		$results            = array();
 		$groups_to_preserve = array();
-		
+
 		$groups_import_data = array();
-		if( isset( $data->$groups_key ) ) {
+		if ( isset( $data->$groups_key ) ) {
 			/** @noinspection PhpParamsInspection */
 			$groups_import_data = $this->simplexmlelement_to_object( $data->$groups_key, true );
-			$groups_import_data = isset( $groups_import_data[ Types_Import_Export::XML_KEY_GROUP ] ) ? $groups_import_data[ Types_Import_Export::XML_KEY_GROUP ] : array();
+			$groups_import_data = isset( $groups_import_data[ Types_Import_Export::XML_KEY_GROUP ] )
+				? $groups_import_data[ Types_Import_Export::XML_KEY_GROUP ] : array();
 		}
-			
-		foreach( $groups_import_data as $group ) {
+
+		foreach ( $groups_import_data as $group ) {
 
 			// ID of group from the import file
 			$import_group_id = wpcf_getarr( $group, Types_Field_Group::XML_ID );
 
-			$group_actions = wpcf_getarr( $group_settings, $import_group_id, array( 'add' => true ) );
-			$group_should_be_imported = isset( $group_actions['add'] );
 
-			if( $group_should_be_imported ) {
-				if( $bulk_overwrite_groups ) {
+			if ( array_key_exists( 'toolset-themes', $args ) ) {
+				// Toolset Themes Import Way
+				$group = tbt_user_choice( $args, $group );
+
+				$group_should_be_imported = $this->tbt_group_should_be_imported( $group );
+
+				if ( array_key_exists( 'add', $group ) ) {
+					$group_actions['add'] = $group['add'];
+				}
+			} else {
+				// Types Import Way
+				$group_actions            = wpcf_getarr( $group_settings, $import_group_id, array( 'add' => true ) );
+				$group_should_be_imported = isset( $group_actions['add'] );
+			}
+
+			if ( $group_should_be_imported ) {
+				if ( $bulk_overwrite_groups                          // bulk overwrite (types import/export page)
+				     || (                                            // OR...
+					     array_key_exists( 'toolset-themes', $args )    //  import with toolset themes
+					     && (                                        //  AND...
+						     ! array_key_exists( 'update', $group )  //      ADD for group is not SET (new item)
+						     || $group['update']                     //      OR... UPDATE is set for item (user choice)
+					     )
+				     )
+				) {
+					// OVERWRITE
 					$group_action = 'update';
 				} else {
 					$group_action = wpcf_getarr( $group_actions, 'update', 'add', array( 'add', 'update' ) );
@@ -427,7 +491,7 @@ final class Types_Import_Export {
 
 			$result = null;
 
-			switch( $group_action ) {
+			switch ( $group_action ) {
 				case 'add':
 					$result = $this->import_field_group( $domain, $group, 'create_new' );
 					break;
@@ -436,12 +500,12 @@ final class Types_Import_Export {
 					break;
 			}
 
-			if( null != $result ) {
+			if ( null != $result ) {
 				$results[] = array(
-					'type' => ( $result['is_success'] ? 'success' : 'error' ),
+					'type'    => ( $result['is_success'] ? 'success' : 'error' ),
 					'content' => $result['display_message']
 				);
-				if( $result['is_success'] ) {
+				if ( $result['is_success'] ) {
 					$groups_to_preserve[] = $result['new_group_id'];
 				}
 			}
@@ -449,7 +513,7 @@ final class Types_Import_Export {
 		}
 
 		$delete_results = $this->maybe_delete_groups( $domain, $delete_other_groups, $groups_to_preserve );
-		$results = array_merge( $results, $delete_results );
+		$results        = array_merge( $results, $delete_results );
 
 		return $results;
 	}
@@ -465,23 +529,24 @@ final class Types_Import_Export {
 	private function maybe_delete_groups( $domain, $delete_other_groups, $groups_to_preserve ) {
 
 		$results = array();
-		if( $delete_other_groups && !empty( $groups_to_preserve ) ) {
+		if ( $delete_other_groups && ! empty( $groups_to_preserve ) ) {
 			$group_factory = Types_Field_Utils::get_group_factory_by_domain( $domain );
-			$all_groups = $group_factory->query_groups();
+			$all_groups    = $group_factory->query_groups();
 
-			foreach( $all_groups as $group_to_delete ) {
-				if( !in_array( $group_to_delete->get_id(), $groups_to_preserve ) ) {
+			foreach ( $all_groups as $group_to_delete ) {
+				if ( ! in_array( $group_to_delete->get_id(), $groups_to_preserve ) ) {
 
 					$deleted_group_name = $group_to_delete->get_name();
-					$deleted = wp_delete_post( $group_to_delete->get_id(), true );
-					if ( !$deleted ) {
+					$deleted            = wp_delete_post( $group_to_delete->get_id(), true );
+					if ( ! $deleted ) {
 						$results[] = array(
-							'type' => 'error',
-							'content' => sprintf( __( 'Term field group "%s" delete failed', 'wpcf' ), $deleted_group_name )
+							'type'    => 'error',
+							'content' => sprintf( __( 'Term field group "%s" delete failed', 'wpcf' ),
+								$deleted_group_name )
 						);
 					} else {
 						$results[] = array(
-							'type' => 'success',
+							'type'    => 'success',
 							'content' => sprintf( __( 'Term field group "%s" deleted', 'wpcf' ), $deleted_group_name )
 						);
 					}
@@ -514,22 +579,22 @@ final class Types_Import_Export {
 
 		$group_factory = Types_Field_Utils::get_group_factory_by_domain( $domain );
 
-		$existing_groups = $group_factory->query_groups( array( 'name' => $group_slug ) );
+		$existing_groups      = $group_factory->query_groups( array( 'name' => $group_slug ) );
 		$group_already_exists = ( count( $existing_groups ) > 0 );
 
 		$new_post = array(
-			'post_status' => $group['post_status'],
-			'post_type' => $group_factory->get_post_type(),
-			'post_title' => $group['post_title'],
-			'post_content' => !empty( $group['post_content'] ) ? $group['post_content'] : '',
+			'post_status'  => $group['post_status'],
+			'post_type'    => $group_factory->get_post_type(),
+			'post_title'   => $group['post_title'],
+			'post_content' => ! empty( $group['post_content'] ) ? $group['post_content'] : '',
 		);
 
 		$update_existing = ( $group_already_exists && 'overwrite' == $conflict_resolution );
 
-		if( $update_existing ) {
+		if ( $update_existing ) {
 			$existing_group = $existing_groups[0];
-			$new_post['ID']	= $existing_group->get_id();
-			$new_group_id = wp_update_post( $new_post );
+			$new_post['ID'] = $existing_group->get_id();
+			$new_group_id   = wp_update_post( $new_post );
 		} else {
 			$new_group_id = wp_insert_post( $new_post, true );
 		}
@@ -537,12 +602,12 @@ final class Types_Import_Export {
 		$is_success = ( ! is_wp_error( $new_group_id ) && 0 < $new_group_id );
 
 		// Update group's postmeta
-		if( $is_success && ! empty( $group['meta'] ) ) {
+		if ( $is_success && ! empty( $group['meta'] ) ) {
 			foreach ( $group['meta'] as $meta_key => $meta_value ) {
-				if( Types_Field_Group_Term::POSTMETA_ASSOCIATED_TAXONOMY == $meta_key ) {
+				if ( Types_Field_Group_Term::POSTMETA_ASSOCIATED_TAXONOMY == $meta_key ) {
 					$meta_values = explode( ',', $meta_value );
 					delete_post_meta( $new_group_id, $meta_key );
-					foreach( $meta_values as $single_meta_value ) {
+					foreach ( $meta_values as $single_meta_value ) {
 						update_post_meta( $new_group_id, $meta_key, $single_meta_value );
 					}
 				} else {
@@ -552,14 +617,14 @@ final class Types_Import_Export {
 		}
 
 		// Create display message
-		if( $is_success ) {
-			if( $update_existing ) {
+		if ( $is_success ) {
+			if ( $update_existing ) {
 				$display_message = sprintf( __( 'Term field group "%s" updated', 'wpcf' ), $group['post_title'] );
 			} else {
 				$display_message = sprintf( __( 'Term field group "%s" added', 'wpcf' ), $group['post_title'] );
 			}
 		} else {
-			if( $update_existing ) {
+			if ( $update_existing ) {
 				$display_message = sprintf( __( 'Term field group "%s" update failed', 'wpcf' ), $group['post_title'] );
 			} else {
 				$display_message = sprintf( __( 'Term field group "%s" insert failed', 'wpcf' ), $group['post_title'] );
@@ -567,9 +632,9 @@ final class Types_Import_Export {
 		}
 
 		return array(
-			'is_success' => $is_success,
+			'is_success'      => $is_success,
 			'display_message' => $display_message,
-			'new_group_id' => $new_group_id
+			'new_group_id'    => $new_group_id
 		);
 	}
 
@@ -581,35 +646,53 @@ final class Types_Import_Export {
 	 * @return array|null
 	 */
 	public function simplexmlelement_to_object( $element, $allways_expand_top_level = false ) {
-		$text_content = trim( (string)$element );
-		if( !empty( $text_content ) ) {
+		$text_content = trim( (string) $element );
+		if ( ! empty( $text_content ) ) {
 			return $text_content;
 		}
 
-		if( $element->count() > 0 ) {
+		if ( $element->count() > 0 ) {
 			$results_by_node_name = array();
-			
+
 			/** @var SimpleXMLElement $child */
-			foreach( $element->children() as $child ) {
+			foreach ( $element->children() as $child ) {
 				$child_name = $child->getName();
-				
-				if( !isset( $results_by_node_name[ $child_name ] ) ) {
+
+				if ( ! isset( $results_by_node_name[ $child_name ] ) ) {
 					$results_by_node_name[ $child_name ] = array();
 				}
 
 				$results_by_node_name[ $child_name ][] = $this->simplexmlelement_to_object( $child, false );
 			}
-			
+
 			$results = array();
-			foreach( $results_by_node_name as $node_name => $children ) {
+			foreach ( $results_by_node_name as $node_name => $children ) {
 				$take_only_first_child = ( count( $children ) == 1 && ! $allways_expand_top_level );
 				$results[ $node_name ] = ( $take_only_first_child ? $children[0] : $children );
 			}
-			
+
 			return $results;
 		}
-		
+
 		return null;
 	}
-	
+
+	/**
+	 * Determines if a group should be imported or not
+	 * This is only relevant for the import process of Toolset Themes
+	 *
+	 * @param $group
+	 *
+	 * @return bool
+	 */
+	private function tbt_group_should_be_imported( $group ) {
+		if ( array_key_exists( 'add', $group ) && $group['add'] === false ) {
+			// the group already exists, but the user wants to keep his version ('add' === false)
+			return false;
+		}
+
+		// import group (initial import / overwrite / duplicate)
+		return true;
+	}
+
 }

@@ -139,52 +139,9 @@ div.tiny-bulk-optimization div.savings div.legend {
 	margin-left: 50%;
 }
 
-div.tiny-bulk-optimization div.savings div.chart {
-	float: left;
-	position: relative;
-	width: 50%;
-	text-align: center;
-}
-
-div.tiny-bulk-optimization div.savings div.chart svg circle.main {
-	fill: #ebebeb;
-	animation: shwoosh 2s ease;
-	transition: stroke-dasharray 1s ease;
-}
-
-div.tiny-bulk-optimization div.savings div.chart svg circle.inner {
-	fill: #fff;
-}
-
-div.tiny-bulk-optimization div.savings div.chart div.value {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	color: #7acb44;
-	text-align: center;
-}
-
-div.tiny-bulk-optimization div.savings div.chart div.value div.percentage {
-	width: 50%;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 65px;
-	font-size: 2.4em;
-	line-height: 1em;
-}
-
-div.tiny-bulk-optimization div.savings div.chart div.value div.label {
-	width: 50%;
-	margin-left: auto;
-	margin-right: auto;
-	font-size: 1.4em;
-	line-height: 1.2em;
-}
-
 div.tiny-bulk-optimization div.savings div.legend {
 	/* margin-left defined inline */
-	padding: 30px 0;
+	padding: 22px 0;
 }
 
 div.tiny-bulk-optimization div.savings table {
@@ -205,13 +162,6 @@ div.tiny-bulk-optimization div.savings table td.description {
 	vertical-align: top;
 	text-align: left;
 	color: #bbb;
-}
-
-@media only screen and (max-width: 400px) {
-	div.tiny-bulk-optimization div.savings div.chart {
-		float: none;
-		width: 100%;
-	}
 }
 
 @media only screen and (max-width: 400px) {
@@ -259,10 +209,6 @@ div.tiny-bulk-optimization div.optimize div.progressbar div.progress {
 	to {
 		background-position: 3200px 0;
 	}
-}
-
-#tiny-bulk-optimization > div.dashboard > div.statistics td.item.costs > div.cost-currency {
-	display: inline-block;
 }
 
 div.tiny-bulk-optimization div.optimize div.progressbar div.numbers {
@@ -318,10 +264,19 @@ div.tiny-bulk-optimization table.whitebox {
 	background-color: #fff;
 }
 
-
 @media only screen and (max-width: 799px) {
 	div.tiny-bulk-optimization table.whitebox {
 		min-width: 250px;
+	}
+}
+
+div.tiny-bulk-optimization table.whitebox th.column-primary {
+	width: 30%;
+}
+
+@media only screen and (max-width: 782px) {
+	div.tiny-bulk-optimization table.whitebox th.column-primary {
+		width: 100%;
 	}
 }
 
@@ -331,13 +286,6 @@ div.tiny-bulk-optimization table.whitebox th.column-author {
 
 div.tiny-bulk-optimization table.whitebox thead th.thumbnail {
 	width: 30px;
-}
-
-div.tiny-bulk-optimization table.whitebox thead th.savings {
-	width: 70px;
-}
-
-div.tiny-bulk-optimization table.whitebox thead th.status {
 }
 
 div.tiny-bulk-optimization table.whitebox th.thumbnail {
@@ -374,7 +322,11 @@ div.tiny-bulk-optimization table.whitebox tr.failed button.toggle-row:before {
 	content: "\f158"; /* more compatibility*/
 }
 
+div.tiny-bulk-optimization table.whitebox tr.no-action button.toggle-row:before {
+	color: gray;
+	content: "\f158"; /* more compatibility*/
+}
+
 div.tiny-bulk-optimization table.whitebox tr.failed.is-expanded span.icon {
 	display: none;
 }
-

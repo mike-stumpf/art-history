@@ -50,17 +50,39 @@ class Types_Api_Handler_Import_From_Zip_File implements Types_Api_Handler_Interf
 
 		add_filter('wpcf_admin_message_store', '__return_false');
 
-        $_POST['overwrite-settings'] = isset( $import_args['overwrite-settings'] ) ? $import_args['overwrite-settings'] : false;
-        $_POST['overwrite-groups'] = isset( $import_args['overwrite-groups'] ) ? $import_args['overwrite-groups'] : 1;
-        $_POST['overwrite-fields'] = isset( $import_args['overwrite-fields'] ) ? $import_args['overwrite-fields'] : 1;
-        $_POST['overwrite-types'] = isset( $import_args['overwrite-types'] ) ? $import_args['overwrite-types'] : 1;
-        $_POST['overwrite-tax'] = isset( $import_args['overwrite-tax'] ) ? $import_args['overwrite-tax'] : 1;
-        $_POST['post_relationship'] = isset( $import_args['post_relationship'] ) ? $import_args['post_relationship'] : false;
-        $_POST['delete-groups'] = isset( $import_args['delete-groups'] ) ? $import_args['delete-groups'] : false;
-        $_POST['delete-fields'] = isset( $import_args['delete-fields'] ) ? $import_args['delete-fields'] : false;
-        $_POST['delete-types']  = isset( $import_args['delete-types'] ) ? $import_args['delete-types'] : false;
-        $_POST['delete-tax'] = isset( $import_args['delete-tax'] ) ? $import_args['delete-tax'] : false;
-        /**
+        $_POST['overwrite-settings'] = isset( $import_args['overwrite-settings'] ) ? (bool) $import_args['overwrite-settings'] : false;
+
+		$_POST['overwrite-groups'] = (
+        	isset( $import_args['overwrite-groups'] ) && 1 == $import_args['overwrite-groups']
+		        ? 1
+		        : 0
+        );
+
+        $_POST['overwrite-fields'] = (
+        	isset( $import_args['overwrite-fields'] ) && 1 == $import_args['overwrite-fields']
+		        ? 1
+		        : 0
+        );
+
+        $_POST['overwrite-types'] = (
+        	isset( $import_args['overwrite-types'] ) && 1 == $import_args['overwrite-types']
+		        ? 1
+		        : 0
+        );
+
+        $_POST['overwrite-tax'] = (
+        	isset( $import_args['overwrite-tax'] ) && 1 == $import_args['overwrite-tax']
+		        ? 1
+                : 0
+        );
+
+        $_POST['post_relationship'] = isset( $import_args['post_relationship'] ) ? (bool) $import_args['post_relationship'] : false;
+        $_POST['delete-groups'] = isset( $import_args['delete-groups'] ) ? (bool) $import_args['delete-groups'] : false;
+        $_POST['delete-fields'] = isset( $import_args['delete-fields'] ) ? (bool) $import_args['delete-fields'] : false;
+        $_POST['delete-types']  = isset( $import_args['delete-types'] ) ? (bool) $import_args['delete-types'] : false;
+        $_POST['delete-tax'] = isset( $import_args['delete-tax'] ) ? (bool) $import_args['delete-tax'] : false;
+
+		/**
          * This can be emtpy string '' or 'wpvdemo', but this second option has a serious bug with xml parsing/looping
          */
         $context = isset( $import_args['context'] ) ? $import_args['context'] : '';

@@ -179,6 +179,10 @@ class Types_Upgrade {
 			array(
 				'version' => 2010000,
 				'callback' => array( $this, 'upgrade_db_to_2010000' )
+			),
+			array(
+				'version' => 2021600,
+				'callback' => array( $this, 'upgrade_db_to_2021600' )
 			)
 		);
 		
@@ -259,6 +263,17 @@ class Types_Upgrade {
 		foreach( $users as $user ) {
 			$roles_manager->clean_the_mess_in_nonadmin_user_caps( $user );
 		}
+	}
+	
+	/**
+	 * Upgrade database to 2021600 (Types 2.2.16) 
+	 *
+	 * Fix types-1142 for non admins with an 'admin' username.
+	 */
+	function upgrade_db_to_2021600() {
+		
+		$roles_manager = WPCF_Roles::getInstance();
+		$roles_manager->clean_the_mess_in_nonadmin_user_caps( 'admin' );
 	}
 
 }

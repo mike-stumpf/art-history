@@ -33,11 +33,11 @@ class Types_Page_Extension_Settings {
 
 		$sections[$setting->get_id()] = array(
 			'slug' => $setting->get_id(),
-			'title' => __( '"Front-end Display" table', 'types' ),
+			'title' => __( '"Front-end Display" table', 'wpcf' ),
 			'content' =>  $view->render(
 				'/setting/checkbox.twig',
 				array(
-					'description' => __( 'Show information about Template, Archive, Views and Forms on:', 'types' ),
+					'description' => __( 'Show information about Template, Archive, Views and Forms on:', 'wpcf' ),
 					'setting' => $setting,
 				)
 			)

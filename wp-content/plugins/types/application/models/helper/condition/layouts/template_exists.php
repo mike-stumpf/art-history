@@ -16,7 +16,7 @@ class Types_Helper_Condition_Layouts_Template_Exists extends Types_Helper_Condit
 
 		$type = self::get_type_name();
 
-		if( isset( self::$layout_id[$type] ) && self::$layout_id[$type] !== null && self::$layout_id !== false )
+		if( isset( self::$layout_id[$type] ) && self::$layout_id[$type] !== null && self::$layout_id[$type] !== false )
 			return true;
 
 		global $wpdb;

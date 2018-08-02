@@ -54,25 +54,28 @@ class Types_Page_Hidden_Helper extends Types_Page_Abstract {
 		$this->redirect_url = false;
 
 		if( isset( $_GET['action'] ) && isset( $_GET['type'] ) ) {
+			
+			$action	= sanitize_text_field( $_GET['action'] );
+			$type	= sanitize_text_field( $_GET['type'] );
 
-			switch( $_GET['action'] ) {
+			switch( $action ) {
 				case 'new-form':
-					$this->redirect_url = $this->new_form_action( $_GET['type'] );
+					$this->redirect_url = $this->new_form_action( $type );
 					break;
 				case 'new-view':
-					$this->redirect_url = $this->new_view_action( $_GET['type'] );
+					$this->redirect_url = $this->new_view_action( $type );
 					break;
 				case 'new-layout-template':
-					$this->redirect_url = $this->new_layout_template_action( $_GET['type'] );
+					$this->redirect_url = $this->new_layout_template_action( $type );
 					break;
 				case 'new-content-template':
-					$this->redirect_url = $this->new_content_template_action( $_GET['type'] );
+					$this->redirect_url = $this->new_content_template_action( $type );
 					break;
 				case 'new-wordpress-archive':
-					$this->redirect_url = $this->new_wordpress_archive_action( $_GET['type'] );
+					$this->redirect_url = $this->new_wordpress_archive_action( $type );
 					break;
 				case 'new-post-field-group':
-					$this->redirect_url = $this->new_post_field_group_action( $_GET['type'] );
+					$this->redirect_url = $this->new_post_field_group_action( $type );
 					break;
 			}
 
@@ -135,7 +138,7 @@ class Types_Page_Hidden_Helper extends Types_Page_Abstract {
 	private function new_post_field_group_action( $type ) {
 
 		$type_object = get_post_type_object( $type );
-		$title = sprintf( __( 'Field Group for %s', 'types' ), $type_object->labels->name );
+		$title = sprintf( __( 'Field Group for %s', 'wpcf' ), $type_object->labels->name );
 		$name = sanitize_title( $title );
 
 		$new_post_field_group = Types_Field_Group_Post_Factory::get_instance()->create( $name, $title, 'publish' );
@@ -146,7 +149,7 @@ class Types_Page_Hidden_Helper extends Types_Page_Abstract {
 		$new_post_field_group->assign_post_type( $type );
 
 		$url = isset( $_GET['ref'] )
-			? 'admin.php?page=wpcf-edit&group_id='.$new_post_field_group->get_id().'&ref='.$_GET['ref']
+			? 'admin.php?page=wpcf-edit&group_id='.$new_post_field_group->get_id().'&ref='.sanitize_text_field( $_GET['ref'] )
 			: 'admin.php?page=wpcf-edit&group_id='.$new_post_field_group->get_id();
 
 		return admin_url( $url );
@@ -155,11 +158,11 @@ class Types_Page_Hidden_Helper extends Types_Page_Abstract {
 	private function add_params_to_url( $url ) {
 		// forward parameter toolset_help_video
 		if( isset( $_GET['toolset_help_video'] ) )
-			$url = add_query_arg( 'toolset_help_video', $_GET['toolset_help_video'], $url );
+			$url = add_query_arg( 'toolset_help_video', sanitize_text_field( $_GET['toolset_help_video'] ), $url );
 
 		// forward parameter ref
 		if( isset( $_GET['ref'] ) )
-			$url = add_query_arg( 'ref', $_GET['ref'], $url );
+			$url = add_query_arg( 'ref', sanitize_text_field( $_GET['ref'] ), $url );
 
 		return $url;
 	}

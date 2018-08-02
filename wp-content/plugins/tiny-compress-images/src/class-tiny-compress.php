@@ -1,7 +1,7 @@
 <?php
 /*
 * Tiny Compress Images - WordPress plugin.
-* Copyright (C) 2015-2016 Voormedia B.V.
+* Copyright (C) 2015-2018 Tinify B.V.
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the Free
@@ -70,7 +70,7 @@ abstract class Tiny_Compress {
 
 		try {
 			$result = $this->validate();
-		} catch (Tiny_Exception $err) {
+		} catch ( Tiny_Exception $err ) {
 			if ( $err->get_status() == 401 ) {
 				$message = 'The key that you have entered is not valid';
 			} else {
@@ -109,7 +109,7 @@ abstract class Tiny_Compress {
 				$resize_opts,
 				$preserve_opts
 			);
-		} catch (Tiny_Exception $err) {
+		} catch ( Tiny_Exception $err ) {
 			$this->call_after_compress_callback();
 			throw $err;
 		}

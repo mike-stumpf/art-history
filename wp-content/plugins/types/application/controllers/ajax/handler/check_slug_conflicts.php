@@ -208,7 +208,8 @@ class Types_Ajax_Handler_Check_Slug_Conflicts extends Types_Ajax_Handler_Abstrac
 
 		// Merge currently registered post types (which might include some from other plugins) and
 		// Types settings (which might include deactivated post types).
-		$post_type_settings = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
+		$post_type_option = new Types_Utils_Post_Type_Option();
+		$post_type_settings = $post_type_option->get_post_types();
 		if( !is_array( $post_type_settings ) ) {
 			return false;
 		}

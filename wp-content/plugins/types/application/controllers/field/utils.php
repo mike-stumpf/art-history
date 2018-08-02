@@ -74,6 +74,28 @@ final class Types_Field_Utils {
 	}
 
 
+	/**
+	 * Get the correct field group factory for provided underlying post type of the field group.
+	 *
+	 * This should not be needed from outside the legacy code.
+	 *
+	 * @param string $group_post_type
+	 * @return Types_Field_Group_Factory
+	 * @throws InvalidArgumentException when the post type doesn't belong to any field group.
+	 * @since 2.2.4
+	 */
+	public static function get_group_factory_by_post_type( $group_post_type ) {
+		$domains = self::get_domains();
+		foreach( $domains as $domain ) {
+			$factory = Types_Field_Group_Factory::get_factory_by_domain( $domain );
+			if( $factory->get_post_type() == $group_post_type ) {
+				return $factory;
+			}
+		}
+		throw new InvalidArgumentException( 'Invalid field group post type.' );
+	}
+
+
 	private static $domain_legacy_value_map = array(
 		self::DOMAIN_POSTS => 'postmeta',
 		self::DOMAIN_USERS => 'usermeta',
@@ -128,7 +150,9 @@ final class Types_Field_Utils {
 	 * Obtain toolset-forms "field configuration", which is an array of settings for specific field instance.
 	 *
 	 * @param WPCF_Field_Instance $field
+	 *
 	 * @since 1.9
+	 * @return array
 	 */
 	public static function get_toolset_forms_field_config( $field ) {
 		return wptoolset_form_filter_types_field(

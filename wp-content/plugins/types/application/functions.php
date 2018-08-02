@@ -68,7 +68,7 @@ if( !function_exists( 'wpcf_getarr' ) ) {
 	 * @since 1.9
 	 */
 	function wpcf_getarr( &$source, $key, $default = '', $valid = null ) {
-		if ( isset( $source[ $key ] ) ) {
+		if ( is_array( $source ) && array_key_exists( $key, $source ) ) {
 			$val = $source[ $key ];
 			if ( is_array( $valid ) && ! in_array( $val, $valid ) ) {
 				return $default;

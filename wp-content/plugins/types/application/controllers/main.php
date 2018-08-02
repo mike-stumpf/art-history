@@ -115,21 +115,39 @@ final class Types_Main {
 	/**
 	 * Early loading actions.
 	 *
-	 * Initialize the Toolset Common library with the new loader.
-	 * Initialize asset manager if we're not doing an AJAX call.
-	 * Initialize the Types hook API.
-	 *
 	 * @since 2.0
 	 */
 	public function after_setup_theme() {
-		Toolset_Common_Bootstrap::getInstance();
 
-		// If an AJAX callback handler needs other assets, they should initialize the asset manager by themselves.
-		if( !defined( 'DOING_AJAX' ) ) {
+		// Initialize the Toolset Common library
+		Toolset_Common_Bootstrap::get_instance();
+
+		$this->setup_autoloader();
+
+		// If an AJAX callback handler needs other assets, it should initialize the asset manager by itself.
+		if( $this->get_plugin_mode() != self::MODE_AJAX ) {
 			Types_Assets::get_instance()->initialize_scripts_and_styles();
 		}
 
+		// Handle embedded plugin mode
+		Types_Embedded::initialize();
+
 		Types_Api::initialize();
+
+		Types_Interop_Mediator::initialize();
+	}
+
+
+	private function setup_autoloader() {
+
+		// It is possible to regenerate the classmap with Zend framework.
+		//
+		// See the "recreate_classmap.sh" script in the plugin root directory.
+		$classmap = include( TYPES_ABSPATH . '/application/autoload_classmap.php' );
+
+		// Use Toolset_Common_Autoloader
+		do_action( 'toolset_register_classmap', $classmap );
+
 	}
 
 

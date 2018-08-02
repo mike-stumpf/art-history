@@ -23,12 +23,26 @@ class Types_Information_Controller {
 		return true;
 	}
 
+	/**
+	 * We don't want to show "archive" for media/pages and "template" for media
+	 *
+	 * @param $columns
+	 * @param $post_type
+	 *
+	 * @return mixed
+	 */
 	public function filter_columns( $columns, $post_type ) {
-		if( isset( $columns['archive'] ) && ( $post_type == 'post' || $post_type == 'page' || $post_type == 'attachment' ) )
-			unset( $columns['archive'] );
+		if( $post_type != 'attachment' && $post_type != 'page' ) {
+			return $columns;
+		}
 
-		if( isset( $columns['template'] ) && ( $post_type == 'post' || $post_type == 'page' ) )
+		if( array_key_exists( 'archive', $columns ) ) {
+			unset( $columns['archive'] );
+		}
+
+		if( $post_type == 'attachment' && array_key_exists( 'template', $columns ) ) {
 			unset( $columns['template'] );
+		}
 
 		return $columns;
 	}
@@ -45,17 +59,6 @@ class Types_Information_Controller {
 
 		// script / style
 		add_action( 'admin_enqueue_scripts', array( $this, 'on_admin_enqueue_scripts' ) );
-
-		// special case: layouts active, but not compatible
-		// the only case where we don't show the table
-		if( defined( 'WPDDL_DEVELOPMENT' ) || defined( 'WPDDL_PRODUCTION' ) )  {
-			$compatible = new Types_Helper_Condition_Layouts_Compatible();
-			if( !$compatible->valid() ) {
-				$data_files = array( TYPES_DATA . '/information/layouts-not-compatible.php' );
-				$this->show_data_as_container_in_meta_box( $data_files );
-				return;
-			}
-		}
 
 		/* data files */
 		$data_files = array(
@@ -113,7 +116,7 @@ class Types_Information_Controller {
 			'/information/table.twig',
 			array(
 				'labels' => array(
-					'or' => __( 'Or...', 'types' )
+					'or' => __( 'Or...', 'wpcf' )
 				),
 				'thead' => $thead_views,
 				'table' => $this->information
@@ -141,7 +144,7 @@ class Types_Information_Controller {
 		// outer box
 		$output_meta_box = new Types_Helper_Output_Meta_Box();
 		$output_meta_box->set_id( $this->information->get_id() );
-		$output_meta_box->set_title( __( 'Front-end Display', 'types' ) );
+		$output_meta_box->set_title( __( 'Front-end Display', 'wpcf' ) );
 		// $output_meta_box->set_css_class( 'types-table-in-meta-box' );
 
 		$this->information->set_output_container( $output_meta_box );
@@ -206,7 +209,7 @@ class Types_Information_Controller {
 		// we want to display dashboard in a meta-box
 		$output_meta_box = new Types_Helper_Output_Meta_Box();
 		$output_meta_box->set_id( $this->information->get_id() );
-		$output_meta_box->set_title( __( 'Front-end Display', 'types' ) );
+		$output_meta_box->set_title( __( 'Front-end Display', 'wpcf' ) );
 		$output_meta_box->set_css_class( 'types-table-in-meta-box' );
 
 		$this->information->set_output_container( $output_meta_box );

@@ -21,10 +21,18 @@ class Types_Helper_Twig {
 		$this->filesystem = new Twig_Loader_Filesystem();
 		$this->filesystem->addPath( TYPES_ABSPATH . '/application/views' );
 		$this->twig = new Twig_Environment( $this->filesystem );
-		$this->twig->addFunction( '__', new Twig_SimpleFunction( '__', array( $this, 'translate' ) ) );
+		$this->twig->addFunction( new Twig_SimpleFunction( '__', array( $this, 'translate' ) ) );
 	}
 
-	public function translate( $text, $domain = 'types' ) {
+	/**
+	 * This allows to use __( 'Text to translate', 'wpcf' ) in twig templates
+	 *
+	 * @param $text
+	 * @param string $domain
+	 *
+	 * @return mixed
+	 */
+	public function translate( $text, $domain = 'wpcf' ) {
 		return __( $text, $domain );
 	}
 	

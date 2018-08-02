@@ -3,7 +3,7 @@
 		<p class="status"><?php
 		if ( $status->ok ) {
 			if ( isset( $status->message ) ) {
-				echo esc_html__( $status->message, 'tiny-compress-images' );
+				echo esc_html( $status->message, 'tiny-compress-images' );
 			} else {
 				echo esc_html__( 'Your account is connected', 'tiny-compress-images' );
 			}
@@ -15,18 +15,20 @@
 		if ( $status->ok ) {
 			$compressions = self::get_compression_count();
 			/* It is not possible to check if a subscription is free or flexible. */
-			if ( Tiny_Config::MONTHLY_FREE_COMPRESSIONS == $compressions ) {
-				$link = '<a href="https://tinypng.com/developers" target="_blank">' . esc_html__( 'TinyPNG API account', 'tiny-compress-images' ) . '</a>';
-				printf( esc_html__(
-					'You have reached your limit of %s compressions this month.',
+			if ( self::limit_reached() ) {
+				$link = '<a href="https://tinypng.com/dashboard/api" target="_blank">' . esc_html__( 'TinyPNG API account', 'tiny-compress-images' ) . '</a>';
+				esc_html_e(
+					'You have reached your free limit this month.',
 					'tiny-compress-images'
-				), $compressions );
+				);
 				echo '<br>';
+				/* translators: %s: link saying TinyPNG API account */
 				printf( esc_html__(
-					'If you need to compress more images you can change your %s.',
+					'If you need to compress more images you can upgrade your %s.',
 					'tiny-compress-images'
 				), $link );
 			} else {
+				/* translators: %s: number of compressions */
 				printf( esc_html__(
 					'You have made %s compressions this month.',
 					'tiny-compress-images'
@@ -35,7 +37,7 @@
 		} else {
 			if ( isset( $status->message ) ) {
 				echo esc_html__( 'Error', 'tiny-compress-images' ) . ': ';
-				echo esc_html__( $status->message, 'tiny-compress-images' );
+				echo esc_html( $status->message, 'tiny-compress-images' );
 			} else {
 				esc_html__(
 					'API status could not be checked, enable cURL for more information',
@@ -46,6 +48,7 @@
 		?></p>
 		<p><?php
 		if ( defined( 'TINY_API_KEY' ) ) {
+			/* translators: %s: wp-config.php */
 			echo sprintf( esc_html__(
 				'The API key has been configured in %s',
 				'tiny-compress-images'
@@ -61,11 +64,12 @@
 	<div class="update" style="display: none">
 		<h4><?php echo esc_html__( 'Change your API key', 'tiny-compress-images' ); ?></h4>
 		<p class="introduction"><?php
-			$link = sprintf( '<a href="https://tinypng.com/developers" target="_blank">%s</a>',
-				esc_html__( 'TinyPNG developer section', 'tiny-compress-images' )
+			$link = sprintf( '<a href="https://tinypng.com/dashboard/api" target="_blank">%s</a>',
+				esc_html__( 'API dashboard', 'tiny-compress-images' )
 			);
+			/* translators: %s: link saying API dashboard */
 			printf( esc_html__(
-				'Enter your API key. If you have lost your key, go to the %s to retrieve it.',
+				'Enter your API key. If you have lost your key, go to your %s to retrieve it.',
 				'tiny-compress-images'
 			), $link );
 		?></p>

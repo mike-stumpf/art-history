@@ -1,7 +1,7 @@
 <?php
 /*
 * Tiny Compress Images - WordPress plugin.
-* Copyright (C) 2015-2016 Voormedia B.V.
+* Copyright (C) 2015-2018 Tinify B.V.
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the Free
@@ -66,7 +66,7 @@ class Tiny_Compress_Client extends Tiny_Compress {
 			\Tinify\Tinify::getClient()->request( 'post', '/shrink' );
 			return true;
 
-		} catch (\Tinify\Exception $err) {
+		} catch ( \Tinify\Exception $err ) {
 			$this->last_error_code = $err->status;
 
 			if ( 429 == $err->status || 400 == $err->status ) {
@@ -115,7 +115,7 @@ class Tiny_Compress_Client extends Tiny_Compress {
 			$buffer = $result->toBuffer();
 			return array( $buffer, $meta );
 
-		} catch (\Tinify\Exception $err) {
+		} catch ( \Tinify\Exception $err ) {
 			$this->last_error_code = $err->status;
 
 			throw new Tiny_Exception(
@@ -123,7 +123,7 @@ class Tiny_Compress_Client extends Tiny_Compress {
 				get_class( $err ),
 				$err->status
 			);
-		}
+		}// End try().
 	}
 
 	public function create_key( $email, $options ) {
@@ -134,7 +134,7 @@ class Tiny_Compress_Client extends Tiny_Compress {
 			);
 
 			\Tinify\createKey( $email, $options );
-		} catch (\Tinify\Exception $err) {
+		} catch ( \Tinify\Exception $err ) {
 			$this->last_error_code = $err->status;
 
 			throw new Tiny_Exception(

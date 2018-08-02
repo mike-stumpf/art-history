@@ -16,7 +16,7 @@ class Types_Helper_Create_Layout {
 		// set name if no available
 		if( ! $name ) {
 			$type_object = get_post_type_object( $type );
-			$name = sprintf( __( 'Template for %s', 'types' ), $type_object->labels->name );
+			$name = sprintf( __( 'Template for %s', 'wpcf' ), $type_object->labels->name );
 		}
 
 		$name = $this->validate_name( $name );
@@ -108,7 +108,7 @@ class Types_Helper_Create_Layout {
 		$layout = WPDD_Layouts::create_layout( 12, 'fluid' );
 
         $parent_post_name = '';
-        $parent_ID = apply_filters('ddl-get-default-' . WPDDL_Options::PARENTS_OPTIONS, WPDDL_Options::PARENTS_OPTIONS);
+        $parent_ID = apply_filters('ddl-get-default-' . WPDDL_Options::PARENTS_OPTIONS, 0, WPDDL_Options::PARENTS_OPTIONS);
         if ($parent_ID) {
             $parent_post_name = WPDD_Layouts_Cache_Singleton::get_name_by_id($parent_ID);
         }

@@ -41,7 +41,7 @@ final class Types_Asset_Help_Tab_Loader {
 			return;
 		}
 
-		$current_page = wpcf_getget( 'page', null );
+		$current_page = sanitize_text_field( wpcf_getget( 'page', null ) );
 		if ( null == $current_page ) {
 			return;
 		}

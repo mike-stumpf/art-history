@@ -22,8 +22,8 @@ final class Types_Ajax_Handler_Field_Control_Action extends Types_Ajax_Handler_A
 		$am->ajax_begin( array( 'nonce' => $am->get_action_js_name( Types_Ajax::CALLBACK_FIELD_CONTROL_ACTION ) ) );
 
 		// Read and validate input
-		$field_action = wpcf_getpost( 'field_action' );
-		$fields = wpcf_getpost( 'fields' );
+		$field_action = sanitize_text_field( wpcf_getpost( 'field_action' ) );
+		$fields = wpcf_getpost( 'fields' ); // array of values, will be sanitized when processed
 
 		$current_domain = wpcf_getpost( 'domain', null, Types_Field_Utils::get_domains() );
 		if( null == $current_domain ) {
@@ -34,6 +34,7 @@ final class Types_Ajax_Handler_Field_Control_Action extends Types_Ajax_Handler_A
 			$am->ajax_finish( array( 'message' => __( 'No fields have been selected.', 'wpcf' ) ), false );
 		}
 
+		// will be sanitized when/if used by the action-specific method
 		$action_specific_data = wpcf_getpost( 'action_specific', array() );
 
 		// Process fields one by one
@@ -92,17 +93,19 @@ final class Types_Ajax_Handler_Field_Control_Action extends Types_Ajax_Handler_A
 	 */
 	private function single_field_control_action( $action_name, $field, $domain, $action_specific_data ) {
 
-		$field_slug = wpcf_getarr( $field, 'slug' );
+		$field_slug = sanitize_text_field( wpcf_getarr( $field, 'slug' ) );
 
 		switch ( $action_name ) {
 
 			case 'manage_with_types':
-				return $this->start_managing_field( wpcf_getarr( $field, 'metaKey' ), $domain );
+				return $this->start_managing_field( sanitize_text_field( wpcf_getarr( $field, 'metaKey' ) ), $domain );
 
 			case 'stop_managing_with_types':
 				return $this->stop_managing_field( $field_slug, $domain );
 
 			case 'change_group_assignment':
+				// $action_specific_data is a list of group slugs, will be sanitized by
+				// trying to load a group model
 				return $this->change_assignment_to_groups( $field_slug, $domain, $action_specific_data );
 
 			case 'delete_field':
@@ -284,7 +287,7 @@ final class Types_Ajax_Handler_Field_Control_Action extends Types_Ajax_Handler_A
 			return new WP_Error( 42, sprintf( __( 'Field "%s" will not be converted because it is not managed by Types.', 'wpcf' ), sanitize_text_field( $field_slug ) ) );
 		}
 
-		$type_slug = wpcf_getarr( $arguments, 'field_type' );
+		$type_slug = sanitize_text_field( wpcf_getarr( $arguments, 'field_type' ) );
 		$target_type = Types_Field_Type_Definition_Factory::get_instance()->load_field_type_definition( $type_slug );
 		if( null == $target_type ) {
 			return new WP_Error( 42, sprintf( __( 'Unknown field type "%s".', 'wpcf' ), $type_slug ) );

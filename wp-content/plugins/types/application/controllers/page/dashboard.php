@@ -58,7 +58,7 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'Toolset Dashboard', 'types' );
+		return __( 'Toolset Dashboard', 'wpcf' );
 	}
 
 	/**
@@ -66,7 +66,7 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 	 * @return string
 	 */
 	public function get_menu_title() {
-		return __( 'Dashboard', 'types' );
+		return __( 'Dashboard', 'wpcf' );
 	}
 
 
@@ -172,9 +172,9 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 			'table_3rd' => $this->table_3rd,
 			'table_wordpress' => $this->table_wordpress,
 			'labels' => array(
-				'create_type' => __( 'Add new post type', 'types' ),
+				'create_type' => __( 'Add new post type', 'wpcf' ),
 				'msg_no_custom_post_types' =>
-					__( 'To get started, create your first custom type. Then, you will be able to add fields and taxonomy and design how it displays.', 'types' )
+					__( 'To get started, create your first custom type. Then, you will be able to add fields and taxonomy and design how it displays.', 'wpcf' )
 			)
 
 		);
@@ -191,8 +191,10 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 		if( $this->types_by_toolset !== null )
 			return $this->types_by_toolset;
 
+		$post_type_option = new Types_Utils_Post_Type_Option();
+
 		$cpts_raw = ! isset( $_GET['toolset-dashboard-simulate-no-custom-post-types'] )
-			? get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() )
+			? $post_type_option->get_post_types()
 			: array();
 
 		// remove buildin types
@@ -291,17 +293,11 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 		// no user settings yet
 		if( empty( $user_settings ) ) {
 
-			// by default no post
-			if( isset( $cpts['post'] ) )
-				unset( $cpts['post'] );
-
-			// by default no page
-			if( isset( $cpts['page'] ) )
-				unset( $cpts['page'] );
-
 			// by default no media
-			if( isset( $cpts['attachment'] ) )
+			if( isset( $cpts['attachment'] ) ) {
 				unset( $cpts['attachment'] );
+			}
+
 
 			$cpts_filtered = $cpts;
 		} else {
@@ -330,7 +326,7 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 		if( ! empty( $post_types ) )
 			$this->table_toolset = $this->get_dashboard_types_table(
 				$post_types,
-				__( 'Custom post types that you created with Toolset', 'types' )
+				__( 'Custom post types that you created with Toolset', 'wpcf' )
 			);
 
 
@@ -340,7 +336,7 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 		if( ! empty( $post_types ) )
 			$this->table_3rd = $this->get_dashboard_types_table(
 				$post_types,
-				__( 'Custom post types created by the theme and other plugins', 'types' ),
+				__( 'Custom post types created by the theme and other plugins', 'wpcf' ),
 				false
 			);
 
@@ -351,7 +347,7 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 		if( ! empty( $post_types ) )
 			$this->table_wordpress = $this->get_dashboard_types_table(
 				$post_types,
-				__( 'Built-in post types created by WordPress', 'types' ),
+				__( 'Built-in post types created by WordPress', 'wpcf' ),
 				false
 			);
 
@@ -376,20 +372,20 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 		// Types by Toolset
 		$cpts = $this->get_types_by_toolset();
 		if( ! empty( $cpts ) ) {
-			$string_legend = __( 'Custom post types that you created with Toolset', 'types' );
+			$string_legend = __( 'Custom post types that you created with Toolset', 'wpcf' );
 			$return .= $this->screen_settings_fieldset( $cpts, $cpts_filtered, $string_legend );
 		}
 
 		// Types by 3rd
 		$cpts = $this->get_types_by_3rd();
 		if( ! empty( $cpts ) ) {
-			$string_legend = __( 'Custom post types created by the theme and other plugins', 'types' );
+			$string_legend = __( 'Custom post types created by the theme and other plugins', 'wpcf' );
 			$return .= $this->screen_settings_fieldset( $cpts, $cpts_filtered, $string_legend );
 		}
 
 		// Types by WordPress
 		$cpts = $this->get_types_by_wordpress();
-		$string_legend = __( 'Built-in post types created by WordPress', 'types' );
+		$string_legend = __( 'Built-in post types created by WordPress', 'wpcf' );
 		$return .= $this->screen_settings_fieldset( $cpts, $cpts_filtered, $string_legend );
 
 		$return .= get_submit_button( __( 'Apply' ), 'button button-primary', 'screen-options-apply', false );
@@ -420,14 +416,24 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 
 	public function screen_settings_save($status, $option, $value) {
 		if ( 'toolset_dashboard_screen_post_types' == $option ) {
-			$value = $_POST['toolset_dashboard_screen_post_types'];
+			if ( is_array( $_POST['toolset_dashboard_screen_post_types'] ) ) {
+				$toolset_dashboard_screen_post_types = array();
+				foreach( $_POST['toolset_dashboard_screen_post_types'] as $tdspt_key => $tdspt_value ) {
+					$tdspt_key = sanitize_text_field( $tdspt_key );
+					$tdspt_value = sanitize_text_field( $tdspt_value );
+					$toolset_dashboard_screen_post_types[ $tdspt_key ] = $tdspt_value;
+				}
+			} else {
+				$toolset_dashboard_screen_post_types = sanitize_text_field( $_POST['toolset_dashboard_screen_post_types'] );
+			}
+			$value = $toolset_dashboard_screen_post_types;
 		}
 		return $value;
 	}
 
 
 	private function help_information() {
-		$title = __('Toolset Dashboard', 'types');
+		$title = __('Toolset Dashboard', 'wpcf');
 		$help_content = $this->get_twig()->render(
 			'/page/dashboard/help.twig',
 			array( 'title' => $title )
@@ -483,10 +489,10 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 				'/page/dashboard/table/tbody-row.twig',
 				array(
 					'labels'    => array(
-						'or'                 => __( 'Or...', 'types' ),
-						'create_taxonomy'    => __( 'Create taxonomy', 'types' ),
-						'create_field_group' => __( 'Create field group', 'types' ),
-						'no_archive_for'     => __( 'No archive available for %s', 'types' ),
+						'or'                 => __( 'Or...', 'wpcf' ),
+						'create_taxonomy'    => __( 'Create taxonomy', 'wpcf' ),
+						'create_field_group' => __( 'Create field group', 'wpcf' ),
+						'no_archive_for'     => __( 'No archive available for %s', 'wpcf' ),
 					),
 					'admin_url' => admin_url(),
 					'post_type' => $post_type,
@@ -507,9 +513,9 @@ final class Types_Page_Dashboard extends Types_Page_Abstract {
 			array(
 				'labels'    => array(
 					'headline' => $headline,
-					'admin'    => __( 'WordPress admin', 'types' ),
-					'frontend' => __( 'Front-end', 'types' ),
-					'or'       => __( 'Or...', 'types' ),
+					'admin'    => __( 'WordPress admin', 'wpcf' ),
+					'frontend' => __( 'Front-end', 'wpcf' ),
+					'or'       => __( 'Or...', 'wpcf' ),
 				),
 				'admin_url' => admin_url(),
 				'thead'     => $data_thead,

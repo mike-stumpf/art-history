@@ -20,12 +20,18 @@ final class Types_Ajax_Handler_Settings_Action extends Types_Ajax_Handler_Abstra
 
 		$am->ajax_begin( array( 'nonce' => $am->get_action_js_name( Types_Ajax::CALLBACK_SETTINGS_ACTION ) ) );
 
-		$setting = wpcf_getpost( 'setting' );
-		$value = wpcf_getpost( 'setting_value' );
+		$setting = sanitize_text_field( wpcf_getpost( 'setting' ) );
+		$setting_value = wpcf_getpost( 'setting_value' );
 
-		if( !is_array( $value ) ) {
-			parse_str( $value, $value );
-			$value = array_pop( $value );
+		if( !is_array( $setting_value ) ) {
+			parse_str( $setting_value, $setting_value );
+			$setting_value = array_pop( $setting_value );
+		}
+
+		$sanitized_value = array();
+		foreach( $setting_value as $key => $value ) {
+			$sanitized_key = sanitize_title( $key );
+			$sanitized_value[ $sanitized_key ] = sanitize_text_field( $value );
 		}
 
 		// use toolset settings if available
@@ -34,12 +40,12 @@ final class Types_Ajax_Handler_Settings_Action extends Types_Ajax_Handler_Abstra
 			$toolset_settings = Toolset_Settings::get_instance();
 
 			if( method_exists( $toolset_settings, 'save' ) ) {
-				$toolset_settings[$setting] = $value;
+				$toolset_settings[ $setting ] = $sanitized_value;
 				$toolset_settings->save();
 				$am->ajax_finish( 'success', true );
 			}
 		} else {
-			update_option( $setting, $value );
+			update_option( $setting, $sanitized_value );
 			$am->ajax_finish( 'success', true );
 		}
 

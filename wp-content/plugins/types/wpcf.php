@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/types/
 Description: Toolset Types defines custom content in WordPress. Easily create custom post types, fields and taxonomy and connect everything together.
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com
-Version: 2.2.2
+Version: 2.3.2
 License: GPLv2 or later
 
 Types is free software: you can redistribute it and/or modify
@@ -23,32 +23,45 @@ along with Types. If not, see http://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 // abort if called directly
-if( !function_exists( 'add_action' ) )
+if ( ! function_exists( 'add_action' ) ) {
 	die( 'Types is a WordPress plugin and can not be called directly.' );
+}
 
 // version
-if( ! defined( 'TYPES_VERSION' ) )
-	define( 'TYPES_VERSION', '2.2.2' );
+if ( ! defined( 'TYPES_VERSION' ) ) {
+	define( 'TYPES_VERSION', '2.3.2' );
+}
 
 // backward compatibility
-if ( ! defined( 'WPCF_VERSION' ) )
+if ( ! defined( 'WPCF_VERSION' ) ) {
 	define( 'WPCF_VERSION', TYPES_VERSION );
+}
 
 // release notes
-if( ! defined( 'TYPES_RELEASE_NOTES' ) )
-	define( 'TYPES_RELEASE_NOTES', 'https://wp-types.com/version/types-2-2-2/?utm_source=typesplugin&utm_campaign=types&utm_medium=release-notes-admin-notice&utm_term=Types 2.2 release notes' );
+if ( ! defined( 'TYPES_RELEASE_NOTES' ) ) {
+	define(
+		'TYPES_RELEASE_NOTES',
+		'https://wp-types.com/version/types-' . str_replace( '.', '-', TYPES_VERSION )
+		. '/?utm_source=typesplugin&utm_campaign=types&utm_medium=release-notes-admin-notice&utm_term=Types%20' . TYPES_VERSION . '%20release%20notes'
+	);
+}
+
 
 /*
  * Path Constants
  */
-if( ! defined( 'TYPES_ABSPATH' ) )
+if ( ! defined( 'TYPES_ABSPATH' ) ) {
 	define( 'TYPES_ABSPATH', dirname( __FILE__ ) );
+}
 
-if( ! defined( 'TYPES_RELPATH' ) )
+
+if ( ! defined( 'TYPES_RELPATH' ) ) {
 	define( 'TYPES_RELPATH', plugins_url() . '/' . basename( TYPES_ABSPATH ) );
+}
 
-if( ! defined( 'TYPES_DATA' ) )
+if ( ! defined( 'TYPES_DATA' ) ) {
 	define( 'TYPES_DATA', dirname( __FILE__ ) . '/application/data' );
+}
 
 /*
  * Bootstrap Types
@@ -63,4 +76,4 @@ register_deactivation_hook( __FILE__, 'wpcf_deactivation_hook' );
 register_activation_hook( __FILE__, 'wpcf_activation_hook' );
 
 // adds "Leave feedback" link on plugins list page
-add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'types_plugin_action_links' );
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'types_plugin_action_links' );

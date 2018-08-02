@@ -41,6 +41,9 @@ final class Types_Admin {
 		}
 
 		$this->init_page_extensions();
+
+		// admin notices
+		Toolset_Singleton_Factory::get( 'Types_Admin_Notices_Free_Version' );
 	}
 
 

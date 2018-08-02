@@ -83,7 +83,7 @@ abstract class Types_Field_Group_Factory {
 		$fg_post = null;
 
 		// http://stackoverflow.com/questions/2559923/shortest-way-to-check-if-a-variable-contains-positive-integer-using-php
-		if ( is_scalar( $field_group ) && ( $field_group == (int) $field_group ) && ( (int) $field_group > 0 ) ) {
+		if ( is_numeric( $field_group ) && ( $field_group == (int) $field_group ) && ( (int) $field_group > 0 ) ) {
 			$fg_post = WP_Post::get_instance( $field_group );
 		} else if ( is_string( $field_group ) ) {
 			$query = new WP_Query( array( 'post_type' => $this->get_post_type(), 'name' => $field_group, 'posts_per_page' => 1 ) );
@@ -115,6 +115,10 @@ abstract class Types_Field_Group_Factory {
      * @return null|Types_Field_Group Field group instance or null if it's not cached.
 	 */
 	private function get_from_cache( $field_group_name ) {
+        if( defined( 'TYPES_DISABLE_CACHE' ) && TYPES_DISABLE_CACHE ) {
+            // disable caching
+            return null;
+        }
 		return wpcf_getarr( $this->field_groups, $field_group_name, null );
 	}
 
@@ -125,6 +129,10 @@ abstract class Types_Field_Group_Factory {
 	 * @param Types_Field_Group $field_group
 	 */
 	private function save_to_cache( $field_group ) {
+        if( defined( 'TYPES_DISABLE_CACHE' ) && TYPES_DISABLE_CACHE ) {
+            // disable caching
+            return;
+        }
 		$this->field_groups[ $field_group->get_slug() ] = $field_group;
 	}
 

@@ -25,8 +25,13 @@ class Types_Helper_Condition_Views_Views_Exist extends Types_Helper_Condition_Vi
 		$views_settings = $wpdb->get_results( "SELECT meta_value, post_id FROM $wpdb->postmeta WHERE meta_key = '_wpv_settings'" );
 
 		foreach( $views_settings as $setting ) {
-
 			$setting->meta_value = unserialize( $setting->meta_value );
+			if( ! isset( $setting->meta_value['view-query-mode'] )
+			    || $setting->meta_value['view-query-mode'] != 'normal' ) {
+				// no "View"
+				continue;
+			}
+
 			if( isset( $setting->meta_value['post_type'] )
 			    && in_array( $cpt->name, $setting->meta_value['post_type'] ) ) {
 

@@ -12,26 +12,26 @@ return array(
 			array(
 				'type'   => 'dialog',
 				'class'  => 'button',
-				'label'  => __( 'Create Form', 'types' ),
+				'label'  => __( 'Create Form', 'wpcf' ),
 				'dialog' => array(
 					'id' => 'create-form',
 					'description' => array(
 						array(
 							'type' => 'paragraph',
 							'content' => __( 'To create a form for front-end content submission and editing, you need to have CRED plugin installed.
-                    CRED is part of the complete Toolset package for adding and displaying custom content.', 'types' )
+                    CRED is part of the complete Toolset package for adding and displaying custom content.', 'wpcf' )
 						),
 						array(
 							'type' => 'link',
 							'external' => true,
-							'label' => __( 'Learn how CRED forms work', 'types' ),
+							'label' => __( 'Learn how CRED forms work', 'wpcf' ),
 							'target'  => Types_Helper_Url::get_url( 'how-cred-work', 'popup' )
 						),
 						/*
 						array(
 							'type' => 'link',
 							'external' => true,
-							'label' => __( 'Free Toolset Trial', 'types' ),
+							'label' => __( 'Free Toolset Trial', 'wpcf' ),
 							'target'  => Types_Helper_Url::get_url( 'free-trial', 'popup' )
 						),
 						*/
@@ -55,7 +55,7 @@ return array(
 				'type'   => 'link',
 				'class'  => 'button',
 				'target' => '%POST-CREATE-FORM%',
-				'label'  => __( 'Create form', 'types' )
+				'label'  => __( 'Create form', 'wpcf' )
 			)
 		)
 	),
@@ -73,13 +73,13 @@ return array(
 		'description' => array(
 			array(
 				'type' => 'paragraph',
-				'content' => '%POST-FORMS-LIST%', 'types'
+				'content' => '%POST-FORMS-LIST%',
 			),
 			array(
 				'type'   => 'link',
 				'class'  => 'button',
 				'target' => '%POST-CREATE-FORM%',
-				'label'  => __( 'Create form', 'types' )
+				'label'  => __( 'Create form', 'wpcf' )
 			)
 		)
 	),
@@ -97,14 +97,14 @@ return array(
 			array(
 				'type' => 'paragraph',
 				'content' => __(
-					'You can create forms for front-end submission and editing of %POST-LABEL-PLURAL%.', 'types'
+					'You can create forms for front-end submission and editing of %POST-LABEL-PLURAL%.', 'wpcf'
 				)
 			),
 			array(
 				'type'   => 'link',
 				'external' => true,
 				'target' => Types_Helper_Url::get_url( 'adding-forms-to-layouts', 'table' ),
-				'label'  => __( 'Learn how', 'types' )
+				'label'  => __( 'Learn how', 'wpcf' )
 			),
 		)
 	),
@@ -121,13 +121,13 @@ return array(
 		'description' => array(
 			array(
 				'type' => 'paragraph',
-				'content' => '%POST-FORMS-LIST%', 'types'
+				'content' => '%POST-FORMS-LIST%'
 			),
 			array(
 				'type'   => 'link',
 				'external' => true,
 				'target' => Types_Helper_Url::get_url( 'adding-forms-to-layouts', 'table' ),
-				'label'  => __( 'How to add forms to layouts', 'types' )
+				'label'  => __( 'How to add forms to layouts', 'wpcf' )
 			),
 		)
 	),
