@@ -16,7 +16,7 @@ $timelines = $artHistoryTimelines->getTimelineData();
         <!-- dynamically populated -->
     </div>
     <!--main content-->
-    <main id="timelines-main-content" class="small-12 large-9 large-grid-end">
+    <main id="timelines-main-content" class="col-sm-12 col-lg-offset-3 col-lg-9">
         <section id="timelines-header-image-container">
             <!-- timeline images-->
             <?php foreach($timelines as $index=>$timeline){
@@ -47,15 +47,11 @@ $timelines = $artHistoryTimelines->getTimelineData();
                 <div id="timeline-<?php echo $index;?>" class="timeline l--show-for-timeline-<?php echo $index;?> faded-out" data-items-list="<?php echo $timeline['niceSlug'];?>"></div>
             <?php } ?>
         </section>
-        <section id="timelines-selector-container" class="grid-container">
+        <section id="timelines-selector-container" class="grid-container row">
             <!--navigation-->
             <?php foreach($timelines as $index=>$timeline) {
-                $className = $index===0?'active':'';
-                $gridEnd = '';
-                if(sizeof($timeline) === $index - 1){
-                    $gridEnd = ' grid-end';
-                } ?>
-                <div class="timelines-selector-block <?php echo $gridEnd;?>">
+                $className = $index===0?'active':''; ?>
+                <div class="timelines-selector-block col">
                     <a href="#" data-timeline-selector="<?php echo $index;?>" class="timelines-selector <?php echo $className;?>">
                         <?php echo $timeline['title']?>
                         <span class="timelines-selector-line"></span>

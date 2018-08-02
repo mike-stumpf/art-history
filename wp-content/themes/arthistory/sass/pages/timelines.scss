@@ -203,12 +203,8 @@ $bullet-spacing: -20px;
 }
 
 .timelines-selector-block {
-  float: left;
   text-align: center;
-  width: 50%;
-  @include tablet-up {
-    width: 25%;
-  }
+  flex-basis: 15%;
 }
 
 .timelines-selector-line {
