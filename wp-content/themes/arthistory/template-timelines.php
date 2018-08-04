@@ -53,7 +53,7 @@ $timelines = $artHistoryTimelines->getTimelineData();
                 $className = $index===0?'active':''; ?>
                 <div class="timelines-selector-block col">
                     <a href="#" data-timeline-selector="<?php echo $index;?>" class="timelines-selector <?php echo $className;?>">
-                        <?php echo $timeline['title']?>
+                        <?php echo $timeline['navigationName']?>
                         <span class="timelines-selector-line"></span>
                         <span class="timelines-selector-indicator"></span>
                     </a>
@@ -62,7 +62,7 @@ $timelines = $artHistoryTimelines->getTimelineData();
         </section>
     </main>
     <a href="#timeline-mobile-modal" id="timeline-mobile-modal-trigger" class="faded-out">Modal Trigger</a>
-    <section class="modal--fade" id="timeline-mobile-modal" data-stackable="false" tabindex="-1" role="dialog" aria-labelledby="label-fade" aria-hidden="true">
+    <section class="modal--fade" id="timeline-mobile-modal" data-stackable="false" tabindex="-1" role="dialog" aria-labelledby="label-fade" aria-hidden="true"
         <div id="timeline-mobile-modal-content" class="modal-inner">
             <!-- dynamically populated -->
         </div>

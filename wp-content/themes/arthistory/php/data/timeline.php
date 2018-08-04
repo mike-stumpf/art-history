@@ -9,17 +9,18 @@ use artHistory\Lib\Dictionary;
 class Timeline {
 
     private $id;
-    private $name;
+    private $navigationName;
     private $slug;
     private $niceSlug;
     private $timeline;
     private $timelineEvents;
     private $image;
     private $movements;
+    private $title;
 
     public function __construct($option){
         //variables
-        $this->name = $option->name;
+        $this->title = $option->name;
         $this->slug = $option->slug;
         $this->timeline = null;
         $this->timelineEvents = array();
@@ -43,6 +44,7 @@ class Timeline {
             while ($timelineQuery->have_posts()) {
                 $timelineQuery->the_post();
                 $this->id = get_the_ID();
+                $this->navigationName = get_the_title();
                 $this->image = Helpers::getMetaValue($this->id,'timeline-header-image');
             }
         }
@@ -118,7 +120,8 @@ class Timeline {
     public function getTimeline(){
         return array(
             'id'=>$this->id,
-            'title'=>$this->name,
+            'navigationName'=>$this->navigationName,
+            'title'=>$this->title,
             'slug'=>$this->slug,
             'niceSlug'=>$this->niceSlug,
             'timeline'=>$this->timeline,
