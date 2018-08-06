@@ -1,10 +1,10 @@
 // core
 //-----------------------------
 .page-template-template-timelines {
-  .vis-item, .timeline-artwork, #timelines-main-content, .timelines-header-title-element-container, .timeline-event {
+  .vis-item, #timelines-main-content, .timelines-header-title-element-container, .timeline-event {
     border-color: $color-black;
   }
-  .timelines-header-title-element, #timelines-sidebar-container, .timelines-active-color-light {
+  .timelines-header-title-element, .timelines-active-color-light {
     background-color: lighten($color-black, 25%);
   }
   .sidebar-entry .entry-image {
@@ -135,6 +135,16 @@ $bullet-spacing: -20px;
 
 .timeline-artwork {
   border-radius: 50%;
+  border-color: $color-black;
+  &.modern {
+    border-color: $color-class-modern;
+  }
+  &.women {
+    border-color: $color-class-women;
+  }
+  &.contemporary {
+    border-color: $color-class-contemporary;
+  }
 }
 
 .timeline-header {
@@ -285,6 +295,7 @@ $bullet-spacing: -20px;
   height: 100%;
   width: 25.5%;
   z-index: 999;
+  background-color: $color-white;
 }
 
 .sidebar-header {
@@ -298,14 +309,36 @@ $bullet-spacing: -20px;
 }
 
 .sidebar-entry {
-  background-color: transparent;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  border-left: 15px solid transparent;
   cursor: pointer;
   display: table;
   width: 100%;
   padding: 5px 0;
-  @include transition-with-defaults(background-color);
+  &.modern {
+    border-left-color: $color-class-modern;
+  }
+  &.women {
+    border-left-color: $color-class-women;
+  }
+  &.contemporary {
+    border-left-color: $color-class-contemporary;
+  }
+  @include transition-with-defaults(border-color);
   &:hover, &.active {
-    background-color: rgba(255,255,255,0.8);
+    &.modern {
+      border-top-color: $color-class-modern;
+      border-bottom-color: $color-class-modern;
+    }
+    &.women {
+      border-top-color: $color-class-women;
+      border-bottom-color: $color-class-modern;
+    }
+    &.contemporary {
+      border-top-color: $color-class-contemporary;
+      border-bottom-color: $color-class-contemporary;
+    }
   }
   .entry-image {
     width: 50px;

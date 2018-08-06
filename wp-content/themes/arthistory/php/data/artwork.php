@@ -10,6 +10,8 @@ class Artwork {
     private $image;
     private $largeImage;
     private $artworkDate;
+    private $movementId; // set dynamically by the parent movement
+    private $taughtClass; // set dynamically by the parent movement
 
     public function __construct($artworkId) {
 
@@ -37,7 +39,9 @@ class Artwork {
             'title'=>$this->title,
             'start'=>$this->artworkDate,
             'image'=>$this->image,
-            'largeImage'=>$this->largeImage
+            'largeImage'=>$this->largeImage,
+            'taughtClass'=>$this->taughtClass,
+            'movementId'=>$this->movementId
         );
     }
 }

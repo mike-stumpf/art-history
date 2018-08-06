@@ -17,6 +17,7 @@ class Movement {
     private $videos;
     private $artworks;
     private $websites;
+    private $taughtClass;
 
     public function __construct($movementId) {
         //variables
@@ -27,6 +28,12 @@ class Movement {
         $this->title = Helpers::getMetaValue($movementId,'movement-title');
         $this->image = get_home_url().Helpers::resizeImage(Helpers::getMetaValue($movementId,'movement-image'),100,100);
         $this->largeImage = Helpers::getMetaValue($movementId,'movement-image');
+        $taughtClassObjectArray = wp_get_post_terms($movementId, Dictionary::$typeTaughtClass);
+        if (sizeof($taughtClassObjectArray) > 0) {
+            $this->taughtClass = $taughtClassObjectArray[0]->slug;
+        } else {
+            $this->taughtClass = '';
+        }
 
         //get children
         $this->books = Helpers::getChildren($movementId,$parentType,Dictionary::$typeBook);
@@ -36,8 +43,12 @@ class Movement {
         $this->artworks = Helpers::getChildren($movementId,$parentType,Dictionary::$typeArtwork);
         $this->websites = Helpers::getChildren($movementId,$parentType,Dictionary::$typeWebsite);
 
-        //get movement start
-        foreach($this->artworks as $artwork){
+        foreach($this->artworks as $index=>$artwork){
+            // set taught class for ui distinction
+            $artwork['taughtClass'] = $this->taughtClass;
+            $artwork['movementId'] = $this->id;
+            $this->artworks[$index] = $artwork;
+            //get movement start
             if (!$this->movementStart || $this->movementStart > $artwork['start']){
                 $this->movementStart = $artwork['start'];
             }
@@ -60,7 +71,8 @@ class Movement {
             'articles'=>$this->articles,
             'videos'=>$this->videos,
             'artworks'=>$this->artworks,
-            'websites'=>$this->websites
+            'websites'=>$this->websites,
+            'taughtClass'=>$this->taughtClass
         );
     }
 }

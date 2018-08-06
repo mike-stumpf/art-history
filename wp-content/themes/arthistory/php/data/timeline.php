@@ -73,12 +73,13 @@ class Timeline {
 
                 //add artworks to timeline from movement
                 foreach($movement['artworks'] as $artwork){
-                    $artwork['movementId'] = $movement['id'];
                     array_push($this->timelineEvents, $artwork);
                 }
             }
         }
-        
+        // sort movements by start and class
+        usort($this->movements, array($this, "sortMovements"));
+
         //get events
         $eventArguments = array(
             'post_status' => 'publish',
@@ -101,7 +102,7 @@ class Timeline {
                 array_push($this->timelineEvents, $eventObject->getEvent());
             }
         }
-        
+
         //get slug
         $optionNiceSlug = '';
         $optionNiceSlugPieces = explode('-',$option->slug);
@@ -117,18 +118,26 @@ class Timeline {
         $this->niceSlug = $optionNiceSlug;
     }
 
-    public function getTimeline(){
+    public function getTimeline() {
         return array(
-            'id'=>$this->id,
-            'navigationName'=>$this->navigationName,
-            'title'=>$this->title,
-            'slug'=>$this->slug,
-            'niceSlug'=>$this->niceSlug,
-            'timeline'=>$this->timeline,
-            'timelineEvents'=>$this->timelineEvents,
-            'image'=>$this->image,
-            'movements'=>$this->movements
+            'id' => $this->id,
+            'navigationName' => $this->navigationName,
+            'title' => $this->title,
+            'slug' => $this->slug,
+            'niceSlug' => $this->niceSlug,
+            'timeline' => $this->timeline,
+            'timelineEvents' => $this->timelineEvents,
+            'image' => $this->image,
+            'movements' => $this->movements
         );
+    }
+
+    private function sortMovements($a, $b) {
+        $c = strcmp($a['start'], $b['start']);
+        if($c != 0) {
+            return $c;
+        }
+        return strcmp($a['taughtClass'], $b['taughtClass']);
     }
 
 }

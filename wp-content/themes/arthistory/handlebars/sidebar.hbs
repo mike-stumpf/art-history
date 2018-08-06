@@ -1,7 +1,7 @@
 <h2 class="sidebar-header">Movements &amp; Artists</h2>
 <h3 class="sidebar-header-title">{{title}}</h3>
 {{#each movements}}
-    <div class="sidebar-entry" data-movement-id="{{id}}">
+    <div class="sidebar-entry {{taughtClass}}" data-movement-id="{{id}}">
         {{#if image}}
             <img class="entry-image" src="{{image}}" alt="{{title}}"/>
         {{else}}

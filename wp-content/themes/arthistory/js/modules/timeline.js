@@ -91,7 +91,8 @@
                 image: entry.image,
                 title: entry.title,
                 start: entry.start,
-                movementId: entry.movementId
+                movementId: entry.movementId,
+                taughtClass: entry.taughtClass
             };
             entry.start = convertDate(entry.start);
             if (!minDate || !maxDate){

@@ -14,4 +14,6 @@ class Dictionary {
     public static $typeEventTimeline = 'event-timeline';
     public static $typeMovement = 'movement';
     public static $typeWebsite = 'website';
+    public static $typeTaughtClass = 'taught-class';
+
 }

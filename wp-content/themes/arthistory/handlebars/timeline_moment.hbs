@@ -1,14 +1,16 @@
 {{#if movementId}}
+    <!--artwork-->
     <div
         {{#if image}}
-        style="background-image: url('{{image}}')" class="timeline-artwork"
+        style="background-image: url('{{image}}')" class="timeline-artwork {{taughtClass}}"
         {{else}}
-        class="timeline-artwork timeline-active-color-light"
+        class="timeline-artwork timeline-active-color-light {{taughtClass}}"
         {{/if}}
         data-movement-id="{{movementId}}">
         {{title}}
     </div>
 {{else}}
+    <!--historical event-->
     <div
         {{#if image}}
         style="background-image: url('{{image}}')" class="timeline-event"
