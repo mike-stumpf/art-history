@@ -149,8 +149,9 @@
     function populateArtworkModal(movementId){
         var currentTimelineData = timelineData[getDataItemsList('#timeline-'+that.currentTimelineIndex)],
             data = _.find(currentTimelineData.movements, {id: parseInt(movementId)}),
-            template = Handlebars.templates.sidebar_modal,
-            html = template(data);
+            template = Handlebars.templates.sidebar_modal;
+        data.isMovement = true;
+        var html = template(data);
         mobileModalContent.html(html);
         openModal();
     }
