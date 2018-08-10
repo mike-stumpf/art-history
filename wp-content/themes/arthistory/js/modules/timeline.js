@@ -189,7 +189,7 @@
                 template = Handlebars.templates.sidebar_event,
                 html = template(data);
             //scroll timeline to center selected event
-            that.timelines[that.currentTimelineIndex-1].moveTo(convertDate(data.start),{
+            that.timelines[that.currentTimelineIndex].moveTo(convertDate(data.start),{
                 animation: true
             });
             closeSidebar()
