@@ -26,8 +26,11 @@ class Movement {
         //fields
         $this->id = $movementId;
         $this->title = Helpers::getMetaValue($movementId,'movement-title');
-        $this->image = get_home_url().Helpers::resizeImage(Helpers::getMetaValue($movementId,'movement-image'),100,100);
-        $this->largeImage = Helpers::getMetaValue($movementId,'movement-image');
+        $imagePath = Helpers::getMetaValue($movementId,'movement-image');
+        if (strlen($imagePath) > 0) {
+            $this->image = get_home_url().Helpers::resizeImage($imagePath,100,100);
+            $this->largeImage = $imagePath;
+        }
         $taughtClassObjectArray = wp_get_post_terms($movementId, Dictionary::$typeTaughtClass);
         if (sizeof($taughtClassObjectArray) > 0) {
             $this->taughtClass = $taughtClassObjectArray[0]->slug;
