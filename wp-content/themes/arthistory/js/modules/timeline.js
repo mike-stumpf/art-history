@@ -289,7 +289,7 @@
             initializeTimeline($(this));
         });
 
-        selectTimeline(0);
+        selectTimeline(selectedTimelineIndex);
 
         bodyElement
             .on('click', timelineArtworkClass, function(){

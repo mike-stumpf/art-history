@@ -7,6 +7,8 @@ get_header();
 include_once('php/bootstrapper.php');
 $artHistoryTimelines = new artHistory\artHistory();
 $timelines = $artHistoryTimelines->getTimelineData();
+$defaultTimeline = get_option('ah_default_timeline');
+$selectedTimelineIndex = 0;
 ?>
     <!--sidebar-->
     <aside id="timelines-sidebar-container" class="show-for-large">
@@ -20,6 +22,9 @@ $timelines = $artHistoryTimelines->getTimelineData();
         <section id="timelines-header-image-container">
             <!-- timeline images-->
             <?php foreach($timelines as $index=>$timeline){
+                if ($timeline['slug'] === $defaultTimeline) {
+                    $selectedTimelineIndex = $index;
+                }
                 if (!empty($timeline['image'])){ ?>
                     <img class="timeline-header-image faded-out l--show-for-timeline-<?php echo $index;?>" src="<?php echo $timeline['image'];?>" alt="<?php echo $timeline['title'];?>"/>
                 <?php }
@@ -50,7 +55,7 @@ $timelines = $artHistoryTimelines->getTimelineData();
         <section id="timelines-selector-container" class="grid-container row">
             <!--navigation-->
             <?php foreach($timelines as $index=>$timeline) {
-                $className = $index===0?'active':''; ?>
+                $className = $index===$selectedTimelineIndex?'active':''; ?>
                 <div class="timelines-selector-block col">
                     <a href="#" data-timeline-selector="<?php echo $index;?>" class="timelines-selector <?php echo $className;?>">
                         <?php echo $timeline['navigationName']?>
@@ -77,7 +82,8 @@ $timelines = $artHistoryTimelines->getTimelineData();
             timelineTitle,
             timeline,
             events,
-            movements;
+            movements,
+            selectedTimelineIndex = <?php echo $selectedTimelineIndex;?>;
         <?php foreach($timelines as $index=>$timeline){?>
         timelineTitle<?php echo $index;?> = '<?php echo $timeline['niceSlug'];?>';
         events<?php echo $index;?> = "<?php echo addslashes(json_encode($timeline['timelineEvents']));?>";

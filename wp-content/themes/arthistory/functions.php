@@ -104,3 +104,44 @@ add_action('init', 'disable_embeds_init', 9999);
 
 remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 remove_action( 'wp_print_styles', 'print_emoji_styles' );
+
+
+/**
+ * add custom settings
+ */
+function register_default_timeline_setting() {
+    add_settings_section(
+        'ah_settings_section', // Section ID
+        'Art History Settings', // Section Title
+        'ah_section_options_callback', // Callback
+        'general' // page
+    );
+
+    add_settings_field(
+        'ah_default_timeline', // Option ID
+        'Default Timeline Slug', // Label
+        'ah_default_timeline_callback', // callback
+        'general', // Page
+        'ah_settings_section', // Name of our section
+        array(
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => NULL,
+            'ah_default_timeline' // Should match Option ID
+        )
+    );
+
+    register_setting('general','ah_default_timeline', 'esc_attr');
+}
+
+
+function ah_section_options_callback() {
+    echo '<p>Custom theme options</p>';
+}
+
+function ah_default_timeline_callback($args) {
+    $option = get_option($args[0]);
+    echo '<input type="text" id="'. $args[0] .'" name="'. $args[0] .'" value="' . $option . '" />';
+}
+
+add_action( 'admin_init', 'register_default_timeline_setting' );
