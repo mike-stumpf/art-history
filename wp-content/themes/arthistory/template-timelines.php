@@ -30,21 +30,21 @@ $selectedTimelineIndex = 0;
                 <?php }
             } ?>
             <!-- timeline title-->
-            <div id="timelines-header-title-container" class="timelines-header-title-element-container">
-                <div id="timelines-header-title-left" class="timelines-header-title-element-container timelines-header-title-bullet">
-                    <div class="timelines-header-title-element">
-                        &diams;
-                    </div>
-                </div>
-                <div class="timelines-header-title-element">
-                    <h3 id="timelines-header-title"></h3>
-                </div>
-                <div id="timelines-header-title-right" class="timelines-header-title-element-container timelines-header-title-bullet">
-                    <div class="timelines-header-title-element">
-                        &diams;
-                    </div>
-                </div>
-            </div>
+<!--            <div id="timelines-header-title-container" class="timelines-header-title-element-container">-->
+<!--                <div id="timelines-header-title-left" class="timelines-header-title-element-container timelines-header-title-bullet">-->
+<!--                    <div class="timelines-header-title-element">-->
+<!--                        &diams;-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="timelines-header-title-element">-->
+<!--                    <h3 id="timelines-header-title"></h3>-->
+<!--                </div>-->
+<!--                <div id="timelines-header-title-right" class="timelines-header-title-element-container timelines-header-title-bullet">-->
+<!--                    <div class="timelines-header-title-element">-->
+<!--                        &diams;-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </section>
         <section id="timelines-timeline-container">
             <!--timelines-->
